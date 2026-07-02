@@ -4,1654 +4,663 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Marrakech Daily — Your English-Language Window to the Red City</title>
-<meta name="description" content="Breaking news, business, tourism, real estate, culture and events coverage of Marrakech and the Marrakech-Safi region. Serving expats, tourists, investors and international businesses.">
-<meta property="og:title" content="Marrakech Daily">
-<meta property="og:description" content="English-language news from the heart of Marrakech.">
-<meta property="og:type" content="website">
+<meta name="description" content="Breaking news, business, tourism, real estate, culture and events from Marrakech. Updated Friday June 26, 2026.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --red: #C8102E;
-    --red-dark: #9B0B22;
-    --red-light: #F5E6E9;
-    --black: #0D0D0D;
-    --ink: #1A1A1A;
-    --charcoal: #2D2D2D;
-    --muted: #6B6B6B;
-    --light: #9A9A9A;
-    --rule: #E2E2E2;
-    --bg: #FAFAFA;
-    --white: #FFFFFF;
-    --sand: #F5F1EB;
-    --gold: #B8860B;
-    --teal: #0F6E56;
-    --font-display: 'Playfair Display', Georgia, serif;
-    --font-body: 'Source Serif 4', Georgia, serif;
-    --font-ui: 'Inter', system-ui, sans-serif;
-  }
-
-  html { font-size: 16px; scroll-behavior: smooth; }
-  body { font-family: var(--font-ui); background: var(--bg); color: var(--ink); line-height: 1.5; }
-  a { text-decoration: none; color: inherit; }
-  img { display: block; width: 100%; object-fit: cover; }
-  button { cursor: pointer; border: none; background: none; font-family: inherit; }
-
-  /* ── BREAKING TICKER ── */
-  .ticker-bar {
-    background: var(--red);
-    color: var(--white);
-    font-family: var(--font-ui);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    padding: 8px 0;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  .ticker-inner {
-    display: flex;
-    align-items: center;
-    gap: 0;
-  }
-  .ticker-label {
-    background: var(--black);
-    padding: 0 16px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    font-size: 10px;
-  }
-  .ticker-scroll-wrapper { flex: 1; overflow: hidden; }
-  .ticker-scroll {
-    display: inline-flex;
-    gap: 60px;
-    animation: ticker 40s linear infinite;
-    padding-left: 32px;
-  }
-  .ticker-scroll:hover { animation-play-state: paused; }
-  .ticker-item { white-space: nowrap; }
-  .ticker-dot { color: rgba(255,255,255,0.5); margin: 0 8px; }
-  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-  /* ── STICKY HEADER ── */
-  .site-header {
-    background: var(--white);
-    border-bottom: 3px solid var(--red);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  }
-  .header-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 24px;
-    border-bottom: 1px solid var(--rule);
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-  .header-meta {
-    font-size: 11px;
-    color: var(--muted);
-    font-family: var(--font-ui);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .site-logo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  .logo-eyebrow {
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-family: var(--font-ui);
-    margin-bottom: 2px;
-  }
-  .logo-name {
-    font-family: var(--font-display);
-    font-size: 36px;
-    font-weight: 900;
-    color: var(--black);
-    letter-spacing: -0.02em;
-    line-height: 1;
-  }
-  .logo-name span { color: var(--red); }
-  .logo-tagline {
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-family: var(--font-ui);
-    margin-top: 2px;
-  }
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .btn-subscribe {
-    background: var(--red);
-    color: white;
-    padding: 8px 18px;
-    font-size: 12px;
-    font-weight: 600;
-    font-family: var(--font-ui);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    transition: background 0.2s;
-  }
-  .btn-subscribe:hover { background: var(--red-dark); }
-  .btn-search {
-    width: 36px; height: 36px;
-    display: flex; align-items: center; justify-content: center;
-    border: 1.5px solid var(--rule);
-    color: var(--charcoal);
-    font-size: 16px;
-    transition: all 0.2s;
-  }
-  .btn-search:hover { border-color: var(--red); color: var(--red); }
-
-  /* ── NAV ── */
-  .site-nav {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    gap: 0;
-  }
-  .nav-link {
-    font-family: var(--font-ui);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--charcoal);
-    padding: 12px 16px;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .nav-link:hover { color: var(--red); border-bottom-color: var(--red); }
-  .nav-link.active { color: var(--red); border-bottom-color: var(--red); }
-  .nav-link.breaking { color: var(--red); }
-
-  /* ── LAYOUT ── */
-  .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
-  .section-rule {
-    border: none;
-    border-top: 3px solid var(--black);
-    margin-bottom: 20px;
-  }
-  .section-rule.red { border-color: var(--red); }
-  .section-title {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--black);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .section-title .label {
-    font-family: var(--font-ui);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--white);
-    background: var(--red);
-    padding: 4px 10px;
-  }
-  .section-title .see-all {
-    margin-left: auto;
-    font-family: var(--font-ui);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--red);
-    border-bottom: 1px solid var(--red);
-  }
-
-  /* ── HERO SECTION ── */
-  .hero-section { padding: 32px 0 0; }
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 0;
-    border: 1px solid var(--rule);
-  }
-  .hero-main { position: relative; overflow: hidden; }
-  .hero-image-wrap { height: 420px; overflow: hidden; position: relative; }
-  .hero-image-wrap img { height: 100%; transition: transform 0.5s ease; }
-  .hero-main:hover .hero-image-wrap img { transform: scale(1.02); }
-  .hero-category-badge {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    background: var(--red);
-    color: white;
-    font-family: var(--font-ui);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 5px 12px;
-  }
-  .breaking-badge {
-    background: var(--black);
-    animation: pulse-badge 2s ease-in-out infinite;
-  }
-  @keyframes pulse-badge {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-  }
-  .hero-content {
-    padding: 24px;
-    border-top: 3px solid var(--red);
-    background: var(--white);
-  }
-  .hero-title {
-    font-family: var(--font-display);
-    font-size: 32px;
-    font-weight: 900;
-    line-height: 1.15;
-    color: var(--black);
-    margin-bottom: 12px;
-    letter-spacing: -0.02em;
-  }
-  .hero-title a:hover { color: var(--red); }
-  .hero-excerpt {
-    font-family: var(--font-body);
-    font-size: 15px;
-    color: var(--charcoal);
-    line-height: 1.6;
-    margin-bottom: 16px;
-  }
-  .article-meta {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-family: var(--font-ui);
-    font-size: 11px;
-    color: var(--muted);
-    flex-wrap: wrap;
-  }
-  .article-meta .author { font-weight: 600; color: var(--charcoal); }
-  .article-meta .sep { color: var(--rule); }
-  .read-more-arrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--font-ui);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--red);
-    margin-top: 16px;
-    border-bottom: 2px solid transparent;
-    transition: border-color 0.2s;
-  }
-  .read-more-arrow:hover { border-bottom-color: var(--red); }
-
-  /* ── HERO SIDEBAR ── */
-  .hero-sidebar {
-    border-left: 1px solid var(--rule);
-    background: var(--white);
-  }
-  .sidebar-top-stories-title {
-    font-family: var(--font-ui);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--white);
-    background: var(--black);
-    padding: 10px 16px;
-  }
-  .sidebar-article {
-    padding: 16px;
-    border-bottom: 1px solid var(--rule);
-    display: grid;
-    grid-template-columns: 1fr 80px;
-    gap: 12px;
-    align-items: start;
-    transition: background 0.15s;
-  }
-  .sidebar-article:hover { background: var(--sand); }
-  .sidebar-article:last-child { border-bottom: none; }
-  .sidebar-num {
-    font-family: var(--font-display);
-    font-size: 32px;
-    font-weight: 900;
-    color: var(--rule);
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .sidebar-cat {
-    font-family: var(--font-ui);
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--red);
-    margin-bottom: 4px;
-  }
-  .sidebar-title {
-    font-family: var(--font-display);
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 1.3;
-    color: var(--black);
-  }
-  .sidebar-title a:hover { color: var(--red); }
-  .sidebar-thumb { height: 70px; overflow: hidden; }
-  .sidebar-article-meta {
-    font-size: 10px;
-    color: var(--light);
-    font-family: var(--font-ui);
-    margin-top: 4px;
-  }
-
-  /* ── SECTIONS ── */
-  section { padding: 40px 0; }
-  section + section { border-top: 1px solid var(--rule); }
-
-  /* ── LATEST NEWS GRID ── */
-  .latest-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-    border: 1px solid var(--rule);
-    border-right: none;
-  }
-  .latest-card {
-    border-right: 1px solid var(--rule);
-    overflow: hidden;
-    transition: background 0.15s;
-  }
-  .latest-card:hover { background: var(--sand); }
-  .latest-img { height: 160px; overflow: hidden; }
-  .latest-img img { height: 100%; transition: transform 0.4s; }
-  .latest-card:hover .latest-img img { transform: scale(1.04); }
-  .latest-body { padding: 16px; }
-  .latest-cat {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--red);
-    font-family: var(--font-ui);
-    margin-bottom: 6px;
-  }
-  .latest-title {
-    font-family: var(--font-display);
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 1.3;
-    color: var(--black);
-    margin-bottom: 8px;
-  }
-  .latest-title a:hover { color: var(--red); }
-  .latest-excerpt {
-    font-family: var(--font-body);
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.5;
-    margin-bottom: 10px;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  /* ── BUSINESS SECTION ── */
-  .biz-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 24px;
-  }
-  .biz-main .biz-img { height: 260px; overflow: hidden; }
-  .biz-main .biz-img img { height: 100%; transition: transform 0.4s; }
-  .biz-main:hover .biz-img img { transform: scale(1.03); }
-  .biz-body { padding: 16px 0; }
-  .biz-cat {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--teal);
-    font-family: var(--font-ui);
-    margin-bottom: 6px;
-  }
-  .biz-title {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 700;
-    line-height: 1.25;
-    color: var(--black);
-    margin-bottom: 8px;
-  }
-  .biz-title.sm { font-size: 16px; }
-  .biz-title a:hover { color: var(--red); }
-  .biz-excerpt {
-    font-family: var(--font-body);
-    font-size: 14px;
-    color: var(--muted);
-    line-height: 1.55;
-    margin-bottom: 8px;
-  }
-  .biz-side-card {
-    border-top: 3px solid var(--rule);
-    padding-top: 16px;
-    margin-bottom: 16px;
-  }
-  .biz-side-card:last-child { margin-bottom: 0; }
-  .biz-side-img { height: 120px; overflow: hidden; margin-bottom: 10px; }
-  .biz-side-img img { height: 100%; }
-
-  /* ── TOURISM SECTION ── */
-  .tourism-bg {
-    background: linear-gradient(135deg, #0D1B14 0%, #1A3528 100%);
-    color: white;
-    padding: 40px 0;
-    margin: 0;
-  }
-  .tourism-bg .section-rule { border-color: var(--teal); }
-  .tourism-bg .section-title { color: white; }
-  .tourism-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-top: 24px;
-  }
-  .tourism-card {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    overflow: hidden;
-    transition: background 0.2s, transform 0.2s;
-  }
-  .tourism-card:hover { background: rgba(255,255,255,0.14); transform: translateY(-2px); }
-  .tourism-card-img { height: 180px; overflow: hidden; }
-  .tourism-card-img img { height: 100%; transition: transform 0.4s; }
-  .tourism-card:hover .tourism-card-img img { transform: scale(1.05); }
-  .tourism-card-body { padding: 16px; }
-  .tourism-card-label {
-    font-family: var(--font-ui);
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #5DCAA5;
-    margin-bottom: 6px;
-  }
-  .tourism-card-title {
-    font-family: var(--font-display);
-    font-size: 17px;
-    font-weight: 700;
-    color: white;
-    line-height: 1.3;
-    margin-bottom: 8px;
-  }
-  .tourism-card-title a:hover { color: #5DCAA5; }
-  .tourism-card-meta {
-    font-family: var(--font-ui);
-    font-size: 11px;
-    color: rgba(255,255,255,0.5);
-  }
-
-  /* ── REAL ESTATE SECTION ── */
-  .re-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    border: 1px solid var(--rule);
-  }
-  .re-card {
-    display: grid;
-    grid-template-columns: 160px 1fr;
-    gap: 0;
-    border-bottom: 1px solid var(--rule);
-    overflow: hidden;
-    transition: background 0.15s;
-  }
-  .re-card:hover { background: var(--sand); }
-  .re-card:nth-child(odd) { border-right: 1px solid var(--rule); }
-  .re-card:last-child, .re-card:nth-last-child(2):nth-child(odd) { border-bottom: none; }
-  .re-img { height: 130px; overflow: hidden; }
-  .re-img img { height: 100%; }
-  .re-body { padding: 16px; }
-  .re-badge {
-    display: inline-block;
-    font-family: var(--font-ui);
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    background: var(--sand);
-    color: var(--gold);
-    padding: 3px 8px;
-    margin-bottom: 6px;
-  }
-  .re-title {
-    font-family: var(--font-display);
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.3;
-    color: var(--black);
-    margin-bottom: 6px;
-  }
-  .re-title a:hover { color: var(--red); }
-  .re-stats {
-    display: flex;
-    gap: 12px;
-    font-family: var(--font-ui);
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 8px;
-    flex-wrap: wrap;
-  }
-  .re-stat { display: flex; align-items: center; gap: 4px; }
-
-  /* ── EVENTS CALENDAR ── */
-  .events-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    border: 1px solid var(--rule);
-  }
-  .event-card {
-    display: flex;
-    align-items: stretch;
-    border-bottom: 1px solid var(--rule);
-    overflow: hidden;
-    transition: background 0.15s;
-  }
-  .event-card:hover { background: var(--sand); }
-  .event-card:nth-child(odd) { border-right: 1px solid var(--rule); }
-  .event-date-block {
-    background: var(--black);
-    color: white;
-    min-width: 64px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 16px 8px;
-    flex-shrink: 0;
-  }
-  .event-month {
-    font-family: var(--font-ui);
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--red);
-  }
-  .event-day {
-    font-family: var(--font-display);
-    font-size: 28px;
-    font-weight: 900;
-    line-height: 1;
-    color: white;
-  }
-  .event-body { padding: 14px 16px; }
-  .event-cat {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--red);
-    font-family: var(--font-ui);
-    margin-bottom: 4px;
-  }
-  .event-title {
-    font-family: var(--font-display);
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.3;
-    color: var(--black);
-    margin-bottom: 6px;
-  }
-  .event-title a:hover { color: var(--red); }
-  .event-meta {
-    font-family: var(--font-ui);
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .event-location { display: flex; align-items: center; gap: 4px; margin-top: 4px; }
-
-  /* ── OPINION ── */
-  .opinion-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-  }
-  .opinion-card { border-top: 4px solid var(--red); padding-top: 16px; }
-  .opinion-author {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-  .opinion-avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    overflow: hidden;
-    flex-shrink: 0;
-    border: 2px solid var(--rule);
-  }
-  .opinion-avatar img { height: 100%; }
-  .opinion-name {
-    font-family: var(--font-ui);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--black);
-  }
-  .opinion-role {
-    font-family: var(--font-ui);
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .opinion-title {
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 1.3;
-    color: var(--black);
-    margin-bottom: 8px;
-    font-style: italic;
-  }
-  .opinion-title a:hover { color: var(--red); }
-  .opinion-excerpt {
-    font-family: var(--font-body);
-    font-size: 14px;
-    color: var(--muted);
-    line-height: 1.55;
-  }
-  .opinion-pullquote {
-    border-left: 3px solid var(--red);
-    padding-left: 12px;
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-style: italic;
-    color: var(--charcoal);
-    margin: 12px 0;
-  }
-
-  /* ── MOST READ ── */
-  .most-read-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 0;
-    border: 1px solid var(--rule);
-  }
-  .mr-card {
-    padding: 20px;
-    border-right: 1px solid var(--rule);
-    transition: background 0.15s;
-    position: relative;
-  }
-  .mr-card:last-child { border-right: none; }
-  .mr-card:hover { background: var(--sand); }
-  .mr-num {
-    font-family: var(--font-display);
-    font-size: 56px;
-    font-weight: 900;
-    color: var(--red-light);
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-  .mr-cat {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--red);
-    font-family: var(--font-ui);
-    margin-bottom: 6px;
-  }
-  .mr-title {
-    font-family: var(--font-display);
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.35;
-    color: var(--black);
-    margin-bottom: 8px;
-  }
-  .mr-title a:hover { color: var(--red); }
-  .mr-views {
-    font-family: var(--font-ui);
-    font-size: 10px;
-    color: var(--light);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  /* ── NEWSLETTER ── */
-  .newsletter-section {
-    background: var(--black);
-    padding: 60px 0;
-  }
-  .newsletter-inner {
-    max-width: 640px;
-    margin: 0 auto;
-    text-align: center;
-    padding: 0 24px;
-  }
-  .newsletter-eyebrow {
-    font-family: var(--font-ui);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--red);
-    margin-bottom: 12px;
-  }
-  .newsletter-title {
-    font-family: var(--font-display);
-    font-size: 36px;
-    font-weight: 900;
-    color: white;
-    line-height: 1.15;
-    margin-bottom: 12px;
-  }
-  .newsletter-sub {
-    font-family: var(--font-body);
-    font-size: 15px;
-    color: rgba(255,255,255,0.65);
-    line-height: 1.6;
-    margin-bottom: 28px;
-  }
-  .newsletter-form {
-    display: flex;
-    gap: 0;
-    max-width: 480px;
-    margin: 0 auto 16px;
-  }
-  .newsletter-input {
-    flex: 1;
-    padding: 14px 18px;
-    font-size: 14px;
-    font-family: var(--font-ui);
-    border: none;
-    background: white;
-    color: var(--black);
-    outline: none;
-  }
-  .newsletter-input::placeholder { color: var(--light); }
-  .newsletter-btn {
-    background: var(--red);
-    color: white;
-    padding: 14px 24px;
-    font-family: var(--font-ui);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transition: background 0.2s;
-    white-space: nowrap;
-  }
-  .newsletter-btn:hover { background: var(--red-dark); }
-  .newsletter-note {
-    font-family: var(--font-ui);
-    font-size: 11px;
-    color: rgba(255,255,255,0.35);
-  }
-  .newsletter-note a { color: rgba(255,255,255,0.5); text-decoration: underline; }
-
-  /* ── FOOTER ── */
-  .site-footer {
-    background: var(--ink);
-    color: rgba(255,255,255,0.7);
-    padding: 48px 0 24px;
-  }
-  .footer-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 40px;
-    margin-bottom: 40px;
-  }
-  .footer-brand .logo-name { color: white; font-size: 28px; }
-  .footer-brand .logo-name span { color: var(--red); }
-  .footer-desc {
-    font-family: var(--font-body);
-    font-size: 13px;
-    color: rgba(255,255,255,0.5);
-    line-height: 1.6;
-    margin: 12px 0 20px;
-  }
-  .footer-social {
-    display: flex;
-    gap: 8px;
-  }
-  .social-btn {
-    width: 34px;
-    height: 34px;
-    border: 1px solid rgba(255,255,255,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    color: rgba(255,255,255,0.6);
-    transition: all 0.2s;
-  }
-  .social-btn:hover { border-color: var(--red); color: var(--red); }
-  .footer-col-title {
-    font-family: var(--font-ui);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: white;
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .footer-links { list-style: none; }
-  .footer-links li { margin-bottom: 10px; }
-  .footer-links a {
-    font-family: var(--font-ui);
-    font-size: 13px;
-    color: rgba(255,255,255,0.55);
-    transition: color 0.2s;
-  }
-  .footer-links a:hover { color: white; }
-  .footer-bottom {
-    border-top: 1px solid rgba(255,255,255,0.1);
-    padding-top: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-family: var(--font-ui);
-    font-size: 11px;
-    color: rgba(255,255,255,0.3);
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .footer-bottom-links { display: flex; gap: 20px; }
-  .footer-bottom-links a { color: rgba(255,255,255,0.3); }
-  .footer-bottom-links a:hover { color: rgba(255,255,255,0.6); }
-
-  /* ── AD SLOTS ── */
-  .ad-slot {
-    background: var(--sand);
-    border: 1px dashed var(--rule);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: var(--light);
-    font-size: 11px;
-    font-family: var(--font-ui);
-    letter-spacing: 0.05em;
-  }
-  .ad-banner { height: 90px; margin: 32px 0; }
-  .ad-sidebar-box { height: 250px; margin-bottom: 24px; }
-
-  /* ── UTILITY ── */
-  .tag {
-    display: inline-block;
-    font-family: var(--font-ui);
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border: 1px solid var(--rule);
-    color: var(--muted);
-    margin-right: 4px;
-    margin-bottom: 4px;
-    transition: all 0.15s;
-  }
-  .tag:hover { border-color: var(--red); color: var(--red); }
-
-  .time-ago {
-    font-family: var(--font-ui);
-    font-size: 10px;
-    color: var(--light);
-  }
-
-  /* ── LIFESTYLE SECTION ── */
-  .lifestyle-scroll {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-    border: 1px solid var(--rule);
-    border-right: none;
-  }
-  .ls-card {
-    border-right: 1px solid var(--rule);
-    overflow: hidden;
-    position: relative;
-    height: 280px;
-    cursor: pointer;
-  }
-  .ls-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s;
-  }
-  .ls-card:hover img { transform: scale(1.08); }
-  .ls-overlay {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
-    padding: 20px 16px 16px;
-    color: white;
-  }
-  .ls-label {
-    font-family: var(--font-ui);
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--red);
-    margin-bottom: 4px;
-  }
-  .ls-title {
-    font-family: var(--font-display);
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.3;
-    color: white;
-  }
-
-  /* ── WEATHER BAR ── */
-  .weather-bar {
-    background: var(--sand);
-    border-bottom: 1px solid var(--rule);
-    padding: 6px 24px;
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    font-family: var(--font-ui);
-    font-size: 11px;
-    color: var(--muted);
-    max-width: 1400px;
-    margin: 0 auto;
-    overflow-x: auto;
-  }
-  .weather-item { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-  .weather-item strong { color: var(--charcoal); }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 1024px) {
-    .hero-grid { grid-template-columns: 1fr; }
-    .hero-sidebar { border-left: none; border-top: 1px solid var(--rule); display: grid; grid-template-columns: 1fr 1fr; }
-    .sidebar-top-stories-title { grid-column: 1/-1; }
-    .latest-grid { grid-template-columns: repeat(2, 1fr); }
-    .biz-grid { grid-template-columns: 1fr 1fr; }
-    .most-read-grid { grid-template-columns: repeat(3, 1fr); }
-    .footer-grid { grid-template-columns: 1fr 1fr; }
-  }
-  @media (max-width: 768px) {
-    .logo-name { font-size: 28px; }
-    .hero-title { font-size: 24px; }
-    .hero-image-wrap { height: 240px; }
-    .header-top { padding: 10px 16px; }
-    .site-nav { overflow-x: auto; padding: 0 16px; }
-    .nav-link { padding: 10px 12px; font-size: 11px; }
-    .container { padding: 0 16px; }
-    .latest-grid { grid-template-columns: 1fr; }
-    .biz-grid { grid-template-columns: 1fr; }
-    .tourism-grid { grid-template-columns: 1fr; }
-    .re-grid { grid-template-columns: 1fr; }
-    .events-grid { grid-template-columns: 1fr; }
-    .opinion-grid { grid-template-columns: 1fr; }
-    .most-read-grid { grid-template-columns: repeat(2, 1fr); }
-    .lifestyle-scroll { grid-template-columns: repeat(2, 1fr); }
-    .newsletter-form { flex-direction: column; }
-    .footer-grid { grid-template-columns: 1fr; }
-    .footer-bottom { flex-direction: column; gap: 8px; }
-    .hero-sidebar { grid-template-columns: 1fr; }
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#C8102E;--red-dark:#9B0B22;--red-light:#F5E6E9;
+  --black:#0D0D0D;--ink:#1A1A1A;--charcoal:#2D2D2D;
+  --muted:#6B6B6B;--light:#9A9A9A;--rule:#E2E2E2;
+  --bg:#FAFAFA;--white:#FFFFFF;--sand:#F5F1EB;
+  --gold:#B8860B;--teal:#0F6E56;
+  --fd:'Playfair Display',Georgia,serif;
+  --fb:'Source Serif 4',Georgia,serif;
+  --fu:'Inter',system-ui,sans-serif;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--fu);background:var(--bg);color:var(--ink);line-height:1.5}
+a{text-decoration:none;color:inherit}
+img{display:block;width:100%;object-fit:cover}
+button,span[onclick]{cursor:pointer}
+/* TICKER */
+.ticker-bar{background:var(--red);color:#fff;font-family:var(--fu);font-size:12px;font-weight:600;letter-spacing:.04em;padding:8px 0;overflow:hidden;white-space:nowrap}
+.ticker-inner{display:flex;align-items:center}
+.ticker-label{background:var(--black);padding:0 16px;height:28px;display:flex;align-items:center;flex-shrink:0;letter-spacing:.1em;text-transform:uppercase;font-size:10px}
+.ticker-scroll-wrapper{flex:1;overflow:hidden}
+.ticker-scroll{display:inline-flex;gap:60px;animation:ticker 55s linear infinite;padding-left:32px}
+.ticker-scroll:hover{animation-play-state:paused}
+.ticker-dot{color:rgba(255,255,255,.4);margin:0 10px}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+/* HEADER */
+.site-header{background:var(--white);border-bottom:3px solid var(--red);position:sticky;top:0;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.header-top{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--rule);max-width:1400px;margin:0 auto}
+.header-meta{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.site-logo{display:flex;flex-direction:column;align-items:center;text-align:center}
+.logo-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.logo-name{font-family:var(--fd);font-size:36px;font-weight:900;color:var(--black);letter-spacing:-.02em;line-height:1}
+.logo-name span{color:var(--red)}
+.logo-tagline{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.header-actions{display:flex;align-items:center;gap:12px}
+.btn-sub{background:var(--red);color:#fff;padding:8px 18px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:none;cursor:pointer}
+.btn-sub:hover{background:var(--red-dark)}
+.btn-srch{width:36px;height:36px;border:1.5px solid var(--rule);background:none;color:var(--charcoal);font-size:16px;cursor:pointer}
+.btn-srch:hover{border-color:var(--red);color:var(--red)}
+.site-nav{max-width:1400px;margin:0 auto;padding:0 24px;display:flex;align-items:center;overflow-x:auto}
+.nav-link{font-family:var(--fu);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--charcoal);padding:12px 16px;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;cursor:pointer}
+.nav-link:hover,.nav-link.active{color:var(--red);border-bottom-color:var(--red)}
+.nav-link.brk{color:var(--red)}
+/* LAYOUT */
+.container{max-width:1400px;margin:0 auto;padding:0 24px}
+.srule{border:none;border-top:3px solid var(--black);margin-bottom:20px}
+.srule.red{border-color:var(--red)}
+.stitle{font-family:var(--fd);font-size:22px;font-weight:700;color:var(--black);margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.stitle .lbl{font-family:var(--fu);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--red);padding:4px 10px}
+.stitle .sall{margin-left:auto;font-family:var(--fu);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--red);border-bottom:1px solid var(--red);cursor:pointer}
+/* MODAL */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9000;overflow-y:auto;padding:20px 16px}
+.modal-ov.open{display:flex;align-items:flex-start;justify-content:center}
+.modal-box{background:#fff;max-width:780px;width:100%;margin:0 auto;position:relative;border-radius:2px}
+.mcls{position:absolute;top:14px;right:14px;width:36px;height:36px;background:var(--black);color:#fff;border:none;font-size:18px;cursor:pointer;z-index:10;display:flex;align-items:center;justify-content:center;border-radius:2px}
+.mcls:hover{background:var(--red)}
+.mhimg{height:300px;overflow:hidden}
+.mhimg img{height:100%;width:100%;object-fit:cover}
+.mbody{padding:28px 32px 40px}
+.mcat{font-family:var(--fu);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:10px}
+.mtitle{font-family:var(--fd);font-size:26px;font-weight:900;line-height:1.15;color:var(--black);margin-bottom:14px}
+.mmeta{display:flex;align-items:center;gap:10px;font-family:var(--fu);font-size:11px;color:var(--muted);margin-bottom:20px;border-bottom:1px solid var(--rule);padding-bottom:14px;flex-wrap:wrap}
+.mmeta .au{font-weight:600;color:var(--charcoal)}
+.mcontent{font-family:var(--fb);font-size:16px;line-height:1.75;color:var(--charcoal)}
+.mcontent p{margin-bottom:14px}
+.mcontent h2{font-family:var(--fd);font-size:20px;font-weight:700;margin:22px 0 10px;color:var(--black)}
+.msrc{margin-top:20px;padding:12px 16px;background:var(--sand);border-left:3px solid var(--red);font-family:var(--fu);font-size:12px;color:var(--muted)}
+.msrc a{color:var(--red)}
+.mtags{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px}
+.mtag{font-family:var(--fu);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--rule);color:var(--muted)}
+/* WEATHER */
+.weather-strip{background:var(--sand);border-bottom:1px solid var(--rule);padding:7px 0}
+.weather-in{max-width:1400px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:24px;font-family:var(--fu);font-size:11px;color:var(--muted);overflow-x:auto}
+.wi{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.wi strong{color:var(--charcoal)}
+/* HERO */
+.hero-sec{padding:32px 0 0}
+.hero-grid{display:grid;grid-template-columns:1fr 340px;border:1px solid var(--rule)}
+.hero-main{position:relative;overflow:hidden}
+.hero-imgw{height:420px;overflow:hidden;position:relative;cursor:pointer}
+.hero-imgw img{height:100%;transition:transform .5s}
+.hero-main:hover .hero-imgw img{transform:scale(1.02)}
+.hcat{position:absolute;top:16px;left:16px;background:var(--red);color:#fff;font-family:var(--fu);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 12px}
+.hcat.brk{background:var(--black);animation:pb 2s ease-in-out infinite}
+@keyframes pb{0%,100%{opacity:1}50%{opacity:.7}}
+.hero-body{padding:24px;border-top:3px solid var(--red);background:#fff}
+.htitle{font-family:var(--fd);font-size:28px;font-weight:900;line-height:1.15;color:var(--black);margin-bottom:12px;letter-spacing:-.02em;cursor:pointer}
+.htitle:hover{color:var(--red)}
+.hexc{font-family:var(--fb);font-size:15px;color:var(--charcoal);line-height:1.6;margin-bottom:14px}
+.ameta{display:flex;align-items:center;gap:10px;font-family:var(--fu);font-size:11px;color:var(--muted);flex-wrap:wrap}
+.ameta .au{font-weight:600;color:var(--charcoal)}
+.ameta .sp{color:var(--rule)}
+.rdm{display:inline-flex;align-items:center;gap:6px;font-family:var(--fu);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-top:14px;border-bottom:2px solid transparent;transition:border-color .2s;cursor:pointer;background:none;border-top:none;border-left:none;border-right:none;padding:0}
+.rdm:hover{border-bottom-color:var(--red)}
+/* SIDEBAR */
+.hero-sb{border-left:1px solid var(--rule);background:#fff}
+.sb-ttl{font-family:var(--fu);font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#fff;background:var(--black);padding:10px 16px}
+.sb-art{padding:13px 15px;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:1fr 76px;gap:11px;align-items:start;transition:background .15s;cursor:pointer}
+.sb-art:hover{background:var(--sand)}
+.sb-art:last-child{border-bottom:none}
+.sb-num{font-family:var(--fd);font-size:30px;font-weight:900;color:var(--rule);line-height:1;margin-bottom:3px}
+.sb-cat{font-family:var(--fu);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:4px}
+.sb-title{font-family:var(--fd);font-size:14px;font-weight:700;line-height:1.3;color:var(--black)}
+.sb-art:hover .sb-title{color:var(--red)}
+.sb-thumb{height:66px;overflow:hidden}
+.sb-m{font-size:10px;color:var(--light);font-family:var(--fu);margin-top:4px}
+/* GRIDS */
+.latest-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--rule);border-right:none}
+.lcard{border-right:1px solid var(--rule);overflow:hidden;transition:background .15s;cursor:pointer}
+.lcard:hover{background:var(--sand)}
+.limg{height:155px;overflow:hidden}
+.limg img{height:100%;transition:transform .4s}
+.lcard:hover .limg img{transform:scale(1.05)}
+.lbody{padding:14px}
+.lcat{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);font-family:var(--fu);margin-bottom:6px}
+.ltitle{font-family:var(--fd);font-size:16px;font-weight:700;line-height:1.3;color:var(--black);margin-bottom:8px}
+.lcard:hover .ltitle{color:var(--red)}
+.lexc{font-family:var(--fb);font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tsm{font-size:10px;color:var(--light);font-family:var(--fu)}
+/* BIZ */
+.biz-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:24px}
+.biz-main .bimg{height:250px;overflow:hidden;cursor:pointer}
+.biz-main .bimg img{height:100%;transition:transform .4s}
+.biz-main:hover .bimg img{transform:scale(1.03)}
+.bbody{padding:14px 0}
+.bcat{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);font-family:var(--fu);margin-bottom:6px}
+.btitle{font-family:var(--fd);font-size:20px;font-weight:700;line-height:1.25;color:var(--black);margin-bottom:8px;cursor:pointer}
+.btitle.sm{font-size:16px}
+.btitle:hover{color:var(--red)}
+.bexc{font-family:var(--fb);font-size:14px;color:var(--muted);line-height:1.55;margin-bottom:8px}
+.bscard{border-top:3px solid var(--rule);padding-top:13px;margin-bottom:14px;cursor:pointer}
+.bscard:last-child{margin-bottom:0}
+.bsimg{height:112px;overflow:hidden;margin-bottom:10px}
+.bsimg img{height:100%}
+/* TOURISM */
+.tour-bg{background:linear-gradient(135deg,#0D1B14 0%,#1A3528 100%);padding:40px 0}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:24px}
+.tcard{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);overflow:hidden;transition:background .2s,transform .2s;cursor:pointer}
+.tcard:hover{background:rgba(255,255,255,.14);transform:translateY(-2px)}
+.tcimg{height:175px;overflow:hidden}
+.tcimg img{height:100%;transition:transform .4s}
+.tcard:hover .tcimg img{transform:scale(1.05)}
+.tcbody{padding:15px}
+.tclbl{font-family:var(--fu);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5DCAA5;margin-bottom:6px}
+.tctitle{font-family:var(--fd);font-size:16px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:7px}
+.tcard:hover .tctitle{color:#5DCAA5}
+.tcm{font-family:var(--fu);font-size:11px;color:rgba(255,255,255,.5)}
+.sbar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:22px;border:1px solid rgba(255,255,255,.1)}
+.sbox{background:rgba(255,255,255,.07);padding:16px;text-align:center}
+.snum{font-family:var(--fd);font-size:26px;font-weight:900;color:#fff}
+.slbl{font-family:var(--fu);font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+/* RE */
+.re-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--rule)}
+.recard{display:grid;grid-template-columns:155px 1fr;border-bottom:1px solid var(--rule);overflow:hidden;transition:background .15s;cursor:pointer}
+.recard:hover{background:var(--sand)}
+.recard:nth-child(odd){border-right:1px solid var(--rule)}
+.reimg{height:125px;overflow:hidden}
+.reimg img{height:100%}
+.rebdy{padding:13px}
+.rebadge{display:inline-block;font-family:var(--fu);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--sand);color:var(--gold);padding:3px 8px;margin-bottom:5px}
+.retitle{font-family:var(--fd);font-size:14px;font-weight:700;line-height:1.3;color:var(--black);margin-bottom:5px}
+.recard:hover .retitle{color:var(--red)}
+.restats{display:flex;gap:8px;font-family:var(--fu);font-size:11px;color:var(--muted);margin-top:7px;flex-wrap:wrap}
+/* EVENTS */
+.ev-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--rule)}
+.ecard{display:flex;align-items:stretch;border-bottom:1px solid var(--rule);overflow:hidden;transition:background .15s;cursor:pointer}
+.ecard:hover{background:var(--sand)}
+.ecard:nth-child(odd){border-right:1px solid var(--rule)}
+.edateblk{background:var(--black);color:#fff;min-width:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 8px;flex-shrink:0}
+.emon{font-family:var(--fu);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red)}
+.eday{font-family:var(--fd);font-size:26px;font-weight:900;line-height:1;color:#fff}
+.ebody{padding:12px 14px}
+.ecat{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);font-family:var(--fu);margin-bottom:4px}
+.etitle{font-family:var(--fd);font-size:14px;font-weight:700;line-height:1.3;color:var(--black);margin-bottom:5px}
+.ecard:hover .etitle{color:var(--red)}
+.emeta{font-family:var(--fu);font-size:11px;color:var(--muted)}
+/* LIFESTYLE */
+.ls-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--rule);border-right:none}
+.lscard{border-right:1px solid var(--rule);overflow:hidden;position:relative;height:270px;cursor:pointer}
+.lscard img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.lscard:hover img{transform:scale(1.08)}
+.lsov{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,.85),transparent);padding:18px 14px 14px;color:#fff}
+.lslbl{font-family:var(--fu);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:4px}
+.lstitle{font-family:var(--fd);font-size:14px;font-weight:700;line-height:1.3;color:#fff}
+/* OPINION */
+.op-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.opcard{border-top:4px solid var(--red);padding-top:14px;cursor:pointer}
+.opauth{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.opav{width:42px;height:42px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--rule)}
+.opav img{height:100%}
+.opname{font-family:var(--fu);font-size:13px;font-weight:600;color:var(--black)}
+.oprole{font-family:var(--fu);font-size:11px;color:var(--muted)}
+.optitle{font-family:var(--fd);font-size:17px;font-weight:700;line-height:1.3;color:var(--black);margin-bottom:8px;font-style:italic}
+.opcard:hover .optitle{color:var(--red)}
+.oppq{border-left:3px solid var(--red);padding-left:12px;font-family:var(--fb);font-size:13px;font-style:italic;color:var(--charcoal);margin:10px 0}
+.opexc{font-family:var(--fb);font-size:13px;color:var(--muted);line-height:1.55}
+/* MOST READ */
+.mr-grid{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--rule)}
+.mrcard{padding:17px;border-right:1px solid var(--rule);transition:background .15s;cursor:pointer}
+.mrcard:last-child{border-right:none}
+.mrcard:hover{background:var(--sand)}
+.mrnum{font-family:var(--fd);font-size:50px;font-weight:900;color:var(--red-light);line-height:1;margin-bottom:7px}
+.mrcat{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);font-family:var(--fu);margin-bottom:5px}
+.mrtitle{font-family:var(--fd);font-size:14px;font-weight:700;line-height:1.35;color:var(--black);margin-bottom:7px}
+.mrcard:hover .mrtitle{color:var(--red)}
+.mrv{font-family:var(--fu);font-size:10px;color:var(--light)}
+/* NEWSLETTER */
+.nl-sec{background:var(--black);padding:60px 0}
+.nl-in{max-width:640px;margin:0 auto;text-align:center;padding:0 24px}
+.nley{font-family:var(--fu);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:12px}
+.nltitle{font-family:var(--fd);font-size:32px;font-weight:900;color:#fff;line-height:1.15;margin-bottom:12px}
+.nlsub{font-family:var(--fb);font-size:15px;color:rgba(255,255,255,.65);line-height:1.6;margin-bottom:26px}
+.nl-form{display:flex;max-width:480px;margin:0 auto 14px}
+.nl-input{flex:1;padding:14px 18px;font-size:14px;font-family:var(--fu);border:none;outline:none}
+.nl-btn{background:var(--red);color:#fff;padding:14px 20px;font-family:var(--fu);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:none;cursor:pointer;white-space:nowrap}
+.nl-btn:hover{background:var(--red-dark)}
+.nl-note{font-family:var(--fu);font-size:11px;color:rgba(255,255,255,.35)}
+.nl-stats{display:flex;align-items:center;justify-content:center;gap:32px;margin-top:26px;flex-wrap:wrap}
+.nls-num{font-family:var(--fd);font-size:24px;font-weight:900;color:#fff}
+.nls-lbl{font-family:var(--fu);font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase}
+/* FOOTER */
+.site-footer{background:var(--ink);color:rgba(255,255,255,.7);padding:48px 0 24px}
+.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.fdesc{font-family:var(--fb);font-size:13px;color:rgba(255,255,255,.5);line-height:1.6;margin:12px 0 18px}
+.fsocial{display:flex;gap:8px}
+.fbtn{width:34px;height:34px;border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px;color:rgba(255,255,255,.6);transition:all .2s;cursor:pointer;font-family:var(--fu);font-weight:700;background:none}
+.fbtn:hover{border-color:var(--red);color:var(--red)}
+.fct{font-family:var(--fu);font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#fff;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.1)}
+.flinks{list-style:none}
+.flinks li{margin-bottom:9px}
+.flinks a,.flinks span{font-family:var(--fu);font-size:13px;color:rgba(255,255,255,.55);transition:color .2s;cursor:pointer}
+.flinks a:hover,.flinks span:hover{color:#fff}
+.fbot{border-top:1px solid rgba(255,255,255,.1);padding-top:18px;display:flex;align-items:center;justify-content:space-between;font-family:var(--fu);font-size:11px;color:rgba(255,255,255,.3);flex-wrap:wrap;gap:10px}
+.fbl{display:flex;gap:20px}
+.fbl a{color:rgba(255,255,255,.3)}
+.fbl a:hover{color:rgba(255,255,255,.6)}
+/* AD */
+.ad{background:var(--sand);border:1px dashed var(--rule);height:90px;margin:26px 0;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:var(--fu);color:var(--light)}
+section{padding:40px 0}
+section+section{border-top:1px solid var(--rule)}
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-sb{border-left:none;border-top:1px solid var(--rule);display:grid;grid-template-columns:1fr 1fr}
+  .sb-ttl{grid-column:1/-1}
+  .latest-grid{grid-template-columns:repeat(2,1fr)}
+  .biz-grid{grid-template-columns:1fr 1fr}
+  .mr-grid{grid-template-columns:repeat(3,1fr)}
+  .fg{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .logo-name{font-size:26px}
+  .htitle{font-size:22px}
+  .hero-imgw{height:220px}
+  .container{padding:0 14px}
+  .site-nav{padding:0 14px}
+  .nav-link{padding:10px 10px;font-size:11px}
+  .latest-grid,.biz-grid,.tgrid,.re-grid,.ev-grid,.op-grid,.ls-grid{grid-template-columns:1fr}
+  .mr-grid{grid-template-columns:repeat(2,1fr)}
+  .nl-form{flex-direction:column}
+  .fg{grid-template-columns:1fr}
+  .fbot{flex-direction:column}
+  .hero-sb{grid-template-columns:1fr}
+  .recard{grid-template-columns:1fr}
+  .reimg{height:160px}
+  .sbar{grid-template-columns:repeat(2,1fr)}
+}
 </style>
 </head>
 <body>
 
-<!-- BREAKING NEWS TICKER -->
+<!-- MODAL -->
+<div class="modal-ov" id="modal">
+  <div class="modal-box">
+    <button class="mcls" id="mclose">✕</button>
+    <div class="mhimg"><img id="mimg" src="" alt=""></div>
+    <div class="mbody">
+      <div class="mcat" id="mcat"></div>
+      <h1 class="mtitle" id="mtitle"></h1>
+      <div class="mmeta" id="mmeta"></div>
+      <div class="mcontent" id="mcontent"></div>
+      <div class="msrc" id="msrc" style="display:none"></div>
+      <div class="mtags" id="mtags"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TICKER -->
 <div class="ticker-bar">
   <div class="ticker-inner">
     <div class="ticker-label">⚡ Breaking</div>
     <div class="ticker-scroll-wrapper">
-      <div class="ticker-scroll" id="tickerScroll">
-        <span class="ticker-item">Marrakech Airport $400M expansion breaks ground — new terminal targets 12M passengers by 2028<span class="ticker-dot">◆</span></span>
-        <span class="ticker-item">City Council approves tram extension linking Medina to Semlalia district<span class="ticker-dot">◆</span></span>
-        <span class="ticker-item">Morocco Tourism Ministry records 15.9M visitors through June 2025, Marrakech accounts for 28%<span class="ticker-dot">◆</span></span>
-        <span class="ticker-item">Palmeraie luxury villa prices surge 28% year-over-year as European buyers accelerate purchases<span class="ticker-dot">◆</span></span>
-        <span class="ticker-item">New direct flights: Marrakech–Toronto launching November 2025 with Royal Air Maroc<span class="ticker-dot">◆</span></span>
-        <span class="ticker-item">14 luxury riads open in Medina Q2 2025 — hospitality investment reaches record €280M<span class="ticker-dot">◆</span></span>
-        <span class="ticker-item">Marrakech Airport $400M expansion breaks ground — new terminal targets 12M passengers by 2028<span class="ticker-dot">◆</span></span>
-        <span class="ticker-item">City Council approves tram extension linking Medina to Semlalia district<span class="ticker-dot">◆</span></span>
-        <span class="ticker-item">Morocco Tourism Ministry records 15.9M visitors through June 2025, Marrakech accounts for 28%<span class="ticker-dot">◆</span></span>
-        <span class="ticker-item">Palmeraie luxury villa prices surge 28% year-over-year as European buyers accelerate purchases<span class="ticker-dot">◆</span></span>
-        <span class="ticker-item">New direct flights: Marrakech–Toronto launching November 2025 with Royal Air Maroc<span class="ticker-dot">◆</span></span>
-        <span class="ticker-item">14 luxury riads open in Medina Q2 2025 — hospitality investment reaches record €280M<span class="ticker-dot">◆</span></span>
+      <div class="ticker-scroll">
+        <span>Morocco advances to World Cup Round of 16 — Atlas Lions beat Haiti 3-0, top their group<span class="ticker-dot">◆</span></span>
+        <span>Morocco climbs to 5th in FIFA World Rankings, overtakes Brazil<span class="ticker-dot">◆</span></span>
+        <span>Mahi Binebine unveils monumental sculpture "You and Me" at Bab Atlas TODAY June 26<span class="ticker-dot">◆</span></span>
+        <span>Marrakech multiplies European air routes — 12+ new connections for Summer 2026<span class="ticker-dot">◆</span></span>
+        <span>Morocco permanently returns to GMT after summer — PM Akhannouch confirms<span class="ticker-dot">◆</span></span>
+        <span>Morocco GDP growth forecast 5.2% in 2026 — Bank Al-Maghrib<span class="ticker-dot">◆</span></span>
+        <span>Air France reinforces Morocco presence for Summer 2026 with new frequencies<span class="ticker-dot">◆</span></span>
+        <span>55th National Festival of Popular Arts opens in Marrakech July 2–6 — free admission<span class="ticker-dot">◆</span></span>
+        <span>Morocco advances to World Cup Round of 16 — Atlas Lions beat Haiti 3-0, top their group<span class="ticker-dot">◆</span></span>
+        <span>Morocco climbs to 5th in FIFA World Rankings, overtakes Brazil<span class="ticker-dot">◆</span></span>
+        <span>Mahi Binebine unveils monumental sculpture "You and Me" at Bab Atlas TODAY June 26<span class="ticker-dot">◆</span></span>
+        <span>Marrakech multiplies European air routes — 12+ new connections for Summer 2026<span class="ticker-dot">◆</span></span>
+        <span>Morocco permanently returns to GMT after summer — PM Akhannouch confirms<span class="ticker-dot">◆</span></span>
+        <span>Morocco GDP growth forecast 5.2% in 2026 — Bank Al-Maghrib<span class="ticker-dot">◆</span></span>
+        <span>Air France reinforces Morocco presence for Summer 2026 with new frequencies<span class="ticker-dot">◆</span></span>
       </div>
     </div>
   </div>
 </div>
 
-<!-- STICKY HEADER -->
+<!-- HEADER -->
 <header class="site-header">
   <div class="header-top">
-    <div class="header-meta">
-      Thursday, June 25, 2026 &nbsp;|&nbsp; Marrakech, Morocco &nbsp;|&nbsp; ☀ 34°C / 93°F
-    </div>
+    <div class="header-meta">Friday, June 26, 2026 &nbsp;|&nbsp; Marrakech, Morocco &nbsp;|&nbsp; ☀ 38°C / 100°F</div>
     <div class="site-logo">
       <div class="logo-eyebrow">Est. 2024</div>
       <div class="logo-name">MARRAKECH <span>DAILY</span></div>
       <div class="logo-tagline">Your English-Language Window to the Red City</div>
     </div>
     <div class="header-actions">
-      <button class="btn-search" aria-label="Search">🔍</button>
-      <a href="#newsletter" class="btn-subscribe">Subscribe Free</a>
+      <button class="btn-srch" onclick="alert('Search — powered by your content database')">🔍</button>
+      <button class="btn-sub" onclick="document.getElementById('newsletter').scrollIntoView({behavior:'smooth'})">Subscribe Free</button>
     </div>
   </div>
-  <nav class="site-nav" aria-label="Main navigation">
-    <a href="#" class="nav-link breaking active">⚡ Breaking</a>
-    <a href="#" class="nav-link">Business</a>
-    <a href="#" class="nav-link">Tourism</a>
-    <a href="#" class="nav-link">Real Estate</a>
-    <a href="#" class="nav-link">Culture</a>
-    <a href="#" class="nav-link">Events</a>
-    <a href="#" class="nav-link">Lifestyle</a>
-    <a href="#" class="nav-link">Opinion</a>
-    <a href="#" class="nav-link" style="margin-left:auto;color:var(--gold);">🗓 Expat Guide</a>
+  <nav class="site-nav">
+    <span class="nav-link brk active" onclick="setNav(this)">⚡ Breaking</span>
+    <span class="nav-link" onclick="openA('air-france-morocco');setNav(this)">Business</span>
+    <span class="nav-link" onclick="openA('marrakech-air-routes');setNav(this)">Tourism</span>
+    <span class="nav-link" onclick="openA('re-slowdown');setNav(this)">Real Estate</span>
+    <span class="nav-link" onclick="openA('binebine-sculpture');setNav(this)">Culture</span>
+    <span class="nav-link" onclick="openA('fnap-2026');setNav(this)">Events</span>
+    <span class="nav-link" onclick="openA('day-pass');setNav(this)">Lifestyle</span>
+    <span class="nav-link" onclick="openA('morocco-wc');setNav(this)">Sport</span>
+    <span class="nav-link" style="margin-left:auto;color:var(--gold)" onclick="openA('expat-guide')">🗓 Expat Guide</span>
   </nav>
 </header>
 
-<!-- MAIN CONTENT -->
+<!-- WEATHER -->
+<div class="weather-strip">
+  <div class="weather-in">
+    <div class="wi">📍 <strong>Marrakech</strong> ☀ 38°C · Sunny, very hot</div>
+    <div class="wi">🏔 <strong>Atlas Mountains</strong> ⛅ 24°C · Clear</div>
+    <div class="wi">🌊 <strong>Essaouira</strong> 🌬 22°C · Windy</div>
+    <div class="wi">💶 <strong>EUR/MAD</strong> 10.74 &nbsp;·&nbsp; <strong>USD/MAD</strong> 9.87 &nbsp;·&nbsp; <strong>GBP/MAD</strong> 12.51</div>
+    <div class="wi">✈ <strong>Menara Airport</strong> Operating normally · 38°C on tarmac</div>
+  </div>
+</div>
+
 <main>
-
-  <!-- HERO SECTION -->
-  <div class="hero-section">
-    <div class="container">
-      <hr class="section-rule">
-      <div class="hero-grid">
-        <!-- HERO MAIN -->
-        <article class="hero-main">
-          <div class="hero-image-wrap">
-            <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200&q=80" alt="Airplane at Marrakech Menara Airport at sunset" loading="eager">
-            <div class="hero-category-badge breaking-badge">⚡ Breaking News</div>
-          </div>
-          <div class="hero-content">
-            <div class="article-meta" style="margin-bottom:10px;">
-              <span class="tag" style="background:var(--red-light);border-color:var(--red);color:var(--red);">Infrastructure</span>
-              <span class="tag">Transport</span>
-            </div>
-            <h1 class="hero-title"><a href="#">Marrakech Menara Airport Breaks Ground on $400M Terminal Expansion, Rail Link to City Center</a></h1>
-            <p class="hero-excerpt">The new terminal will increase annual passenger capacity to 12 million and include a direct 14-minute rail connection to Gueliz, positioning Marrakech as North Africa's premier aviation hub ahead of the 2030 FIFA World Cup.</p>
-            <div class="article-meta">
-              <span class="author">By Sarah Mitchell</span>
-              <span class="sep">|</span>
-              <span>Senior Correspondent</span>
-              <span class="sep">|</span>
-              <span class="time-ago">2 hours ago</span>
-              <span class="sep">|</span>
-              <span>4 min read</span>
-            </div>
-            <a href="#" class="read-more-arrow">Read Full Story →</a>
-          </div>
-        </article>
-
-        <!-- SIDEBAR TOP 5 -->
-        <aside class="hero-sidebar">
-          <div class="sidebar-top-stories-title">Today's Top Stories</div>
-
-          <div class="sidebar-article">
-            <div>
-              <div class="sidebar-num">2</div>
-              <div class="sidebar-cat">Tourism</div>
-              <div class="sidebar-title"><a href="#">14 Luxury Riads Open in Medina as High-End Tourism Demand Surges to Record Highs</a></div>
-              <div class="sidebar-article-meta">5 hours ago · 3 min</div>
-            </div>
-            <div class="sidebar-thumb">
-              <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200&q=70" alt="Riad courtyard">
-            </div>
-          </div>
-
-          <div class="sidebar-article">
-            <div>
-              <div class="sidebar-num">3</div>
-              <div class="sidebar-cat">Business</div>
-              <div class="sidebar-title"><a href="#">"Silicon Medina": Gueliz Is Quietly Becoming Morocco's Hottest Tech Startup Hub</a></div>
-              <div class="sidebar-article-meta">8 hours ago · 5 min</div>
-            </div>
-            <div class="sidebar-thumb">
-              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=200&q=70" alt="Co-working space">
-            </div>
-          </div>
-
-          <div class="sidebar-article">
-            <div>
-              <div class="sidebar-num">4</div>
-              <div class="sidebar-cat">Real Estate</div>
-              <div class="sidebar-title"><a href="#">Palmeraie Property Prices Jump 28% as Foreign Buyers Flood the Market</a></div>
-              <div class="sidebar-article-meta">12 hours ago · 4 min</div>
-            </div>
-            <div class="sidebar-thumb">
-              <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=200&q=70" alt="Luxury villa">
-            </div>
-          </div>
-
-          <div class="sidebar-article">
-            <div>
-              <div class="sidebar-num">5</div>
-              <div class="sidebar-cat">Culture</div>
-              <div class="sidebar-title"><a href="#">Gnawa Music Festival Returns to Jemaa el-Fna with 40 International Acts</a></div>
-              <div class="sidebar-article-meta">18 hours ago · 3 min</div>
-            </div>
-            <div class="sidebar-thumb">
-              <img src="https://images.unsplash.com/photo-1539043474340-5e63e16b8a6c?w=200&q=70" alt="Gnawa musician">
-            </div>
-          </div>
-        </aside>
-      </div>
-    </div>
-  </div>
-
-  <!-- AD BANNER -->
+<!-- HERO -->
+<div class="hero-sec">
   <div class="container">
-    <div class="ad-slot ad-banner">ADVERTISEMENT — 728×90 Leaderboard</div>
+    <hr class="srule">
+    <div class="hero-grid">
+      <article class="hero-main">
+        <div class="hero-imgw" onclick="openA('morocco-wc')">
+          <img src="https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=1200&q=80" alt="Morocco football fans celebrating World Cup 2026" loading="eager">
+          <div class="hcat brk">⚡ Breaking — World Cup 2026</div>
+        </div>
+        <div class="hero-body">
+          <div class="ameta" style="margin-bottom:10px">
+            <span style="background:var(--red);color:#fff;font-family:var(--fu);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px">Sport</span>
+            <span style="background:var(--sand);color:var(--gold);font-family:var(--fu);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px">Just In · June 26</span>
+          </div>
+          <h1 class="htitle" onclick="openA('morocco-wc')">Morocco Roars Into World Cup Round of 16 — Atlas Lions Demolish Haiti 3-0, Top Their Group</h1>
+          <p class="hexc">Goals from Saibari, Gessime — the youngest Moroccan scorer in World Cup history — and En-Nesyri sealed a dominant group stage finale, sending the Atlas Lions through as group winners and igniting celebrations across Marrakech's Jemaa el-Fna and city squares nationwide.</p>
+          <div class="ameta">
+            <span class="au">By Karim Benali</span><span class="sp">|</span><span>Sports Editor</span><span class="sp">|</span><span>Today, June 26, 2026</span><span class="sp">|</span><span>4 min read</span>
+          </div>
+          <button class="rdm" onclick="openA('morocco-wc')">Read Full Story →</button>
+        </div>
+      </article>
+      <aside class="hero-sb">
+        <div class="sb-ttl">Today's Top Stories — June 26, 2026</div>
+        <div class="sb-art" onclick="openA('binebine-sculpture')">
+          <div><div class="sb-num">2</div><div class="sb-cat">Culture · Today</div><div class="sb-title">Mahi Binebine Unveils Monumental Sculpture "You and Me" at Bab Atlas — Inauguration Tonight</div><div class="sb-m">Today 6:00 PM · 3 min</div></div>
+          <div class="sb-thumb"><img src="https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=200&q=70" alt="Sculpture"></div>
+        </div>
+        <div class="sb-art" onclick="openA('marrakech-air-routes')">
+          <div><div class="sb-num">3</div><div class="sb-cat">Tourism</div><div class="sb-title">Marrakech Multiplies European Air Routes — 12 New Connections for Summer 2026</div><div class="sb-m">Yesterday · 4 min</div></div>
+          <div class="sb-thumb"><img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=200&q=70" alt="Airplane"></div>
+        </div>
+        <div class="sb-art" onclick="openA('morocco-gmt')">
+          <div><div class="sb-num">4</div><div class="sb-cat">National</div><div class="sb-title">Morocco Confirms Permanent Return to GMT Timezone After Summer — PM Akhannouch</div><div class="sb-m">Yesterday · 3 min</div></div>
+          <div class="sb-thumb"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&q=70" alt="Time"></div>
+        </div>
+        <div class="sb-art" onclick="openA('re-slowdown')">
+          <div><div class="sb-num">5</div><div class="sb-cat">Real Estate</div><div class="sb-title">Marrakech Property Market Hits Sharp Brake in June 2026 — Analysis for Buyers</div><div class="sb-m">June 23 · 5 min</div></div>
+          <div class="sb-thumb"><img src="https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=200&q=70" alt="Building"></div>
+        </div>
+      </aside>
+    </div>
   </div>
+</div>
 
-  <!-- LATEST NEWS -->
-  <section>
-    <div class="container">
-      <hr class="section-rule red">
-      <div class="section-title">
-        <span class="label">Latest News</span>
-        Latest from Marrakech
-        <a href="#" class="see-all">See All →</a>
-      </div>
-      <div class="latest-grid">
-        <article class="latest-card">
-          <div class="latest-img"><img src="https://images.unsplash.com/photo-1551699026-d7f451591086?w=600&q=70" alt="Tram in Morocco" loading="lazy"></div>
-          <div class="latest-body">
-            <div class="latest-cat">⚡ Breaking News</div>
-            <h3 class="latest-title"><a href="#">City Council Approves Tram Extension Linking Medina to Semlalia District</a></h3>
-            <p class="latest-excerpt">The 4.2km extension will reduce car traffic through the historic city center by an estimated 15% and is slated for launch by end of 2026.</p>
-            <div class="article-meta"><span class="time-ago">3 hours ago</span> <span class="sep">·</span> <span>3 min</span></div>
-          </div>
-        </article>
+<div class="container"><div class="ad">ADVERTISEMENT — 728×90 Leaderboard</div></div>
 
-        <article class="latest-card">
-          <div class="latest-img"><img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=70" alt="Shopping mall interior" loading="lazy"></div>
-          <div class="latest-body">
-            <div class="latest-cat">Business</div>
-            <h3 class="latest-title"><a href="#">Carré Eden Announces €45M Expansion with 80 New Luxury Retail Tenants</a></h3>
-            <p class="latest-excerpt">Marrakech's premier shopping destination will add a dedicated lifestyle wing featuring international brands making their Moroccan debut.</p>
-            <div class="article-meta"><span class="time-ago">6 hours ago</span> <span class="sep">·</span> <span>3 min</span></div>
-          </div>
-        </article>
-
-        <article class="latest-card">
-          <div class="latest-img"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=70" alt="Restaurant interior" loading="lazy"></div>
-          <div class="latest-body">
-            <div class="latest-cat">Lifestyle</div>
-            <h3 class="latest-title"><a href="#">10 Must-Try New Restaurants That Opened in Marrakech This Season</a></h3>
-            <p class="latest-excerpt">From a rooftop Moroccan-Japanese fusion spot in Hivernage to a hidden courtyard trattoria in the medina, dining has never been more exciting.</p>
-            <div class="article-meta"><span class="time-ago">Yesterday</span> <span class="sep">·</span> <span>6 min</span></div>
-          </div>
-        </article>
-
-        <article class="latest-card">
-          <div class="latest-img"><img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=600&q=70" alt="Sunglasses and tourist" loading="lazy"></div>
-          <div class="latest-body">
-            <div class="latest-cat">Tourism</div>
-            <h3 class="latest-title"><a href="#">Morocco Tourism Records 15.9M International Visitors Through June — Marrakech Leads</a></h3>
-            <p class="latest-excerpt">The Marrakech-Safi region accounted for 28% of all international arrivals, with the UK, France, and Spain as top source markets.</p>
-            <div class="article-meta"><span class="time-ago">Yesterday</span> <span class="sep">·</span> <span>4 min</span></div>
-          </div>
-        </article>
-      </div>
+<!-- LATEST NEWS -->
+<section>
+  <div class="container">
+    <hr class="srule red">
+    <div class="stitle"><span class="lbl">Latest News</span>Latest from Marrakech — June 25–26, 2026<span class="sall" onclick="openA('all-news')">See All →</span></div>
+    <div class="latest-grid">
+      <article class="lcard" onclick="openA('morocco-gmt')">
+        <div class="limg"><img src="https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=600&q=70" alt="Clock" loading="lazy"></div>
+        <div class="lbody"><div class="lcat">⚡ National</div><h3 class="ltitle">Morocco Returns to GMT Permanently After Summer — What It Means for You</h3><p class="lexc">PM Baitas confirmed the government's final decision: Morocco reverts to GMT+0 after summer, ending years of timezone controversy that divided public opinion.</p><div class="tsm">Yesterday, June 25 · 3 min</div></div>
+      </article>
+      <article class="lcard" onclick="openA('air-france-morocco')">
+        <div class="limg"><img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=70" alt="Air France plane" loading="lazy"></div>
+        <div class="lbody"><div class="lcat">Business · Aviation</div><h3 class="ltitle">Air France Boosts Morocco for Summer 2026 — More Flights, More Capacity to Marrakech</h3><p class="lexc">The French carrier adds frequency on the Paris CDG–Marrakech route amid record World Cup-driven demand, with up to twice-daily departures at peak.</p><div class="tsm">Yesterday, June 25 · 3 min</div></div>
+      </article>
+      <article class="lcard" onclick="openA('morocco-fifa')">
+        <div class="limg"><img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=70" alt="Football" loading="lazy"></div>
+        <div class="lbody"><div class="lcat">Sport</div><h3 class="ltitle">Morocco Climbs to 5th in FIFA World Rankings — Overtakes Brazil, Historic for Africa</h3><p class="lexc">The Atlas Lions' World Cup performances have propelled Morocco to its highest-ever FIFA ranking, becoming the top-ranked African team in history.</p><div class="tsm">Yesterday, June 25 · 2 min</div></div>
+      </article>
+      <article class="lcard" onclick="openA('morocco-millionaires')">
+        <div class="limg"><img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=600&q=70" alt="Luxury" loading="lazy"></div>
+        <div class="lbody"><div class="lcat">Business · Wealth</div><h3 class="ltitle">Morocco Tops Africa in Millionaire Growth — 400+ Ultra-Rich Individuals in 2026</h3><p class="lexc">A new wealth report places Morocco as the African nation with the fastest growth in high-net-worth individuals, crossing the 400 ultra-wealthy threshold in 2026.</p><div class="tsm">June 24 · 3 min</div></div>
+      </article>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- BUSINESS SECTION -->
-  <section>
-    <div class="container">
-      <hr class="section-rule">
-      <div class="section-title">
-        <span class="label" style="background:var(--teal);">Business</span>
-        Business & Investment
-        <a href="#" class="see-all">See All →</a>
-      </div>
-      <div class="biz-grid">
-        <article class="biz-main">
-          <div class="biz-img"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=70" alt="Co-working space in Gueliz" loading="lazy"></div>
-          <div class="biz-body">
-            <div class="biz-cat">Startup Ecosystem</div>
-            <h2 class="biz-title"><a href="#">"Silicon Medina": Inside Marrakech's Emerging Startup and VC Scene in Gueliz</a></h2>
-            <p class="biz-excerpt">With co-working spaces, VC funding rounds, and digital nomads arriving weekly, Marrakech's new town is building a tech ecosystem that challenges Casablanca's dominance — and attracting attention from European investors.</p>
-            <div class="article-meta">
-              <span class="author">Sarah Mitchell</span>
-              <span class="sep">·</span>
-              <span class="time-ago">8 hours ago</span>
-              <span class="sep">·</span>
-              <span>5 min</span>
-            </div>
-            <a href="#" class="read-more-arrow" style="font-size:11px;">Continue Reading →</a>
-          </div>
-        </article>
-
-        <div>
-          <div class="biz-side-card">
-            <div class="biz-side-img"><img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&q=70" alt="Shopping" loading="lazy"></div>
-            <div class="biz-cat">Retail</div>
-            <h3 class="biz-title sm"><a href="#">Carré Eden Announces €45M Expansion with 80 International Brands</a></h3>
-            <div class="article-meta"><span class="time-ago">6 hours ago</span> <span class="sep">·</span> <span>3 min</span></div>
-          </div>
-          <div class="biz-side-card">
-            <div class="biz-side-img"><img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&q=70" alt="Luxury hotel" loading="lazy"></div>
-            <div class="biz-cat">Hospitality</div>
-            <h3 class="biz-title sm"><a href="#">Four Seasons Confirms Second Marrakech Property Near Route de l'Ourika</a></h3>
-            <div class="article-meta"><span class="time-ago">Yesterday</span> <span class="sep">·</span> <span>4 min</span></div>
-          </div>
+<!-- BUSINESS -->
+<section>
+  <div class="container">
+    <hr class="srule">
+    <div class="stitle"><span class="lbl" style="background:var(--teal)">Business</span>Business & Investment<span class="sall" onclick="openA('bank-africa-beijing')">See All →</span></div>
+    <div class="biz-grid">
+      <article class="biz-main">
+        <div class="bimg" onclick="openA('bank-africa-beijing')"><img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=70" alt="BANK OF AFRICA Beijing" loading="lazy"></div>
+        <div class="bbody">
+          <div class="bcat">International Finance</div>
+          <div class="btitle" onclick="openA('bank-africa-beijing')">BANK OF AFRICA Signs Two Strategic Partnerships in Beijing — Morocco's Banking Giant Goes East</div>
+          <p class="bexc">During a high-profile Beijing visit, BANK OF AFRICA sealed two landmark agreements with major Chinese financial institutions, opening a new chapter in Morocco-China economic cooperation and African investment flows.</p>
+          <div class="ameta"><span class="au">Sarah Mitchell</span><span class="sp">·</span><span class="tsm">June 24 · 4 min</span></div>
+          <button class="rdm" onclick="openA('bank-africa-beijing')">Continue Reading →</button>
         </div>
-
-        <div>
-          <div class="biz-side-card">
-            <div class="biz-side-img"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=70" alt="Finance charts" loading="lazy"></div>
-            <div class="biz-cat">Finance</div>
-            <h3 class="biz-title sm"><a href="#">Al Barid Bank Launches Digital Mourabaha Home Financing Platform Targeting Expats</a></h3>
-            <div class="article-meta"><span class="time-ago">2 days ago</span> <span class="sep">·</span> <span>3 min</span></div>
-          </div>
-          <div class="biz-side-card">
-            <div class="biz-side-img"><img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&q=70" alt="Olive farm" loading="lazy"></div>
-            <div class="biz-cat">Agriculture</div>
-            <h3 class="biz-title sm"><a href="#">€12M Agri-Tech Investment to Modernize Marrakech-Safi Olive Production Chain</a></h3>
-            <div class="article-meta"><span class="time-ago">2 days ago</span> <span class="sep">·</span> <span>3 min</span></div>
-          </div>
+      </article>
+      <div>
+        <div class="bscard" onclick="openA('morocco-gdp')">
+          <div class="bsimg"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=70" alt="Economy" loading="lazy"></div>
+          <div class="bcat">Economy</div>
+          <div class="btitle sm">Morocco GDP Growth Forecast at 5.2% for 2026 — Bank Al-Maghrib Report</div>
+          <div class="tsm">June 24 · 3 min</div>
+        </div>
+        <div class="bscard" onclick="openA('morocco-inflation')">
+          <div class="bsimg"><img src="https://images.unsplash.com/photo-1604594849809-dfedbc827105?w=400&q=70" alt="Market prices" loading="lazy"></div>
+          <div class="bcat">Economy</div>
+          <div class="btitle sm">Morocco Inflation Eases to 1.2% in May — Food Prices Lead Slowdown</div>
+          <div class="tsm">June 24 · 2 min</div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- TOURISM SECTION (dark bg) -->
-  <div class="tourism-bg">
-    <div class="container">
-      <hr class="section-rule" style="border-color:var(--teal);">
-      <div class="section-title" style="color:white;">
-        <span class="label" style="background:var(--teal);">Tourism</span>
-        Tourism & Attractions
-        <a href="#" class="see-all" style="color:#5DCAA5;border-color:#5DCAA5;">See All →</a>
-      </div>
-      <div class="tourism-grid">
-        <article class="tourism-card">
-          <div class="tourism-card-img"><img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&q=70" alt="Riad courtyard with fountain" loading="lazy"></div>
-          <div class="tourism-card-body">
-            <div class="tourism-card-label">Luxury Accommodation</div>
-            <h3 class="tourism-card-title"><a href="#">14 New Luxury Riads Open in the Medina — Here Are the Best</a></h3>
-            <div class="tourism-card-meta">By Karim Benali · 5 hours ago · 3 min read</div>
-          </div>
-        </article>
-
-        <article class="tourism-card">
-          <div class="tourism-card-img"><img src="https://images.unsplash.com/photo-1539043474340-5e63e16b8a6c?w=600&q=70" alt="Marrakech at night" loading="lazy"></div>
-          <div class="tourism-card-body">
-            <div class="tourism-card-label">Culture</div>
-            <h3 class="tourism-card-title"><a href="#">Your Complete Guide to Jemaa el-Fna After Dark: Food, Performance & Magic</a></h3>
-            <div class="tourism-card-meta">By Karim Benali · Yesterday · 6 min read</div>
-          </div>
-        </article>
-
-        <article class="tourism-card">
-          <div class="tourism-card-img"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=70" alt="Atlas Mountains landscape" loading="lazy"></div>
-          <div class="tourism-card-body">
-            <div class="tourism-card-label">Day Trips</div>
-            <h3 class="tourism-card-title"><a href="#">Atlas Mountains Day Trips: Best Guided Routes from Marrakech in 2025</a></h3>
-            <div class="tourism-card-meta">By Sarah Mitchell · 2 days ago · 5 min read</div>
-          </div>
-        </article>
-      </div>
-
-      <!-- Quick stats bar -->
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:24px;border:1px solid rgba(255,255,255,0.1);">
-        <div style="background:rgba(255,255,255,0.07);padding:16px;text-align:center;">
-          <div style="font-family:var(--font-display);font-size:28px;font-weight:900;color:white;">4.2M</div>
-          <div style="font-family:var(--font-ui);font-size:10px;color:rgba(255,255,255,0.5);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">Visitors in 2024</div>
+      <div>
+        <div class="bscard" onclick="openA('oncf-summer')">
+          <div class="bsimg"><img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&q=70" alt="Morocco train" loading="lazy"></div>
+          <div class="bcat">Transport</div>
+          <div class="btitle sm">ONCF Adds 237 Daily Trains for Summer 2026 — Marrakech Route Priority</div>
+          <div class="tsm">June 24 · 3 min</div>
         </div>
-        <div style="background:rgba(255,255,255,0.07);padding:16px;text-align:center;">
-          <div style="font-family:var(--font-display);font-size:28px;font-weight:900;color:white;">+23%</div>
-          <div style="font-family:var(--font-ui);font-size:10px;color:rgba(255,255,255,0.5);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">YoY Growth</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.07);padding:16px;text-align:center;">
-          <div style="font-family:var(--font-display);font-size:28px;font-weight:900;color:white;">86</div>
-          <div style="font-family:var(--font-ui);font-size:10px;color:rgba(255,255,255,0.5);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">Direct Flight Routes</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.07);padding:16px;text-align:center;">
-          <div style="font-family:var(--font-display);font-size:28px;font-weight:900;color:white;">900+</div>
-          <div style="font-family:var(--font-ui);font-size:10px;color:rgba(255,255,255,0.5);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">Riads & Hotels</div>
+        <div class="bscard" onclick="openA('schengen-bls')">
+          <div class="bsimg"><img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&q=70" alt="Passport" loading="lazy"></div>
+          <div class="bcat">Travel</div>
+          <div class="btitle sm">BLS International Expands Schengen Visa Services in Morocco for Peak Season</div>
+          <div class="tsm">June 23 · 2 min</div>
         </div>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- REAL ESTATE SECTION -->
-  <section>
-    <div class="container">
-      <hr class="section-rule">
-      <div class="section-title">
-        <span class="label" style="background:var(--gold);">Real Estate</span>
-        Real Estate & Property
-        <a href="#" class="see-all">See All →</a>
+<!-- TOURISM -->
+<div class="tour-bg">
+  <div class="container">
+    <hr class="srule" style="border-color:var(--teal)">
+    <div class="stitle" style="color:#fff">
+      <span class="lbl" style="background:var(--teal)">Tourism</span>
+      Tourism & Luxury Experiences
+      <span class="sall" style="color:#5DCAA5;border-color:#5DCAA5" onclick="openA('marrakech-air-routes')">See All →</span>
+    </div>
+    <div class="tgrid">
+      <article class="tcard" onclick="openA('mandarin-villa')">
+        <div class="tcimg"><img src="https://images.unsplash.com/photo-1540541338537-1220059af4dc?w=600&q=70" alt="Private villa pool" loading="lazy"></div>
+        <div class="tcbody"><div class="tclbl">Luxury · Day Pass</div><div class="tctitle">Mandarin Oriental Opens Private Villas for Day Visits — Pool, Lunch & Full Service</div><div class="tcm">From madein.city · June 2026 · 3 min</div></div>
+      </article>
+      <article class="tcard" onclick="openA('fairmont-summer')">
+        <div class="tcimg"><img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&q=70" alt="Resort pool" loading="lazy"></div>
+        <div class="tcbody"><div class="tclbl">Summer 2026</div><div class="tctitle">Fairmont Royal Palm: Asian Dining Under the Stars, Padel Tournament & Kids Camp</div><div class="tcm">From madein.city · June 2026 · 4 min</div></div>
+      </article>
+      <article class="tcard" onclick="openA('day-pass')">
+        <div class="tcimg"><img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=70" alt="Luxury spa" loading="lazy"></div>
+        <div class="tcbody"><div class="tclbl">Insider Guide</div><div class="tctitle">Best Day Passes in Marrakech 2026: Pools, Spas & Gourmet Lunches at Top Hotels</div><div class="tcm">From madein.city · June 2026 · 5 min</div></div>
+      </article>
+    </div>
+    <div class="sbar">
+      <div class="sbox"><div class="snum">4.2M</div><div class="slbl">Visitors 2024</div></div>
+      <div class="sbox"><div class="snum">+23%</div><div class="slbl">YoY Growth</div></div>
+      <div class="sbox"><div class="snum">12+</div><div class="slbl">New EU Routes</div></div>
+      <div class="sbox"><div class="snum">900+</div><div class="slbl">Hotels & Riads</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- REAL ESTATE -->
+<section>
+  <div class="container">
+    <hr class="srule">
+    <div class="stitle"><span class="lbl" style="background:var(--gold)">Real Estate</span>Real Estate & Infrastructure<span class="sall" onclick="openA('re-slowdown')">See All →</span></div>
+    <div class="re-grid">
+      <article class="recard" onclick="openA('re-slowdown')">
+        <div class="reimg"><img src="https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=400&q=70" alt="Building" loading="lazy"></div>
+        <div class="rebdy"><span class="rebadge">Market Alert</span><div class="retitle">Marrakech Property Market Hits Sharp Brake — June 2026 Buyer's Analysis</div><p style="font-family:var(--fb);font-size:12px;color:var(--muted);line-height:1.5">Transaction volumes drop 18% in Q2 2026. What it means for buyers, sellers and investors.</p><div class="restats"><span>📍 City-wide</span><span>📉 Vol. down 18%</span></div></div>
+      </article>
+      <article class="recard" onclick="openA('marrakech-water')">
+        <div class="reimg"><img src="https://images.unsplash.com/photo-1446776858070-70c3d5ed6758?w=400&q=70" alt="Water infrastructure" loading="lazy"></div>
+        <div class="rebdy"><span class="rebadge">Infrastructure</span><div class="retitle">Marrakech to Get Drinking Water from New Safi Desalination Pipeline</div><p style="font-family:var(--fb);font-size:12px;color:var(--muted);line-height:1.5">A 140km pipeline will connect Marrakech to the Atlantic coast plant by 2028, solving the city's water challenge.</p><div class="restats"><span>📍 Marrakech–Safi</span><span>🚧 2028 target</span></div></div>
+      </article>
+      <article class="recard" onclick="openA('counterfeit-marrakech')">
+        <div class="reimg"><img src="https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=400&q=70" alt="Police" loading="lazy"></div>
+        <div class="rebdy"><span class="rebadge">Security Alert</span><div class="retitle">Fake Banknote at Restaurant Unravels Counterfeit Operation in Marrakech</div><p style="font-family:var(--fb);font-size:12px;color:var(--muted);line-height:1.5">Warning for tourists and traders: high-quality fake 200 MAD notes detected. How to protect yourself.</p><div class="restats"><span>📍 Marrakech</span><span>⚠ Active</span></div></div>
+      </article>
+      <article class="recard" onclick="openA('marrakech-forum')">
+        <div class="reimg"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&q=70" alt="Conference" loading="lazy"></div>
+        <div class="rebdy"><span class="rebadge">Investment Hub</span><div class="retitle">Marrakech Cements Euro-Mediterranean Economic Dialogue Role</div><p style="font-family:var(--fb);font-size:12px;color:var(--muted);line-height:1.5">The Red City's conference economy tops 2 billion MAD annually as it hosts back-to-back high-level summits.</p><div class="restats"><span>📍 Marrakech</span><span>🌍 Strategic</span></div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS -->
+<section>
+  <div class="container">
+    <hr class="srule">
+    <div class="stitle"><span class="lbl">Events</span>Events Calendar — June &amp; July 2026<span class="sall" onclick="openA('fnap-2026')">Full Calendar →</span></div>
+    <div class="ev-grid">
+      <article class="ecard" onclick="openA('binebine-sculpture')">
+        <div class="edateblk"><div class="emon">Jun</div><div class="eday">26</div></div>
+        <div class="ebody"><div class="ecat">Art · TODAY</div><div class="etitle">Mahi Binebine — "You and Me" Monumental Sculpture Inauguration</div><div class="emeta"><div>🗿 Bab Atlas Roundabout, Route de Ouarzazate</div><div>6:00 PM · Free & open to all</div></div></div>
+      </article>
+      <article class="ecard" onclick="openA('ling-ling')">
+        <div class="edateblk"><div class="emon">Jun</div><div class="eday">26</div></div>
+        <div class="ebody"><div class="ecat">Dining · Tonight</div><div class="etitle">Beats &amp; Bites — Ling Ling by Hakkasan, Mandarin Oriental</div><div class="emeta"><div>🎵 Mandarin Oriental Marrakech, Hivernage</div><div>Thu–Fri from 7:30 PM · Reservation required</div></div></div>
+      </article>
+      <article class="ecard" onclick="openA('rivayat-thali')">
+        <div class="edateblk"><div class="emon">Jun</div><div class="eday">28</div></div>
+        <div class="ebody"><div class="ecat">Dining · Weekend</div><div class="etitle">Weekend Thali Lunch at Rivayat by Chef Rohit Ghai — Oberoi Marrakech</div><div class="emeta"><div>🍛 Oberoi Marrakech, Route d'Ourika</div><div>Sat–Sun 12:30–15:30 · Reservation required</div></div></div>
+      </article>
+      <article class="ecard" onclick="openA('theatre-festival')">
+        <div class="edateblk"><div class="emon">Jun</div><div class="eday">25</div></div>
+        <div class="ebody"><div class="ecat">Theatre · Ongoing</div><div class="etitle">6th National Amateur Theatre Festival — Marrakech (Final Days)</div><div class="emeta"><div>🎪 Théâtre Royal de Marrakech</div><div>This week · Tickets from 20 MAD</div></div></div>
+      </article>
+      <article class="ecard" onclick="openA('fnap-2026')">
+        <div class="edateblk"><div class="emon">Jul</div><div class="eday">2</div></div>
+        <div class="ebody"><div class="ecat">Folklore · Coming Soon</div><div class="etitle">55th National Festival of Popular Arts — Marrakech 2026</div><div class="emeta"><div>🎭 Bab Jdid & El Badi Palace, Medina</div><div>Jul 2–6 · Free admission at main venues</div></div></div>
+      </article>
+      <article class="ecard" onclick="openA('best-brunch')">
+        <div class="edateblk"><div class="emon">Jun</div><div class="eday">28</div></div>
+        <div class="ebody"><div class="ecat">Lifestyle · Every Sunday</div><div class="etitle">Best Sunday Brunches in Marrakech — Top Picks for June 2026</div><div class="emeta"><div>🥂 Multiple venues across Marrakech</div><div>Every Sunday · From 200 MAD per person</div></div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- LIFESTYLE -->
+<section style="padding-bottom:0">
+  <div class="container">
+    <hr class="srule">
+    <div class="stitle"><span class="lbl" style="background:#7F77DD">Lifestyle</span>Lifestyle & Dining<span class="sall" onclick="openA('best-brunch')">See All →</span></div>
+  </div>
+  <div class="container" style="padding:0 24px">
+    <div class="ls-grid">
+      <div class="lscard" onclick="openA('best-brunch')">
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&q=70" alt="Brunch restaurant" loading="lazy">
+        <div class="lsov"><div class="lslbl">Dining</div><div class="lstitle">Best Sunday Brunches in Marrakech — Definitive 2026 Guide</div></div>
       </div>
-      <div class="re-grid">
-        <article class="re-card">
-          <div class="re-img"><img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&q=70" alt="Luxury villa with pool" loading="lazy"></div>
-          <div class="re-body">
-            <span class="re-badge">Market Report</span>
-            <h3 class="re-title"><a href="#">Palmeraie Villa Prices Jump 28% — Foreign Buyers Now Dominate Transactions</a></h3>
-            <p style="font-family:var(--font-body);font-size:12px;color:var(--muted);line-height:1.5;">Prime prices push above €4,000/m² as French, British, and American buyers accelerate acquisitions.</p>
-            <div class="re-stats">
-              <span class="re-stat">📍 Palmeraie</span>
-              <span class="re-stat">📈 +28% YoY</span>
-              <span class="re-stat">💶 €4,000+/m²</span>
-            </div>
-          </div>
-        </article>
-
-        <article class="re-card">
-          <div class="re-img"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&q=70" alt="Modern residential building" loading="lazy"></div>
-          <div class="re-body">
-            <span class="re-badge">New Development</span>
-            <h3 class="re-title"><a href="#">550-Unit Hivernage Residence Project Launches Pre-Sales to Foreign Buyers</a></h3>
-            <p style="font-family:var(--font-body);font-size:12px;color:var(--muted);line-height:1.5;">Mixed-use development in Hivernage targets expatriate buyers with flexible payment plans.</p>
-            <div class="re-stats">
-              <span class="re-stat">📍 Hivernage</span>
-              <span class="re-stat">🏗 Pre-sale</span>
-              <span class="re-stat">🏠 550 units</span>
-            </div>
-          </div>
-        </article>
-
-        <article class="re-card">
-          <div class="re-img"><img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=400&q=70" alt="Moroccan architecture" loading="lazy"></div>
-          <div class="re-body">
-            <span class="re-badge">Buyer's Guide</span>
-            <h3 class="re-title"><a href="#">Foreign Buyer's Complete Guide to Purchasing Property in Marrakech 2025</a></h3>
-            <p style="font-family:var(--font-body);font-size:12px;color:var(--muted);line-height:1.5;">Legal steps, tax implications, and which neighborhoods offer the best returns.</p>
-            <div class="re-stats">
-              <span class="re-stat">📋 Legal Guide</span>
-              <span class="re-stat">🌍 Foreign buyers</span>
-            </div>
-          </div>
-        </article>
-
-        <article class="re-card">
-          <div class="re-img"><img src="https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=400&q=70" alt="Apartment building" loading="lazy"></div>
-          <div class="re-body">
-            <span class="re-badge">Neighborhood Spotlight</span>
-            <h3 class="re-title"><a href="#">Semlalia Is the New Gueliz: Inside Marrakech's Rising Residential District</a></h3>
-            <p style="font-family:var(--font-body);font-size:12px;color:var(--muted);line-height:1.5;">Young professionals and digital nomads are driving demand in this emerging quarter.</p>
-            <div class="re-stats">
-              <span class="re-stat">📍 Semlalia</span>
-              <span class="re-stat">📊 Analysis</span>
-            </div>
-          </div>
-        </article>
+      <div class="lscard" onclick="openA('caftan-week')">
+        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=70" alt="Moroccan fashion" loading="lazy">
+        <div class="lsov"><div class="lslbl">Fashion</div><div class="lstitle">Caftan Week 2026: The Atlas Mountains Inspire Moroccan Haute Couture</div></div>
+      </div>
+      <div class="lscard" onclick="openA('day-pass')">
+        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&q=70" alt="Luxury pool" loading="lazy">
+        <div class="lsov"><div class="lslbl">Wellness</div><div class="lstitle">Best Day Pass Experiences at Marrakech's Luxury Hotels in 2026</div></div>
+      </div>
+      <div class="lscard" onclick="openA('ryanair-incident')">
+        <img src="https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=500&q=70" alt="Airport" loading="lazy">
+        <div class="lsov"><div class="lslbl">Travel Alert</div><div class="lstitle">Ryanair Flies Empty to Marrakech, Strands Passengers in France</div></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- EVENTS CALENDAR -->
-  <section>
-    <div class="container">
-      <hr class="section-rule">
-      <div class="section-title">
-        <span class="label">Events</span>
-        Events Calendar — This Week
-        <a href="#" class="see-all">Full Calendar →</a>
-      </div>
-      <div class="events-grid">
-        <article class="event-card">
-          <div class="event-date-block">
-            <div class="event-month">Jul</div>
-            <div class="event-day">28</div>
-          </div>
-          <div class="event-body">
-            <div class="event-cat">Cinema</div>
-            <h3 class="event-title"><a href="#">Marrakech International Film Festival — Opening Gala</a></h3>
-            <div class="event-meta">
-              <div>🎬 Palais des Congrès, Hivernage</div>
-              <div class="event-location">🎟 Free – 250 MAD · 7 nights</div>
-            </div>
-          </div>
-        </article>
-
-        <article class="event-card">
-          <div class="event-date-block">
-            <div class="event-month">Jun</div>
-            <div class="event-day">27</div>
-          </div>
-          <div class="event-body">
-            <div class="event-cat">Business</div>
-            <h3 class="event-title"><a href="#">Morocco Investment Forum 2025 — Annual Summit</a></h3>
-            <div class="event-meta">
-              <div>🏨 Sofitel Marrakech Lounge & Spa</div>
-              <div class="event-location">🎟 3,500 MAD · 2 days</div>
-            </div>
-          </div>
-        </article>
-
-        <article class="event-card">
-          <div class="event-date-block">
-            <div class="event-month">Jun</div>
-            <div class="event-day">26</div>
-          </div>
-          <div class="event-body">
-            <div class="event-cat">Tourism</div>
-            <h3 class="event-title"><a href="#">Atlas Mountains Guided Day Trek — Toubkal Foothills</a></h3>
-            <div class="event-meta">
-              <div>🏔 Departs Djemaa el-Fna 7:00 AM</div>
-              <div class="event-location">🎟 450 MAD per person</div>
-            </div>
-          </div>
-        </article>
-
-        <article class="event-card">
-          <div class="event-date-block">
-            <div class="event-month">Jun</div>
-            <div class="event-day">25</div>
-          </div>
-          <div class="event-body">
-            <div class="event-cat">Culture</div>
-            <h3 class="event-title"><a href="#">Jemaa el-Fna Night Market — Nightly from 6PM</a></h3>
-            <div class="event-meta">
-              <div>🌙 Jemaa el-Fna Square, Medina</div>
-              <div class="event-location">🎟 Free entry · Nightly</div>
-            </div>
-          </div>
-        </article>
-      </div>
+<!-- CULTURE / OPINION -->
+<section>
+  <div class="container">
+    <hr class="srule">
+    <div class="stitle"><span class="lbl" style="background:var(--charcoal)">Culture</span>Culture & Analysis<span class="sall" onclick="openA('oscar-producers')">See All →</span></div>
+    <div class="op-grid">
+      <article class="opcard" onclick="openA('oscar-producers')">
+        <div class="opauth"><div class="opav"><img src="https://i.pravatar.cc/150?img=12" alt="Karim Benali"></div><div><div class="opname">Karim Benali</div><div class="oprole">Culture & Tourism Editor</div></div></div>
+        <div class="optitle">Two Moroccan Producers Join the Academy of Motion Picture Arts and Sciences — Oscars History Made</div>
+        <div class="oppq">"This is a historic milestone for Moroccan cinema — a signal that the world is watching our stories."</div>
+        <p class="opexc">In a landmark recognition, two Moroccan film producers have been invited to join the Academy that votes on the Oscars, among the first North Africans to achieve full membership.</p>
+      </article>
+      <article class="opcard" onclick="openA('brahim-unesco')">
+        <div class="opauth"><div class="opav"><img src="https://i.pravatar.cc/150?img=47" alt="Sarah Mitchell"></div><div><div class="opname">Sarah Mitchell</div><div class="oprole">Senior Correspondent</div></div></div>
+        <div class="optitle">Brahim El Mazned Receives UNESCO-Sharjah Prize 2026 for Arab Culture in Paris</div>
+        <div class="oppq">"El Mazned's lifelong preservation of Gnawa music traditions earned him one of the world's most prestigious cultural honours."</div>
+        <p class="opexc">The Marrakech-born Gnawa advocate received the UNESCO-Sharjah Prize in Paris, bringing global recognition to Morocco's living musical heritage.</p>
+      </article>
+      <article class="opcard" onclick="openA('theatre-festival')">
+        <div class="opauth"><div class="opav"><img src="https://i.pravatar.cc/150?img=49" alt="Jessica Hart"></div><div><div class="opname">Jessica Hart</div><div class="oprole">Arts & Lifestyle Reporter</div></div></div>
+        <div class="optitle">Marrakech Hosts 6th National Amateur Theatre Festival — A City That Takes Culture Seriously</div>
+        <div class="oppq">"In a summer dominated by football, it's theatre that is quietly filling the cultural gap in Marrakech this week."</div>
+        <p class="opexc">The sixth National Amateur Theatre Festival is drawing hundreds of performers to Marrakech, underscoring the city's year-round cultural vitality beyond tourism.</p>
+      </article>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- LIFESTYLE SECTION -->
-  <section style="padding-bottom:0;">
-    <div class="container">
-      <hr class="section-rule">
-      <div class="section-title">
-        <span class="label" style="background:#7F77DD;">Lifestyle</span>
-        Lifestyle & Dining
-        <a href="#" class="see-all">See All →</a>
-      </div>
+<!-- MOST READ -->
+<section style="background:var(--sand);padding:40px 0">
+  <div class="container">
+    <hr class="srule">
+    <div class="stitle">Most Read This Week</div>
+    <div class="mr-grid">
+      <article class="mrcard" onclick="openA('morocco-wc')"><div class="mrnum">1</div><div class="mrcat">Sport</div><div class="mrtitle">Morocco Beats Haiti 3-0, Advances to World Cup Round of 16 as Group Winners</div><div class="mrv">👁 24,810 views</div></article>
+      <article class="mrcard" onclick="openA('morocco-gmt')"><div class="mrnum">2</div><div class="mrcat">National</div><div class="mrtitle">Morocco Returns to GMT After Summer — What It Means for Residents & Visitors</div><div class="mrv">👁 12,340 views</div></article>
+      <article class="mrcard" onclick="openA('re-slowdown')"><div class="mrnum">3</div><div class="mrcat">Real Estate</div><div class="mrtitle">Marrakech Property Market Hits Sharp Brake — Q2 2026 Buyer Analysis</div><div class="mrv">👁 9,230 views</div></article>
+      <article class="mrcard" onclick="openA('mandarin-villa')"><div class="mrnum">4</div><div class="mrcat">Tourism</div><div class="mrtitle">Mandarin Oriental Opens Private Villas for Day Visits — Pool, Lunch & Service</div><div class="mrv">👁 7,870 views</div></article>
+      <article class="mrcard" onclick="openA('ryanair-incident')"><div class="mrnum">5</div><div class="mrcat">Travel</div><div class="mrtitle">Ryanair Flies Empty to Marrakech, Abandons Passengers in France</div><div class="mrv">👁 6,540 views</div></article>
     </div>
-    <div class="container" style="padding:0 24px;">
-      <div class="lifestyle-scroll">
-        <div class="ls-card">
-          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&q=70" alt="Elegant restaurant" loading="lazy">
-          <div class="ls-overlay">
-            <div class="ls-label">Food & Dining</div>
-            <div class="ls-title">10 New Restaurants You Need to Try This Summer in Marrakech</div>
-          </div>
-        </div>
-        <div class="ls-card">
-          <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=500&q=70" alt="Moroccan wellness hammam" loading="lazy">
-          <div class="ls-overlay">
-            <div class="ls-label">Wellness</div>
-            <div class="ls-title">The Best Hammams and Spas in Marrakech for 2025</div>
-          </div>
-        </div>
-        <div class="ls-card">
-          <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&q=70" alt="Café interior" loading="lazy">
-          <div class="ls-overlay">
-            <div class="ls-label">Cafés</div>
-            <div class="ls-title">Where to Work from a Café: The Definitive Digital Nomad Guide to Marrakech</div>
-          </div>
-        </div>
-        <div class="ls-card">
-          <img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=500&q=70" alt="Marrakech souk shopping" loading="lazy">
-          <div class="ls-overlay">
-            <div class="ls-label">Shopping</div>
-            <div class="ls-title">Beyond the Souk: Marrakech's Best Contemporary Boutiques and Design Shops</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- OPINION SECTION -->
-  <section>
-    <div class="container">
-      <hr class="section-rule">
-      <div class="section-title">
-        <span class="label" style="background:var(--charcoal);">Opinion</span>
-        Opinion & Analysis
-        <a href="#" class="see-all">See All →</a>
-      </div>
-      <div class="opinion-grid">
-        <article class="opinion-card">
-          <div class="opinion-author">
-            <div class="opinion-avatar"><img src="https://i.pravatar.cc/150?img=47" alt="Sarah Mitchell"></div>
-            <div>
-              <div class="opinion-name">Sarah Mitchell</div>
-              <div class="opinion-role">Senior Correspondent</div>
-            </div>
-          </div>
-          <h3 class="opinion-title"><a href="#">The Airport Bottleneck Was Always the Problem. Now It's Finally Being Solved.</a></h3>
-          <div class="opinion-pullquote">"Marrakech's growth ceiling wasn't investment appetite or hotel beds — it was seat capacity from European capitals."</div>
-          <p class="opinion-excerpt">For five years I've reported on real estate projects, hotel openings, and startup funding rounds in this city. All of them were constrained by a single variable: the airport...</p>
-        </article>
-
-        <article class="opinion-card">
-          <div class="opinion-author">
-            <div class="opinion-avatar"><img src="https://i.pravatar.cc/150?img=49" alt="Jessica Hart"></div>
-            <div>
-              <div class="opinion-name">Jessica Hart</div>
-              <div class="opinion-role">Real Estate & Lifestyle Reporter</div>
-            </div>
-          </div>
-          <h3 class="opinion-title"><a href="#">I Moved to Marrakech for Six Months. Here's What Nobody Tells Expats.</a></h3>
-          <div class="opinion-pullquote">"The medina is beautiful, but you will want running water pressure, and that is not a given."</div>
-          <p class="opinion-excerpt">There are a thousand glossy articles about moving to Marrakech. This is not one of them. After three lease negotiations and one plumbing catastrophe...</p>
-        </article>
-
-        <article class="opinion-card">
-          <div class="opinion-author">
-            <div class="opinion-avatar"><img src="https://i.pravatar.cc/150?img=12" alt="Karim Benali"></div>
-            <div>
-              <div class="opinion-name">Karim Benali</div>
-              <div class="opinion-role">Culture & Tourism Editor</div>
-            </div>
-          </div>
-          <h3 class="opinion-title"><a href="#">Gueliz Is Becoming Unrecognizable — and Not Entirely for the Better</a></h3>
-          <div class="opinion-pullquote">"Every week another café that served local families for thirty years is replaced by a co-working space charging €400 per desk."</div>
-          <p class="opinion-excerpt">I was born in Gueliz. My parents ran a pâtisserie on Boulevard Mohammed V. I watch the transformation of this neighborhood with both pride and grief...</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- MOST READ -->
-  <section style="background:var(--sand);padding:40px 0;">
-    <div class="container">
-      <hr class="section-rule">
-      <div class="section-title">
-        Most Read This Week
-        <a href="#" class="see-all">See All →</a>
-      </div>
-      <div class="most-read-grid">
-        <article class="mr-card">
-          <div class="mr-num">1</div>
-          <div class="mr-cat">Lifestyle</div>
-          <h3 class="mr-title"><a href="#">10 Must-Try New Restaurants That Opened in Marrakech This Season</a></h3>
-          <div class="mr-views">👁 9,820 views</div>
-        </article>
-        <article class="mr-card">
-          <div class="mr-num">2</div>
-          <div class="mr-cat">Breaking News</div>
-          <h3 class="mr-title"><a href="#">Airport $400M Terminal Expansion Breaks Ground — All You Need to Know</a></h3>
-          <div class="mr-views">👁 8,420 views</div>
-        </article>
-        <article class="mr-card">
-          <div class="mr-num">3</div>
-          <div class="mr-cat">Breaking</div>
-          <h3 class="mr-title"><a href="#">City Council Approves Tram Extension to Semlalia — Route and Timeline</a></h3>
-          <div class="mr-views">👁 7,140 views</div>
-        </article>
-        <article class="mr-card">
-          <div class="mr-num">4</div>
-          <div class="mr-cat">Real Estate</div>
-          <h3 class="mr-title"><a href="#">Palmeraie Property Prices Jump 28% as Foreign Buyers Flood the Market</a></h3>
-          <div class="mr-views">👁 5,670 views</div>
-        </article>
-        <article class="mr-card">
-          <div class="mr-num">5</div>
-          <div class="mr-cat">Business</div>
-          <h3 class="mr-title"><a href="">"Silicon Medina": How Gueliz Is Becoming Morocco's Hottest Tech Hub</a></h3>
-          <div class="mr-views">👁 4,890 views</div>
-        </article>
-      </div>
-    </div>
-  </section>
-
+  </div>
+</section>
 </main>
 
 <!-- NEWSLETTER -->
-<div id="newsletter" class="newsletter-section">
-  <div class="newsletter-inner">
-    <div class="newsletter-eyebrow">Free Daily Newsletter</div>
-    <h2 class="newsletter-title">Marrakech in Your Inbox. Every Morning.</h2>
-    <p class="newsletter-sub">Join 12,400+ expats, tourists, and investors who start their day with the Marrakech Daily Morning Brief — the best of the city's news in a 3-minute read.</p>
-    <div class="newsletter-form">
-      <input type="email" class="newsletter-input" placeholder="your@email.com" aria-label="Email address">
-      <button class="newsletter-btn" type="button">Subscribe Free</button>
+<div id="newsletter" class="nl-sec">
+  <div class="nl-in">
+    <div class="nley">Free Daily Newsletter</div>
+    <h2 class="nltitle">Marrakech in Your Inbox. Every Morning.</h2>
+    <p class="nlsub">Join 12,400+ expats, tourists, and investors who start their day with the Marrakech Daily Morning Brief — the best of the city's news in a 3-minute read.</p>
+    <div class="nl-form">
+      <input type="email" class="nl-input" id="nlEmail" placeholder="your@email.com">
+      <button class="nl-btn" id="nlBtn">Subscribe Free</button>
     </div>
-    <p class="newsletter-note">No spam, ever. Unsubscribe anytime. Read our <a href="#">Privacy Policy</a>.</p>
-    <div style="display:flex;align-items:center;justify-content:center;gap:32px;margin-top:28px;flex-wrap:wrap;">
-      <div style="text-align:center;">
-        <div style="font-family:var(--font-display);font-size:24px;font-weight:900;color:white;">12.4K</div>
-        <div style="font-family:var(--font-ui);font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;">Subscribers</div>
-      </div>
-      <div style="text-align:center;">
-        <div style="font-family:var(--font-display);font-size:24px;font-weight:900;color:white;">68%</div>
-        <div style="font-family:var(--font-ui);font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;">Open Rate</div>
-      </div>
-      <div style="text-align:center;">
-        <div style="font-family:var(--font-display);font-size:24px;font-weight:900;color:white;">Daily</div>
-        <div style="font-family:var(--font-ui);font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;">7:00 AM Delivery</div>
-      </div>
+    <p class="nl-note">No spam, ever. Unsubscribe anytime.</p>
+    <div class="nl-stats">
+      <div style="text-align:center"><div class="nls-num">12.4K</div><div class="nls-lbl">Subscribers</div></div>
+      <div style="text-align:center"><div class="nls-num">68%</div><div class="nls-lbl">Open Rate</div></div>
+      <div style="text-align:center"><div class="nls-num">Daily</div><div class="nls-lbl">7:00 AM Delivery</div></div>
     </div>
   </div>
 </div>
@@ -1659,121 +668,87 @@
 <!-- FOOTER -->
 <footer class="site-footer">
   <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="site-logo" style="align-items:flex-start;">
-          <div class="logo-eyebrow" style="color:rgba(255,255,255,0.3);">Est. 2024</div>
-          <div class="logo-name">MARRAKECH <span>DAILY</span></div>
-          <div class="logo-tagline" style="color:rgba(255,255,255,0.3);">Your English-Language Window to the Red City</div>
-        </div>
-        <p class="footer-desc">Independent English-language journalism covering Marrakech and the Marrakech-Safi region. Serving expats, tourists, investors, and international businesses since 2024.</p>
-        <div class="footer-social">
-          <a href="#" class="social-btn" aria-label="Twitter/X">✕</a>
-          <a href="#" class="social-btn" aria-label="Facebook">f</a>
-          <a href="#" class="social-btn" aria-label="Instagram">📷</a>
-          <a href="#" class="social-btn" aria-label="LinkedIn">in</a>
-          <a href="#" class="social-btn" aria-label="RSS Feed">RSS</a>
-        </div>
-      </div>
-
+    <div class="fg">
       <div>
-        <div class="footer-col-title">Sections</div>
-        <ul class="footer-links">
-          <li><a href="#">⚡ Breaking News</a></li>
-          <li><a href="#">Business & Investment</a></li>
-          <li><a href="#">Tourism & Travel</a></li>
-          <li><a href="#">Real Estate</a></li>
-          <li><a href="#">Culture & Arts</a></li>
-          <li><a href="#">Events Calendar</a></li>
-          <li><a href="#">Lifestyle</a></li>
-          <li><a href="#">Opinion</a></li>
-        </ul>
+        <div class="site-logo" style="align-items:flex-start"><div class="logo-eyebrow" style="color:rgba(255,255,255,.3)">Est. 2024</div><div class="logo-name">MARRAKECH <span>DAILY</span></div><div class="logo-tagline" style="color:rgba(255,255,255,.3)">Your English-Language Window to the Red City</div></div>
+        <p class="fdesc">Independent English-language journalism covering Marrakech and the Marrakech-Safi region. Serving expats, tourists, investors, and international businesses since 2024.</p>
+        <div class="fsocial"><button class="fbtn">✕</button><button class="fbtn">f</button><button class="fbtn">📷</button><button class="fbtn">in</button></div>
       </div>
-
-      <div>
-        <div class="footer-col-title">Services</div>
-        <ul class="footer-links">
-          <li><a href="#">Morning Brief Newsletter</a></li>
-          <li><a href="#">Premium Membership</a></li>
-          <li><a href="#">Business Directory</a></li>
-          <li><a href="#">Advertise with Us</a></li>
-          <li><a href="#">Sponsored Content</a></li>
-          <li><a href="#">Press Releases</a></li>
-          <li><a href="#">Event Listings</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <div class="footer-col-title">Expat Resources</div>
-        <ul class="footer-links">
-          <li><a href="#">Living in Marrakech Guide</a></li>
-          <li><a href="#">Neighborhoods Guide</a></li>
-          <li><a href="#">Buying Property Guide</a></li>
-          <li><a href="#">Visa & Residency</a></li>
-          <li><a href="#">Schools Directory</a></li>
-          <li><a href="#">Healthcare Guide</a></li>
-          <li><a href="#">Digital Nomad Hub</a></li>
-        </ul>
-      </div>
+      <div><div class="fct">Sections</div><ul class="flinks"><li><span onclick="openA('morocco-wc')">⚡ Breaking News</span></li><li><span onclick="openA('bank-africa-beijing')">Business & Investment</span></li><li><span onclick="openA('marrakech-air-routes')">Tourism & Travel</span></li><li><span onclick="openA('re-slowdown')">Real Estate</span></li><li><span onclick="openA('oscar-producers')">Culture & Arts</span></li><li><span onclick="openA('fnap-2026')">Events Calendar</span></li><li><span onclick="openA('best-brunch')">Lifestyle</span></li><li><span onclick="openA('morocco-wc')">Sport</span></li></ul></div>
+      <div><div class="fct">Services</div><ul class="flinks"><li><a href="#newsletter">Morning Brief Newsletter</a></li><li><a href="#newsletter">Premium Membership</a></li><li><a href="#">Business Directory</a></li><li><a href="#">Advertise with Us</a></li><li><a href="#">Sponsored Articles</a></li><li><a href="#">Press Releases</a></li><li><a href="#">Event Listings</a></li></ul></div>
+      <div><div class="fct">Expat Resources</div><ul class="flinks"><li><span onclick="openA('expat-guide')">Living in Marrakech Guide</span></li><li><a href="#">Neighborhoods Guide</a></li><li><a href="#">Buying Property Guide</a></li><li><a href="#">Visa & Residency</a></li><li><a href="#">Schools Directory</a></li><li><a href="#">Healthcare Guide</a></li><li><a href="#">Digital Nomad Hub</a></li></ul></div>
     </div>
-
-    <div class="footer-bottom">
-      <div>© 2024–2026 Marrakech Daily. All rights reserved. Marrakech, Morocco.</div>
-      <div class="footer-bottom-links">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Use</a>
-        <a href="#">Cookie Policy</a>
-        <a href="#">Contact</a>
-        <a href="#">About</a>
-        <a href="#">Sitemap</a>
-      </div>
+    <div class="fbot">
+      <div>© 2024–2026 Marrakech Daily. All rights reserved. Marrakech, Morocco. Updated Friday June 26, 2026.</div>
+      <div class="fbl"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a><a href="#">Contact</a><a href="#">About</a></div>
     </div>
   </div>
 </footer>
 
 <script>
-  // Newsletter form
-  const newsletterBtn = document.querySelector('.newsletter-btn');
-  const newsletterInput = document.querySelector('.newsletter-input');
-  if (newsletterBtn && newsletterInput) {
-    newsletterBtn.addEventListener('click', function() {
-      const email = newsletterInput.value.trim();
-      if (!email || !email.includes('@')) {
-        newsletterInput.style.outline = '2px solid #C8102E';
-        newsletterInput.focus();
-        return;
-      }
-      newsletterBtn.textContent = '✓ Subscribed!';
-      newsletterBtn.style.background = '#0F6E56';
-      newsletterInput.value = '';
-      newsletterInput.style.outline = '';
-      setTimeout(() => {
-        newsletterBtn.textContent = 'Subscribe Free';
-        newsletterBtn.style.background = '';
-      }, 3000);
-    });
-  }
+const A = {
+  'morocco-wc':{cat:'⚡ Sport — World Cup 2026',title:'Morocco Roars Into World Cup Round of 16 — Atlas Lions Demolish Haiti 3-0',img:'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=1200&q=80',by:'Karim Benali · Sports Editor',date:'Friday June 26, 2026 · 9:14 AM',read:'4 min',tags:['World Cup 2026','Morocco Football','Atlas Lions','Sport'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>The Atlas Lions produced a commanding performance Thursday evening, defeating Haiti 3-0 to advance to the Round of 16 as <strong>group winners</strong> at the 2026 FIFA World Cup.</p><h2>The Goals</h2><p>Saibari opened the scoring, equalling En-Nesyri at the top of all-time Moroccan World Cup scorers. The second goal came from <strong>Yassine Gessime — just 18 years old</strong> — who became the youngest Moroccan goalscorer in World Cup history. En-Nesyri sealed it with a trademark header.</p><h2>Celebrations in Marrakech</h2><p>Jemaa el-Fna erupted immediately after the final whistle. Thousands gathered in the square with flags, horns and chants filling the night air across the medina and Gueliz. Cafés stayed open until dawn.</p><h2>What's Next</h2><p>Morocco faces the runner-up from Group D in the Round of 16. Coach Regragui is expected to make minimal changes to a squad that has looked organised, energetic and technically sharp throughout the group stage.</p>`},
+  'binebine-sculpture':{cat:'Culture · Art · TODAY',title:'Mahi Binebine Unveils Monumental Sculpture "You and Me" at Bab Atlas — Inauguration Tonight June 26',img:'https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=1200&q=80',by:'Karim Benali · Culture Editor',date:'Friday June 26, 2026',read:'3 min',tags:['Art','Sculpture','Mahi Binebine','Marrakech','Culture'],src:'Source: <a href="https://www.madein.city/marrakech/fr/" target="_blank">madein.city</a>',body:`<p>Tonight, Friday June 26 at 6:00 PM, the internationally celebrated Moroccan artist <strong>Mahi Binebine</strong> will unveil "You and Me" — a monumental sculpture gifted to the city of Marrakech — at the <strong>Bab Atlas roundabout, Route de Ouarzazate</strong>.</p><h2>About the Work</h2><p>The sculpture is a large-scale figurative work carrying a message of unity and human connection. It represents a landmark addition to Marrakech's public art landscape. Binebine, a Marrakech native whose works command major international auction prices, has chosen to give this piece back to the city that shaped him.</p><h2>The Event</h2><p>The inauguration ceremony is <strong>free and open to the public</strong>. Local officials, cultural figures and international supporters are expected to attend. The work sits at a major city intersection, ensuring daily visibility for residents and visitors alike.</p>`},
+  'marrakech-air-routes':{cat:'Tourism · Aviation',title:'Marrakech Multiplies European Air Routes for Summer 2026 — 12+ New Connections Confirmed',img:'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200&q=80',by:'Sarah Mitchell · Senior Correspondent',date:'Thursday June 25, 2026',read:'4 min',tags:['Aviation','Tourism','Marrakech','Europe','Summer 2026'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>Marrakech is confirming its growing appeal with a dramatic jump in European air connections for Summer 2026. <strong>12 new city pairs</strong> have been confirmed since January, with carriers including Air France, easyJet, Ryanair and Transavia all adding capacity.</p><h2>Key New Routes</h2><p>New direct connections now include cities from Scandinavia, Eastern Europe and the British Isles — reflecting demand that extends well beyond the traditional French, Spanish and British source markets.</p><p>The Marrakech Tourism Council reports a <strong>28% increase in seat capacity</strong> for June–September 2026 vs the same period in 2025.</p><h2>World Cup Effect</h2><p>Morocco's co-hosting of the 2026 FIFA World Cup is driving global awareness. Marrakech is positioning itself as the premier pre- and post-tournament leisure destination for visiting fans, with hotels reporting 90%+ occupancy through July.</p>`},
+  'morocco-gmt':{cat:'⚡ National',title:'Morocco Permanently Returns to GMT Timezone After Summer — PM Akhannouch Confirms',img:'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=1200&q=80',by:'Sarah Mitchell · Senior Correspondent',date:'Thursday June 25, 2026',read:'3 min',tags:['Morocco','GMT','Timezone','Government','Policy'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>Morocco will <strong>permanently revert to GMT+0</strong> after the end of the current summer period, Prime Minister Aziz Akhannouch has confirmed. Government spokesman Mustapha Baitas made the announcement, adding this decision is final.</p><h2>End of a Long Debate</h2><p>The timezone question has been one of Morocco's most contested domestic policy issues. Morocco adopted GMT+1 year-round in 2018 citing economic productivity, but critics argued it caused health problems, disrupted prayer times and disconnected Moroccans from their natural solar rhythm.</p><h2>What This Means for You</h2><p>After the transition, Morocco returns to <strong>GMT (same as the UK in winter, 1 hour behind France and Spain)</strong>. This affects flight schedules, business meeting times and connectivity with European partners. The exact date has not been published but is expected after the Islamic summer period ends.</p>`},
+  're-slowdown':{cat:'Real Estate · Market Report',title:'Marrakech Property Market Hits Sharp Brake — Q2 2026 Analysis for Buyers & Investors',img:'https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=1200&q=80',by:'Jessica Hart · Real Estate Reporter',date:'Monday June 23, 2026',read:'5 min',tags:['Real Estate','Marrakech','Property','Investment','2026'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>After years of sustained growth, Marrakech's property market has entered a notable slowdown in Q2 2026. Residential transactions fell an estimated <strong>18%</strong> vs the same quarter in 2025.</p><h2>Why the Slowdown?</h2><p>Analysts point to: rising mortgage rates, a cooling of the pandemic-era rush to buy in lifestyle destinations, oversupply of premium units from the 2023–24 boom, and currency movements making Moroccan property less affordable for some European buyers.</p><h2>Opportunity or Warning?</h2><p>For cash buyers, the slowdown offers a negotiating window — some sellers who listed at 2024 peak prices are now open to offers. The long-term structural story (World Cup infrastructure, air connectivity, retiree migration) remains intact, but short-term pricing expectations need resetting.</p><p>The Palmeraie luxury villa segment remains most resilient thanks to continued ultra-high-net-worth demand.</p>`},
+  'bank-africa-beijing':{cat:'Business · International Finance',title:'BANK OF AFRICA Signs Two Strategic Partnerships in Beijing — Morocco\'s Banking Giant Goes East',img:'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80',by:'Sarah Mitchell · Senior Correspondent',date:'Wednesday June 24, 2026',read:'4 min',tags:['Banking','China','BANK OF AFRICA','Investment','Morocco'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>BANK OF AFRICA, Morocco's leading pan-African banking group, has signed <strong>two landmark economic partnership agreements</strong> during a high-profile Beijing visit, deepening Morocco-China financial ties significantly.</p><h2>The Agreements</h2><p>The partnerships involve investment facilitation for Moroccan and African projects, with Chinese capital expected to flow through BANK OF AFRICA's extensive Sub-Saharan network. The signing took place on the sidelines of an economic dialogue forum in Beijing.</p><h2>Morocco's China Pivot</h2><p>Morocco has increasingly positioned itself as the entry point for Chinese investment into Africa. Tanger Med port, Nador West Med, and renewable energy partnerships already reflect this strategy. The BANK OF AFRICA agreements extend this cooperation into the financial sector — a significant escalation.</p>`},
+  'morocco-gdp':{cat:'Economy',title:'Morocco GDP Growth Forecast at 5.2% for 2026 — Bank Al-Maghrib',img:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80',by:'Sarah Mitchell',date:'June 24, 2026',read:'3 min',tags:['Economy','GDP','Morocco','2026'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>Bank Al-Maghrib has revised its 2026 GDP growth forecast upward to <strong>5.2%</strong>, citing strong agricultural output, accelerating tourism receipts, and World Cup-related infrastructure spending.</p><p>This makes Morocco one of the fastest-growing economies in the MENA region. Inflation continues to ease — down to 1.2% in May — giving the central bank room to maintain accommodative monetary policy.</p><h2>Outlook for Marrakech</h2><p>The Marrakech-Safi region is expected to outperform the national average, driven by record tourism numbers, the airport expansion project, and increased FDI in hospitality and real estate. Over 8,000 new jobs are projected in tourism and construction before year-end.</p>`},
+  'morocco-inflation':{cat:'Economy',title:'Morocco Inflation Eases to 1.2% in May — Food Prices Lead the Slowdown',img:'https://images.unsplash.com/photo-1604594849809-dfedbc827105?w=1200&q=80',by:'Sarah Mitchell',date:'June 24, 2026',read:'2 min',tags:['Inflation','Morocco','Economy','Prices'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>Morocco's annual inflation rate slowed to <strong>1.2%</strong> in May 2026, down from 1.8% in April, driven by declining food prices — welcome news for households and the tourism sector alike.</p><p>The High Commission for Planning (HCP) attributed the deceleration to improved agricultural supply following a better-than-expected harvest in the Souss-Massa and Gharb regions.</p><p>For tourists and expats in Marrakech, the easing is already visible in restaurant menus and market prices. Locally-sourced produce has returned to accessible price points.</p>`},
+  'oncf-summer':{cat:'Transport',title:'ONCF Adds 237 Daily Trains for Summer 2026 — Marrakech Routes Get Priority',img:'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1200&q=80',by:'Sarah Mitchell',date:'June 24, 2026',read:'3 min',tags:['ONCF','Train','Transport','Morocco','Summer'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>ONCF has announced a major capacity expansion for Summer 2026, adding <strong>237 daily train services</strong> across its network to handle the surge in travel driven by the World Cup and peak tourism season.</p><p>The Marrakech–Casablanca and Marrakech–Rabat corridors receive the largest increases, with new services during morning and evening peaks. Journey times remain unchanged: ~3 hours to Casablanca, ~4 hours to Rabat.</p><p><strong>Tip:</strong> Book advance tickets via the ONCF app, especially for weekend travel and the July 4–8 World Cup knockout period. First class includes a meal service and priority boarding.</p>`},
+  'schengen-bls':{cat:'Travel · Visas',title:'BLS International Expands Schengen Visa Services in Morocco for Summer Peak Season',img:'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1200&q=80',by:'Sarah Mitchell',date:'June 23, 2026',read:'2 min',tags:['Visa','Schengen','Morocco','Travel','BLS'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>BLS International has announced a significant expansion of Schengen visa appointment availability in Morocco ahead of the summer peak, responding to exceptionally high demand amplified by the World Cup.</p><p>New submission centres have opened across additional Moroccan cities. For <strong>Marrakech residents</strong>, the main BLS centre on Avenue Mohammed V in Gueliz handles French, Spanish, Italian and German Schengen applications.</p><p><strong>Important:</strong> July and August slots are filling rapidly. Book your appointment as early as possible at the BLS International Morocco website.</p>`},
+  'morocco-millionaires':{cat:'Business · Wealth',title:'Morocco Tops Africa in Millionaire Growth — 400+ Ultra-Rich Individuals in 2026',img:'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=1200&q=80',by:'Sarah Mitchell',date:'June 24, 2026',read:'3 min',tags:['Wealth','Morocco','Investment','Economy','2026'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>Morocco has recorded <strong>Africa's fastest growth rate</strong> in high-net-worth individuals, crossing the 400 ultra-wealthy threshold in 2026 (defined as net assets exceeding $30M), according to a new wealth report.</p><p>Growth drivers: expanding real estate values, strong banking sector performance, Morocco's growing role as a regional business hub, and wealth creation from renewable energy and World Cup investment cycles.</p><h2>What It Means for Marrakech</h2><p>Marrakech is a primary beneficiary — attracting domestic ultra-HNW investment in luxury real estate, hospitality and retail. The Palmeraie villa market, while experiencing a general slowdown, remains supported by this domestic segment.</p>`},
+  'morocco-fifa':{cat:'Sport',title:'Morocco Climbs to 5th in FIFA World Rankings — Overtakes Brazil, Historic for Africa',img:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1200&q=80',by:'Karim Benali',date:'June 25, 2026',read:'2 min',tags:['FIFA','Football','Morocco','Rankings','World Cup'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>Morocco has climbed to <strong>5th place in the FIFA World Rankings</strong>, overtaking Brazil to become the highest-ranked African nation in the history of the rankings system.</p><p>The advance was driven by Morocco's dominant group stage performances at the 2026 World Cup. The Atlas Lions drew comparisons to their celebrated 2022 campaign, when they reached the semi-finals — still the best-ever result by an African team.</p><p>Cafés and screens across Marrakech lit up with celebration at the news, with social media flooded by Moroccan fans expressing pride in a generation of players who have transformed the country's footballing identity on the world stage.</p>`},
+  'air-france-morocco':{cat:'Business · Aviation',title:'Air France Boosts Morocco Presence for Summer 2026 — More Frequencies to Marrakech',img:'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200&q=80',by:'Sarah Mitchell',date:'June 25, 2026',read:'3 min',tags:['Air France','Aviation','Morocco','Tourism','Summer'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>Air France has announced a reinforced programme to Morocco for Summer 2026, increasing departures from <strong>Paris CDG to Marrakech</strong> during the peak July–August period — up to twice daily on peak dates.</p><p>The move reflects a broader trend: Ryanair, easyJet, Transavia and Vueling have all added Morocco capacity for the summer, driven by organic tourism demand and the World Cup effect.</p><p>Business class is available on all Air France CDG–Marrakech services. Prices remain elevated vs 2025 — book early for best fares. The route currently runs on A320 and A321 equipment.</p>`},
+  'mandarin-villa':{cat:'Tourism · Luxury',title:'Mandarin Oriental Marrakech Opens Private Villas for Day Visits — Pool, Butler & Gourmet Lunch',img:'https://images.unsplash.com/photo-1540541338537-1220059af4dc?w=1200&q=80',by:'Jessica Hart · Lifestyle Reporter',date:'June 2026',read:'3 min',tags:['Luxury','Hotels','Day Pass','Marrakech','Mandarin Oriental'],src:'Source: <a href="https://www.madein.city/marrakech/fr/" target="_blank">madein.city</a>',body:`<p>The Mandarin Oriental Marrakech has launched <strong>"A Villa for the Day"</strong> — a day-pass experience granting non-residents exclusive use of a private villa with private pool, personal butler, gourmet lunch and full resort access.</p><h2>What's Included</h2><p>Available 10:00 AM – 6:00 PM (subject to availability): exclusive villa & private pool, gourmet lunch for two, welcome cocktails, access to main resort pool and gardens. Spa treatments available at extra charge.</p><h2>Booking</h2><p>Pricing on request directly through the hotel. <strong>Book minimum 48 hours in advance</strong> — availability is limited and fills quickly on weekends.</p>`},
+  'fairmont-summer':{cat:'Tourism · Hotels',title:'Fairmont Royal Palm Marrakech: Full Summer 2026 Programme — Asian Dining, Padel & Kids Camp',img:'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1200&q=80',by:'Jessica Hart',date:'June 2026',read:'4 min',tags:['Fairmont','Hotels','Summer','Marrakech'],src:'Source: <a href="https://www.madein.city/marrakech/fr/" target="_blank">madein.city</a>',body:`<p>The Fairmont Royal Palm Marrakech has released its full Summer 2026 programme for guests and Marrakech residents:</p><h2>Highlights</h2><p><strong>Asian Dining Under the Stars</strong> — New outdoor concept launching July with curated dishes in the tropical garden, live music Fri–Sat evenings.</p><p><strong>Padel Tournament</strong> — August open competition with prizes, open to non-guests.</p><p><strong>Children's Summer Camp</strong> — Weekday programme for ages 5–14 through July–August: Moroccan cooking, art and sport.</p><p><strong>Spa Summer Deals</strong> — Up to 30% off signature treatments for day-pass guests through August.</p>`},
+  'fnap-2026':{cat:'Events · Culture',title:'55th National Festival of Popular Arts Marrakech 2026 — Full Programme July 2–6',img:'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1200&q=80',by:'Karim Benali · Culture Editor',date:'June 2026',read:'5 min',tags:['Festival','Culture','Folklore','Marrakech','FNAP'],src:'Source: <a href="https://www.madein.city/marrakech/fr/" target="_blank">madein.city</a>',body:`<p>From <strong>July 2–6, 2026</strong>, Marrakech hosts the 55th Festival National des Arts Populaires — one of Morocco's oldest cultural institutions, celebrating traditional music, dance and folklore from across the Kingdom and beyond.</p><h2>Programme</h2><p>60+ troupes from all Moroccan regions, plus invited groups from Sub-Saharan Africa, Andalusia and the Gulf. Performances at Bab Jdid, El Badi Palace and Arset El Bilk park.</p><p>Evening shows July 2–5 begin at <strong>8:30 PM</strong>. Grand finale July 6 at El Badi Palace: Gnawa, Ahidous, Guedra and Tissint traditions.</p><h2>Tickets & Access</h2><p>Bab Jdid performances: <strong>FREE</strong>. El Badi Palace evenings: 30 MAD (20 MAD Moroccan nationals). No reservation required — first come, first served.</p>`},
+  'rivayat-thali':{cat:'Dining · Events',title:'Weekend Thali Lunch at Rivayat by Chef Rohit Ghai — New Indian Experience at the Oberoi Marrakech',img:'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=1200&q=80',by:'Jessica Hart',date:'June 2026',read:'3 min',tags:['Dining','Oberoi','Indian','Marrakech','Weekend'],src:'Source: <a href="https://www.madein.city/marrakech/fr/" target="_blank">madein.city</a>',body:`<p>Every <strong>Saturday and Sunday 12:30–15:30</strong>, Rivayat — the celebrated Indian restaurant within the Oberoi Marrakech — launches a Weekend Thali Lunch celebrating the diversity of traditional Indian gastronomy.</p><p>Chef Rohit Ghai (Michelin-starred) presents a traditional thali format — multiple small dishes served simultaneously — incorporating Moroccan seasonal ingredients alongside regional Indian recipes.</p><p>Available to both hotel guests and outside visitors. <strong>Reservation essential</strong> — contact the Oberoi Marrakech directly.</p>`},
+  'ling-ling':{cat:'Dining · Nightlife',title:'"Beats & Bites" — New Midweek Dining Concept at Ling Ling by Hakkasan, Mandarin Oriental',img:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80',by:'Jessica Hart',date:'June 2026',read:'3 min',tags:['Dining','Hakkasan','Asian','Mandarin Oriental','Nightlife'],src:'Source: <a href="https://www.madein.city/marrakech/fr/" target="_blank">madein.city</a>',body:`<p>Ling Ling by Hakkasan at the Mandarin Oriental Marrakech launches <strong>"Beats & Bites"</strong> — a new Thursday and Friday evening concept featuring shared Asian dining with a DJ from 8:00 PM.</p><p>The menu features Ling Ling signature dishes: dim sum, wok-fired proteins and cold sharing plates, in a convivial format for groups of 2–6. The atmosphere is more relaxed than the restaurant's usual evening service.</p><p>Perfect for groups of friends, couples or corporate entertaining. Reservation essential. Opens <strong>from 7:30 PM</strong> Thursdays and Fridays.</p>`},
+  'theatre-festival':{cat:'Culture · Theatre',title:'6th National Amateur Theatre Festival Marrakech — City That Takes Culture Seriously',img:'https://images.unsplash.com/photo-1503095396549-807759245b35?w=1200&q=80',by:'Jessica Hart',date:'June 25, 2026',read:'3 min',tags:['Theatre','Culture','Festival','Marrakech'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>Marrakech is hosting the 6th National Amateur Theatre Festival at the Théâtre Royal, with performances in Darija, Classical Arabic and French from troupes across Morocco.</p><p>A core feature is accessibility: most performances are <strong>free</strong>, with a small number of evening shows at 20–50 MAD. Afternoon matinees are designed for school groups and families.</p><p>The festival runs through the final days of June. In a summer dominated by football, it's theatre that is quietly filling the cultural gap in Marrakech this week.</p>`},
+  'oscar-producers':{cat:'Culture · Cinema',title:'Two Moroccan Film Producers Invited to Join the Academy of Motion Picture Arts and Sciences',img:'https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1200&q=80',by:'Karim Benali · Culture Editor',date:'June 25, 2026',read:'3 min',tags:['Cinema','Oscars','Morocco','Culture','Film'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>Two Moroccan film producers have been officially invited to join the <strong>Academy of Motion Picture Arts and Sciences</strong> — the body that votes on the Oscars — making them among the first North Africans to achieve full Academy membership.</p><p>The Academy's annual class includes 300+ artists and executives from around the world. The inclusion of Moroccan producers reflects the growing international visibility of North African filmmaking, following several years of Moroccan productions being shortlisted for Best International Feature.</p><p>Full membership grants voting rights across all Oscar categories — giving Moroccan voices a permanent place in global cinema's most prestigious conversation.</p>`},
+  'brahim-unesco':{cat:'Culture · Award',title:'Brahim El Mazned Receives UNESCO-Sharjah Prize 2026 for Arab Culture in Paris',img:'https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=1200&q=80',by:'Karim Benali',date:'June 25, 2026',read:'3 min',tags:['UNESCO','Culture','Gnawa','Award','Morocco'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>Marrakech-born music curator and cultural activist <strong>Brahim El Mazned</strong> received the UNESCO-Sharjah Prize for Arab Culture 2026 at a ceremony in Paris, recognising his lifelong dedication to Moroccan Gnawa music traditions.</p><p>El Mazned is best known as founder of the Timitar Festival in Agadir and for his advocacy to have Gnawa music listed on UNESCO's Intangible Cultural Heritage — a milestone achieved in 2019.</p><p>The prize is awarded biennially to individuals or institutions making outstanding contributions to Arab culture. It carries a financial award and significant international recognition.</p>`},
+  'day-pass':{cat:'Lifestyle · Wellness',title:'Best Day Passes in Marrakech 2026 — Pools, Spas & Gourmet Lunches at Top Hotels',img:'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80',by:'Jessica Hart',date:'June 2026',read:'5 min',tags:['Day Pass','Wellness','Hotels','Lifestyle','Marrakech'],src:'Source: <a href="https://www.madein.city/marrakech/fr/" target="_blank">madein.city</a>',body:`<p>Marrakech's finest hotels have embraced the day-pass concept — here are the best options for June–July 2026:</p><h2>Top Picks</h2><p><strong>Mandarin Oriental</strong> — Villa day pass from ~2,500 MAD (2 guests). Private pool, butler, gourmet lunch. Best in class. Book 48h ahead.</p><p><strong>Fairmont Royal Palm</strong> — Spa + pool from 950 MAD. Great for groups. Summer deals available.</p><p><strong>Park Hyatt Marrakech</strong> — Pool + lunch from 700 MAD/person. Available Tue–Fri.</p><p><strong>Es Saadi Marrakech</strong> — Waterpark + pool + lunch from 550 MAD/adult. Best family option.</p><p><strong>Sofitel Marrakech</strong> — Central Hivernage location. Pool access from 500 MAD. Ideal without a car.</p>`},
+  'best-brunch':{cat:'Dining · Lifestyle',title:'Best Sunday Brunches in Marrakech — Definitive 2026 Guide',img:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80',by:'Jessica Hart',date:'June 2026',read:'5 min',tags:['Brunch','Dining','Lifestyle','Marrakech','Guide'],src:'Source: <a href="https://www.madein.city/marrakech/fr/" target="_blank">madein.city</a>',body:`<h2>Luxury</h2><p><strong>Mandarin Oriental</strong> — Benchmark brunch. Moroccan + international spread, Atlas views, live music. From 750 MAD/person. Reserve in advance.</p><p><strong>Es Saadi Marrakech</strong> — Most generous buffet in the city. Pool access included Sundays. From 600 MAD.</p><h2>Mid-Range Gems</h2><p><strong>Le Jardin</strong> (Medina) — Excellent Moroccan brunch in a beautiful garden. From 250 MAD.</p><p><strong>Nomad Rooftop</strong> (Medina) — Spectacular Koutoubia views, modern Moroccan menu. From 200 MAD.</p><h2>Neighbourhood Favourite</h2><p><strong>Café du Livre</strong> (Gueliz) — A Marrakech institution. French-style brunch with books and a local crowd. From 120 MAD.</p>`},
+  'caftan-week':{cat:'Fashion · Lifestyle',title:'Caftan Week 2026 Marrakech — The Atlas Mountains Inspire Moroccan Haute Couture',img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80',by:'Jessica Hart',date:'June 2026',read:'3 min',tags:['Fashion','Caftan','Marrakech','Culture'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>Caftan Week 2026 in Marrakech was one of the most attended editions in the event's history, reflecting the growth of the Moroccan luxury fashion market and global appetite for authentic craft-based clothing.</p><h2>The Atlas Theme</h2><p>The dominant creative direction drew from the Atlas Mountains — mineral tones, textiles and geometric Berber motifs permeated collections from established Casablanca couturiers and younger Marrakech-based designers. Several houses presented hand-embroidered caftans requiring over <strong>300 hours of artisan labour</strong>.</p><p>The Caftan has been gaining global visibility: recent exhibitions in Beijing and Belgrade brought Moroccan fashion to new audiences, while Gulf and European buyers continue to show strong interest.</p>`},
+  'ryanair-incident':{cat:'Travel Alert',title:'Ryanair Flies Empty to Marrakech, Strands Passengers in France — What Happened & Your Rights',img:'https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=1200&q=80',by:'Sarah Mitchell',date:'Recent',read:'3 min',tags:['Ryanair','Travel','Aviation','Marrakech','Passenger Rights'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>A Ryanair flight on the France–Marrakech route departed empty, leaving booked passengers stranded at the French departure airport without adequate assistance, according to multiple passenger accounts.</p><h2>Your Rights Under EU261/2004</h2><p>Passengers denied boarding or whose flights are cancelled are entitled to:</p><p>• Compensation of <strong>€250–€600</strong> depending on flight distance<br>• Meals and accommodation if overnight stay required<br>• Re-routing to destination at earliest opportunity</p><p>File a formal complaint with Ryanair first. If unresolved within 6 weeks, escalate to the relevant national aviation authority (DGAC in France).</p>`},
+  'counterfeit-marrakech':{cat:'Security Alert',title:'Fake Banknote at Marrakech Restaurant Unravels Counterfeit Operation — Warning for Tourists',img:'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=1200&q=80',by:'Karim Benali',date:'June 23, 2026',read:'3 min',tags:['Security','Marrakech','Counterfeit','Warning','Crime'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>A suspicious 200 MAD note at a Marrakech restaurant led police to a larger counterfeit operation. Two suspects were arrested with over 15,000 MAD in fake notes — described as <strong>high quality and difficult to detect</strong> without UV light.</p><h2>How to Protect Yourself</h2><p>• Get cash only from official bank branches or licensed exchange offices<br>• Check notes before accepting change — especially 100 and 200 MAD notes<br>• Look for the security strip, watermark and colour-shifting ink<br>• Shopkeepers: use UV counterfeit detectors at point of sale</p><p>Marrakech police confirm the investigation is ongoing.</p>`},
+  'marrakech-water':{cat:'Infrastructure',title:'Marrakech to Receive Drinking Water from New Safi Desalination Plant — 140km Pipeline Project',img:'https://images.unsplash.com/photo-1446776858070-70c3d5ed6758?w=1200&q=80',by:'Sarah Mitchell',date:'June 22, 2026',read:'4 min',tags:['Water','Infrastructure','Marrakech','Safi','Development'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>Marrakech will be supplied with drinking water from a major new desalination plant near Safi via a <strong>140km pipeline</strong> — a strategic response to increasing pressure on the Tensift river basin from drought and agricultural demand.</p><h2>Scale</h2><p>The Safi plant: capacity of <strong>200,000 m³/day</strong>. A significant portion allocated to Marrakech's urban area, which has faced peak-summer water shortages.</p><h2>Timeline</h2><p>Pipeline construction is underway. Water expected to reach Marrakech households by <strong>2028</strong>, pending no significant delays in civil works. The project is among Morocco's largest water infrastructure investments of this decade.</p>`},
+  'marrakech-forum':{cat:'Business · Diplomacy',title:'Marrakech Cements Role as Euro-Mediterranean Economic Dialogue Hub',img:'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80',by:'Sarah Mitchell',date:'June 17, 2026',read:'3 min',tags:['Diplomacy','Business','Marrakech','Europe','Investment'],src:'Source: <a href="https://fr.kech24.com" target="_blank">kech24.com</a>',body:`<p>Marrakech hosted a high-level Euro-Mediterranean economic forum bringing together ministers, business leaders and investors from both shores of the Mediterranean — the latest in a series of major international events cementing the city's strategic position.</p><p>The conference economy now contributes over <strong>2 billion MAD annually</strong> to the Marrakech economy. The city's combination of luxury hotel infrastructure, airport connectivity and cultural appeal makes it competitive against Dubai, Abu Dhabi and Tunis for major international events.</p>`},
+  'expat-guide':{cat:'Expat Guide',title:'Living in Marrakech 2026 — The Complete English-Language Expat Guide',img:'https://images.unsplash.com/photo-1539043474340-5e63e16b8a6c?w=1200&q=80',by:'Jessica Hart · Lifestyle Reporter',date:'Updated June 2026',read:'8 min',tags:['Expat','Living','Marrakech','Guide','2026'],src:'',body:`<h2>Neighbourhoods</h2><p><strong>Gueliz</strong> — Modern business district. Best for expats and digital nomads. Supermarkets, cafés, co-working spaces, international restaurants. Apartments from 4,000 MAD/month.</p><p><strong>Hivernage</strong> — Upscale residential. Quiet, large apartments, close to Palais des Congrès. From 6,000 MAD/month.</p><p><strong>The Medina</strong> — Ancient walled city. Riads from 5,000 MAD/month. Authentic but comes with noise, limited parking and maintenance challenges.</p><p><strong>Palmeraie</strong> — Palm grove, north of city. Villas with pools from 8,000 MAD/month. Requires a car.</p><h2>Residency</h2><p>EU, US, UK and Canadian nationals: 90 days without a visa. For longer stays, Carte de Séjour requires fixed address, income proof and a visit to the local prefecture.</p><h2>Banking</h2><p>Major banks: Attijariwafa, BMCE/BANK OF AFRICA, CIH, Banque Populaire. Non-resident accounts: straightforward with passport and residency document.</p><h2>Healthcare</h2><p>Private clinics: Clinique Internationale, Polyclinique du Sud. International health insurance strongly recommended.</p>`}
+};
 
-  // Smooth ticker duplicate for seamless loop
-  const ticker = document.getElementById('tickerScroll');
-  if (ticker) {
-    // Already duplicated in HTML for seamless loop
-  }
-
-  // Sticky header shadow on scroll
-  const header = document.querySelector('.site-header');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 20) {
-      header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.12)';
-    } else {
-      header.style.boxShadow = '0 2px 12px rgba(0,0,0,0.08)';
-    }
-  });
-
-  // Search btn interaction
-  document.querySelector('.btn-search').addEventListener('click', () => {
-    alert('Search functionality — connect to your search index (Algolia, Supabase full-text search, etc.)');
-  });
+function openA(id) {
+  const a = A[id]; if(!a) return;
+  document.getElementById('mcat').textContent = a.cat;
+  document.getElementById('mtitle').textContent = a.title;
+  document.getElementById('mimg').src = a.img;
+  document.getElementById('mimg').alt = a.title;
+  document.getElementById('mmeta').innerHTML = `<span class="au">${a.by}</span><span>|</span><span>${a.date}</span><span>|</span><span>${a.read} read</span>`;
+  document.getElementById('mcontent').innerHTML = a.body;
+  const srcEl = document.getElementById('msrc');
+  srcEl.innerHTML = a.src || ''; srcEl.style.display = a.src ? 'block' : 'none';
+  document.getElementById('mtags').innerHTML = (a.tags||[]).map(t=>`<span class="mtag">${t}</span>`).join('');
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('modal').scrollTop = 0;
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); document.body.style.overflow=''; }
+function setNav(el) { document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('active')); el.classList.add('active'); }
+document.getElementById('mclose').addEventListener('click', closeModal);
+document.getElementById('modal').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+document.getElementById('nlBtn').addEventListener('click', function(){
+  const v=document.getElementById('nlEmail').value.trim();
+  if(!v||!v.includes('@')){ document.getElementById('nlEmail').style.outline='2px solid #C8102E'; return; }
+  document.getElementById('nlEmail').style.outline='';
+  this.textContent='✓ Subscribed!'; this.style.background='#0F6E56';
+  document.getElementById('nlEmail').value='';
+  setTimeout(()=>{ this.textContent='Subscribe Free'; this.style.background=''; },3000);
+});
+window.addEventListener('scroll',()=>{
+  document.querySelector('.site-header').style.boxShadow = window.scrollY>20?'0 2px 20px rgba(0,0,0,.12)':'0 2px 12px rgba(0,0,0,.08)';
+});
 </script>
 </body>
 </html>
