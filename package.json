@@ -1,0 +1,41 @@
+{
+  "name": "marrakech-daily",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "generate-articles": "tsx scripts/generate-articles.ts"
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "react": "^18",
+    "react-dom": "^18",
+    "@supabase/supabase-js": "^2.43.4",
+    "@supabase/ssr": "^0.3.0",
+    "openai": "^4.52.7",
+    "stripe": "^16.2.0",
+    "resend": "^3.3.0",
+    "date-fns": "^3.6.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.4.0",
+    "lucide-react": "^0.400.0",
+    "next-seo": "^6.6.0",
+    "rss": "^1.2.2",
+    "sharp": "^0.33.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^5",
+    "tailwindcss": "^3.4.1",
+    "autoprefixer": "^10.0.1",
+    "postcss": "^8",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.5",
+    "tsx": "^4.16.2"
+  }
+}

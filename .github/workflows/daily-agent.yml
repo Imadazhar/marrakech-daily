@@ -1,0 +1,111 @@
+name: "📰 Marrakech Daily — AI News Agent"
+
+on:
+  # ── Automatic: every day at 05:00 UTC = 06:00 Morocco time (GMT+1 summer / GMT winter) ──
+  schedule:
+    - cron: "0 5 * * *"
+
+  # ── Manual trigger from GitHub UI ──
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Run mode"
+        required: true
+        default: "daily"
+        type: choice
+        options:
+          - daily
+          - manual
+      topic:
+        description: "Topic for manual article (only used when mode=manual)"
+        required: false
+        default: ""
+      limit:
+        description: "Number of articles (daily mode only)"
+        required: false
+        default: "20"
+
+permissions:
+  contents: write   # needed to push commits back to the repo
+
+jobs:
+  publish-news:
+    name: "Publish daily news"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # ── Checkout ──────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          token: ${{ secrets.GH_TOKEN }}
+          fetch-depth: 1
+
+      # ── Python setup ──────────────────────────────────────────────────────
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install anthropic requests beautifulsoup4 lxml
+
+      # ── Daily run ─────────────────────────────────────────────────────────
+      - name: Run daily agent
+        if: github.event_name == 'schedule' || inputs.mode == 'daily'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          cd agent
+          python daily_agent.py --limit ${{ inputs.limit || '20' }}
+
+      # ── Manual article ────────────────────────────────────────────────────
+      - name: Publish manual article
+        if: inputs.mode == 'manual' && inputs.topic != ''
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          cd agent
+          python daily_agent.py --manual "${{ inputs.topic }}"
+
+      # ── Commit & push ─────────────────────────────────────────────────────
+      - name: Commit updated site
+        run: |
+          git config user.name  "Marrakech Daily Bot 🤖"
+          git config user.email "bot@marrakechdaily.com"
+
+          git add index.html articles/ logs/ || true
+
+          # Only commit if something actually changed
+          if git diff --staged --quiet; then
+            echo "No changes to commit — site already up to date"
+            exit 0
+          fi
+
+          TODAY=$(date +'%Y-%m-%d')
+          MODE="${{ inputs.mode || 'daily' }}"
+
+          if [ "$MODE" = "manual" ]; then
+            MSG="📰 Manual article: ${{ inputs.topic }} (${TODAY})"
+          else
+            COUNT=$(git diff --staged --stat | grep -oP '\d+(?= insertion)' | head -1 || echo "?")
+            MSG="📰 Daily update ${TODAY} — AI-generated articles"
+          fi
+
+          git commit -m "$MSG"
+          git push origin gh-pages
+          echo "✅ Site updated and pushed"
+
+      # ── Upload logs as artifact ───────────────────────────────────────────
+      - name: Upload run logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-logs-${{ github.run_id }}
+          path: logs/
+          retention-days: 14
