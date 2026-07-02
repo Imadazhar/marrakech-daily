@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ site_title }} — {{ site_tagline }}</title>
+  <meta name="description" content="{{ site_description }}">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{{ site_url }}/">
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website">
+  <meta property="og:title"       content="{{ site_title }}">
+  <meta property="og:description" content="{{ site_description }}">
+  <meta property="og:url"         content="{{ site_url }}/">
+  {% if hero %}
+  <meta property="og:image"       content="{{ hero.hero_image }}">
+  {% endif %}
+  <meta property="og:site_name"   content="{{ site_title }}">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:site"        content="{{ site_twitter }}">
+  <meta name="twitter:title"       content="{{ site_title }}">
+  <meta name="twitter:description" content="{{ site_description }}">
+  {% if hero %}
+  <meta name="twitter:image"       content="{{ hero.hero_image }}">
+  {% endif %}
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NewsMediaOrganization",
+    "name": "{{ site_title }}",
+    "url": "{{ site_url }}/",
+    "description": "{{ site_description }}"
+  }
+  </script>
+
+  <style>
+    /* ── Reset & base ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #0a0a0f;
+      --surface:  #111118;
+      --surface2: #18181f;
+      --border:   #222230;
+      --accent:   #e85d04;
+      --accent2:  #f48c06;
+      --text:     #e8e8f0;
+      --muted:    #888899;
+      --white:    #ffffff;
+      --red:      #e53935;
+      --gold:     #f4b942;
+      --font-sans: 'Georgia', serif;
+      --font-ui:   system-ui, -apple-system, sans-serif;
+      --max-w:    1200px;
+      --radius:   6px;
+      --shadow:   0 4px 24px rgba(0,0,0,.45);
+    }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; height: auto; }
+
+    /* ── Breaking ticker ──────────────────────────────── */
+    .ticker-bar {
+      background: var(--accent);
+      color: var(--white);
+      font-family: var(--font-ui);
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      height: 34px;
+    }
+    .ticker-label {
+      flex-shrink: 0;
+      background: #c44d00;
+      padding: 0 14px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+    .ticker-track-wrapper {
+      overflow: hidden;
+      flex: 1;
+      height: 100%;
+      position: relative;
+    }
+    .ticker-track {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      white-space: nowrap;
+      animation: ticker 40s linear infinite;
+    }
+    .ticker-track:hover { animation-play-state: paused; }
+    .ticker-item { padding: 0 28px; }
+    .ticker-item::before { content: "◆"; margin-right: 14px; opacity: .6; }
+    @keyframes ticker {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ── Top bar (weather/forex) ──────────────────────── */
+    .top-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-ui);
+      font-size: .73rem;
+      color: var(--muted);
+    }
+    .top-bar-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 6px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .top-bar-group { display: flex; gap: 16px; flex-wrap: wrap; }
+    .top-bar-item strong { color: var(--text); }
+    .top-bar-item .tag {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0 5px;
+      font-size: .68rem;
+      margin-left: 4px;
+      color: var(--gold);
+    }
+
+    /* ── Header / masthead ────────────────────────────── */
+    .masthead {
+      background: var(--surface);
+      border-bottom: 3px solid var(--accent);
+    }
+    .masthead-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      gap: 20px;
+    }
+    .logo {
+      font-family: var(--font-ui);
+      font-size: 1.45rem;
+      font-weight: 900;
+      letter-spacing: -.02em;
+      color: var(--white);
+    }
+    .logo span { color: var(--accent); }
+    .masthead-meta {
+      font-family: var(--font-ui);
+      font-size: .72rem;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    /* ── Nav ──────────────────────────────────────────── */
+    .nav-bar {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+    .nav-btn {
+      flex-shrink: 0;
+      font-family: var(--font-ui);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 10px 14px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: color .2s;
+      border-bottom: 2px solid transparent;
+    }
+    .nav-btn:hover, .nav-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* ── Layout containers ────────────────────────────── */
+    .container { max-width: var(--max-w); margin: 0 auto; padding: 0 16px; }
+    .section { padding: 40px 0; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 10px;
+    }
+    .section-title {
+      font-family: var(--font-ui);
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .see-all {
+      font-family: var(--font-ui);
+      font-size: .72rem;
+      color: var(--muted);
+      font-weight: 600;
+      transition: color .2s;
+    }
+    .see-all:hover { color: var(--accent); }
+
+    /* ── Hero ─────────────────────────────────────────── */
+    .hero { padding: 32px 0 0; }
+    .hero-inner {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      max-height: 520px;
+    }
+    .hero-image {
+      width: 100%;
+      height: 520px;
+      object-fit: cover;
+      display: block;
+      filter: brightness(.55);
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.3) 60%, transparent 100%);
+    }
+    .hero-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 32px;
+    }
+    .hero-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .badge-breaking {
+      background: var(--red);
+      color: var(--white);
+      font-family: var(--font-ui);
+      font-size: .65rem;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+    .badge-category {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.25);
+      color: var(--white);
+      font-family: var(--font-ui);
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+    .hero-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 8px rgba(0,0,0,.5);
+    }
+    .hero-title a:hover { color: var(--accent2); }
+    .hero-excerpt {
+      color: rgba(255,255,255,.82);
+      font-size: .95rem;
+      margin-bottom: 16px;
+      max-width: 700px;
+    }
+    .hero-meta {
+      font-family: var(--font-ui);
+      font-size: .72rem;
+      color: rgba(255,255,255,.6);
+    }
+    .hero-meta span { margin: 0 4px; }
+    .hero-cta {
+      display: inline-block;
+      margin-top: 14px;
+      background: var(--accent);
+      color: var(--white);
+      font-family: var(--font-ui);
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      padding: 8px 18px;
+      border-radius: var(--radius);
+      transition: background .2s;
+    }
+    .hero-cta:hover { background: var(--accent2); }
+
+    /* ── Article card grid ────────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color .2s, transform .2s;
+      cursor: pointer;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .card-img-wrap { position: relative; height: 170px; overflow: hidden; }
+    .card-img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+    .card:hover .card-img { transform: scale(1.04); }
+    .card-category {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--accent);
+      color: var(--white);
+      font-family: var(--font-ui);
+      font-size: .62rem;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+    .card-category.breaking { background: var(--red); }
+    .card-body { padding: 16px; }
+    .card-title {
+      font-size: .97rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 8px;
+      color: var(--text);
+      transition: color .2s;
+    }
+    .card:hover .card-title { color: var(--accent2); }
+    .card-excerpt {
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-footer {
+      font-family: var(--font-ui);
+      font-size: .68rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .card-dot { margin: 0 5px; }
+
+    /* ── Featured 2-col layout ────────────────────────── */
+    .featured-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .featured-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color .2s;
+    }
+    .featured-card:hover { border-color: var(--accent); }
+    .featured-img { width: 100%; height: 200px; object-fit: cover; }
+    .featured-body { padding: 20px; flex: 1; }
+    .featured-meta {
+      font-family: var(--font-ui);
+      font-size: .68rem;
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .featured-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 10px;
+    }
+    .featured-card:hover .featured-title { color: var(--accent2); }
+    .featured-excerpt { font-size: .82rem; color: var(--muted); }
+    .featured-footer {
+      font-family: var(--font-ui);
+      font-size: .68rem;
+      color: var(--muted);
+      padding: 12px 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Article modal ────────────────────────────────── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.85);
+      z-index: 1000;
+      overflow-y: auto;
+      padding: 24px 16px;
+    }
+    .modal-backdrop.open { display: flex; align-items: flex-start; justify-content: center; }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto;
+      overflow: hidden;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(0,0,0,.5);
+      color: var(--white);
+      border: none;
+      border-radius: 50%;
+      width: 34px;
+      height: 34px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: background .2s;
+    }
+    .modal-close:hover { background: var(--accent); }
+    .modal-hero-img { width: 100%; height: 300px; object-fit: cover; }
+    .modal-body { padding: 28px 32px 36px; }
+    .modal-cat {
+      font-family: var(--font-ui);
+      font-size: .65rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .modal-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 12px;
+      color: var(--white);
+    }
+    .modal-desc {
+      font-size: .88rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+    .modal-byline {
+      font-family: var(--font-ui);
+      font-size: .72rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 0;
+      margin-bottom: 22px;
+    }
+    .modal-byline strong { color: var(--text); }
+    .modal-content { font-size: .96rem; line-height: 1.75; color: var(--text); }
+    .modal-content p { margin-bottom: 1.1em; }
+    .modal-content a { color: var(--accent2); text-decoration: underline; }
+    .modal-content em { color: var(--muted); font-size: .85rem; }
+    .modal-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .modal-tag {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font-ui);
+      font-size: .68rem;
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+
+    /* ── Divider ──────────────────────────────────────── */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    /* ── Footer ───────────────────────────────────────── */
+    .footer {
+      background: var(--surface);
+      border-top: 3px solid var(--accent);
+      padding: 40px 0 24px;
+      margin-top: 60px;
+    }
+    .footer-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+    .footer-top {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .footer-brand { flex: 0 0 260px; }
+    .footer-logo {
+      font-family: var(--font-ui);
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+    .footer-logo span { color: var(--accent); }
+    .footer-tagline { font-size: .82rem; color: var(--muted); }
+    .footer-cols { display: flex; gap: 40px; flex-wrap: wrap; flex: 1; }
+    .footer-col h4 {
+      font-family: var(--font-ui);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 6px; }
+    .footer-col a {
+      font-family: var(--font-ui);
+      font-size: .78rem;
+      color: var(--muted);
+      transition: color .2s;
+    }
+    .footer-col a:hover { color: var(--accent2); }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-copy {
+      font-family: var(--font-ui);
+      font-size: .72rem;
+      color: var(--muted);
+    }
+    .footer-build {
+      font-family: var(--font-ui);
+      font-size: .68rem;
+      color: #3a3a4a;
+    }
+
+    /* ── Filter active state ──────────────────────────── */
+    .hidden { display: none !important; }
+
+    /* ── Responsive ───────────────────────────────────── */
+    @media (max-width: 768px) {
+      .hero-title { font-size: 1.35rem; }
+      .hero-content { padding: 20px; }
+      .hero-image { height: 380px; }
+      .hero-inner { max-height: 380px; }
+      .featured-grid { grid-template-columns: 1fr; }
+      .card-grid { grid-template-columns: 1fr 1fr; }
+      .modal-body { padding: 20px; }
+      .modal-title { font-size: 1.3rem; }
+    }
+    @media (max-width: 480px) {
+      .card-grid { grid-template-columns: 1fr; }
+      .top-bar-inner { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Breaking ticker ──────────────────────────────────────────── -->
+<div class="ticker-bar" role="marquee" aria-live="off">
+  <div class="ticker-label">⚡ Breaking</div>
+  <div class="ticker-track-wrapper">
+    <div class="ticker-track">
+      {% for text in ticker_texts %}
+      <span class="ticker-item">{{ text }}</span>
+      {% endfor %}
+      {% for text in ticker_texts %}
+      <span class="ticker-item">{{ text }}</span>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- ── Top info bar ─────────────────────────────────────────────── -->
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div class="top-bar-group">
+      <span class="top-bar-item">📍 <strong>Marrakech</strong> ☀ 38°C · Sunny, very hot</span>
+      <span class="top-bar-item">🏔 <strong>Atlas Mountains</strong> ⛅ 24°C · Clear</span>
+      <span class="top-bar-item">🌊 <strong>Essaouira</strong> 🌬 22°C · Windy</span>
+    </div>
+    <div class="top-bar-group">
+      <span class="top-bar-item">💶 <strong>EUR/MAD</strong> 10.74</span>
+      <span class="top-bar-item"><strong>USD/MAD</strong> 9.87</span>
+      <span class="top-bar-item">✈ <strong>Menara Airport</strong> <span class="tag">Normal ops</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Masthead ─────────────────────────────────────────────────── -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="logo">Marrakech<span>Daily</span></div>
+    <div class="masthead-meta">
+      Independent English-Language Journalism<br>
+      {{ build_time }}
+    </div>
+  </div>
+</header>
+
+<!-- ── Navigation ──────────────────────────────────────────────── -->
+<nav class="nav-bar" aria-label="Category navigation">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="filterCategory('all', this)">All</button>
+    <button class="nav-btn" onclick="filterCategory('Breaking', this)">Breaking</button>
+    <button class="nav-btn" onclick="filterCategory('National', this)">National</button>
+    <button class="nav-btn" onclick="filterCategory('Business', this)">Business</button>
+    <button class="nav-btn" onclick="filterCategory('Sport', this)">Sport</button>
+    <button class="nav-btn" onclick="filterCategory('Culture', this)">Culture</button>
+    <button class="nav-btn" onclick="filterCategory('Tourism', this)">Tourism</button>
+    <button class="nav-btn" onclick="filterCategory('Society', this)">Society</button>
+    <button class="nav-btn" onclick="filterCategory('Technology', this)">Tech</button>
+    <button class="nav-btn" onclick="filterCategory('Health', this)">Health</button>
+    <button class="nav-btn" onclick="filterCategory('International', this)">World</button>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────────── -->
+{% if hero %}
+<section class="hero" id="section-hero">
+  <div class="container">
+    <div class="hero-inner" onclick="openArticle('{{ hero.slug }}')" style="cursor:pointer;">
+      <img src="{{ hero.hero_image }}" alt="{{ hero.title }}" class="hero-image" loading="eager">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-badge-row">
+          {% if hero.is_breaking %}<span class="badge-breaking">⚡ Breaking News</span>{% endif %}
+          <span class="badge-category">{{ hero.category }}</span>
+        </div>
+        <h1 class="hero-title"><a>{{ hero.title }}</a></h1>
+        <p class="hero-excerpt">{{ hero.excerpt }}</p>
+        <div class="hero-meta">
+          By <strong>{{ hero.author.name }}</strong>
+          <span>|</span> {{ hero.author.role }}
+          <span>|</span> {{ hero.date_display }}
+          <span>|</span> {{ hero.reading_time }} min read
+        </div>
+        <span class="hero-cta">Read Full Story →</span>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<hr class="divider">
+
+<!-- ── Latest News ──────────────────────────────────────────────── -->
+<section class="section" id="section-latest">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-title">Latest from Marrakech — Updated Daily</div>
+      <a class="see-all" href="#">See All →</a>
+    </div>
+    <div class="card-grid" id="articles-grid">
+      {% for art in latest %}
+      <article class="card" data-category="{{ art.category }}" onclick="openArticle('{{ art.slug }}')">
+        <div class="card-img-wrap">
+          <img src="{{ art.thumb_image }}" alt="{{ art.title }}" class="card-img" loading="lazy">
+          <span class="card-category{% if art.is_breaking %} breaking{% endif %}">
+            {% if art.is_breaking %}⚡ {% endif %}{{ art.category }}
+          </span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">{{ art.title }}</div>
+          <div class="card-excerpt">{{ art.excerpt }}</div>
+          <div class="card-footer">
+            <span>{{ art.date_display }}</span>
+            <span><span class="card-dot">·</span>{{ art.reading_time }} min</span>
+          </div>
+        </div>
+      </article>
+      {% else %}
+      <p style="color:var(--muted);font-family:var(--font-ui);font-size:.85rem;grid-column:1/-1;padding:40px 0;text-align:center;">
+        The editorial agent will populate articles here on its next run.
+      </p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── Business section ─────────────────────────────────────────── -->
+{% if business %}
+<section class="section" data-category-section="Business">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-title">Business &amp; Investment</div>
+      <a class="see-all" href="#" onclick="filterCategory('Business', null); return false;">See All →</a>
+    </div>
+    <div class="featured-grid">
+      {% for art in business[:2] %}
+      <article class="featured-card" onclick="openArticle('{{ art.slug }}')">
+        <img src="{{ art.thumb_image }}" alt="{{ art.title }}" class="featured-img" loading="lazy">
+        <div class="featured-body">
+          <div class="featured-meta">{{ art.category }}</div>
+          <div class="featured-title">{{ art.title }}</div>
+          <div class="featured-excerpt">{{ art.excerpt }}</div>
+        </div>
+        <div class="featured-footer">{{ art.date_display }} · {{ art.reading_time }} min</div>
+      </article>
+      {% endfor %}
+    </div>
+    {% if business|length > 2 %}
+    <div class="card-grid" style="margin-top:20px;">
+      {% for art in business[2:] %}
+      <article class="card" data-category="{{ art.category }}" onclick="openArticle('{{ art.slug }}')">
+        <div class="card-img-wrap">
+          <img src="{{ art.thumb_image }}" alt="{{ art.title }}" class="card-img" loading="lazy">
+          <span class="card-category">{{ art.category }}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">{{ art.title }}</div>
+          <div class="card-excerpt">{{ art.excerpt }}</div>
+          <div class="card-footer">
+            <span>{{ art.date_display }}</span>
+            <span><span class="card-dot">·</span>{{ art.reading_time }} min</span>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+<hr class="divider">
+{% endif %}
+
+<!-- ── Culture & Tourism ─────────────────────────────────────────── -->
+{% if culture or tourism %}
+<section class="section">
+  <div class="container">
+    {% if culture %}
+    <div style="margin-bottom:36px;">
+      <div class="section-header">
+        <div class="section-title">Culture &amp; Arts</div>
+        <a class="see-all" href="#" onclick="filterCategory('Culture', null); return false;">See All →</a>
+      </div>
+      <div class="card-grid">
+        {% for art in culture %}
+        <article class="card" data-category="{{ art.category }}" onclick="openArticle('{{ art.slug }}')">
+          <div class="card-img-wrap">
+            <img src="{{ art.thumb_image }}" alt="{{ art.title }}" class="card-img" loading="lazy">
+            <span class="card-category">{{ art.category }}</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">{{ art.title }}</div>
+            <div class="card-excerpt">{{ art.excerpt }}</div>
+            <div class="card-footer">
+              <span>{{ art.date_display }}</span>
+              <span><span class="card-dot">·</span>{{ art.reading_time }} min</span>
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    {% if tourism %}
+    <div>
+      <div class="section-header">
+        <div class="section-title">Tourism &amp; Lifestyle</div>
+        <a class="see-all" href="#" onclick="filterCategory('Tourism', null); return false;">See All →</a>
+      </div>
+      <div class="card-grid">
+        {% for art in tourism %}
+        <article class="card" data-category="{{ art.category }}" onclick="openArticle('{{ art.slug }}')">
+          <div class="card-img-wrap">
+            <img src="{{ art.thumb_image }}" alt="{{ art.title }}" class="card-img" loading="lazy">
+            <span class="card-category">{{ art.category }}</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">{{ art.title }}</div>
+            <div class="card-excerpt">{{ art.excerpt }}</div>
+            <div class="card-footer">
+              <span>{{ art.date_display }}</span>
+              <span><span class="card-dot">·</span>{{ art.reading_time }} min</span>
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+<hr class="divider">
+{% endif %}
+
+<!-- ── Sport ─────────────────────────────────────────────────────── -->
+{% if sport %}
+<section class="section" data-category-section="Sport">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-title">Sport</div>
+      <a class="see-all" href="#" onclick="filterCategory('Sport', null); return false;">See All →</a>
+    </div>
+    <div class="card-grid">
+      {% for art in sport %}
+      <article class="card" data-category="{{ art.category }}" onclick="openArticle('{{ art.slug }}')">
+        <div class="card-img-wrap">
+          <img src="{{ art.thumb_image }}" alt="{{ art.title }}" class="card-img" loading="lazy">
+          <span class="card-category">{{ art.category }}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">{{ art.title }}</div>
+          <div class="card-excerpt">{{ art.excerpt }}</div>
+          <div class="card-footer">
+            <span>{{ art.date_display }}</span>
+            <span><span class="card-dot">·</span>{{ art.reading_time }} min</span>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<hr class="divider">
+{% endif %}
+
+<!-- ── All articles (full browse, hidden by default) ──────────────── -->
+<section class="section" id="all-articles-section" style="display:none;">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-title" id="filter-label">All Articles</div>
+      <button class="see-all" onclick="filterCategory('all', null)">← Back to all</button>
+    </div>
+    <div class="card-grid" id="filtered-grid"></div>
+  </div>
+</section>
+
+<!-- ── Footer ───────────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">Marrakech<span>Daily</span></div>
+        <p class="footer-tagline">Independent English-language journalism covering Marrakech, Morocco and the region since 2024.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Categories</h4>
+          <ul>
+            <li><a href="#" onclick="filterCategory('National',null);return false;">National</a></li>
+            <li><a href="#" onclick="filterCategory('Business',null);return false;">Business</a></li>
+            <li><a href="#" onclick="filterCategory('Sport',null);return false;">Sport</a></li>
+            <li><a href="#" onclick="filterCategory('Culture',null);return false;">Culture</a></li>
+            <li><a href="#" onclick="filterCategory('Tourism',null);return false;">Tourism</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Sources</h4>
+          <ul>
+            <li><a href="https://fr.kech24.com" target="_blank" rel="noopener">Kech24 (FR)</a></li>
+            <li><a href="https://www.madein.city/marrakech/fr/stories" target="_blank" rel="noopener">Made In City</a></li>
+            <li><a href="https://alphabourse.ma" target="_blank" rel="noopener">Alphabourse (FR)</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>About</h4>
+          <ul>
+            <li><a href="#">Editorial Policy</a></li>
+            <li><a href="#">Attribution</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">
+        © {{ build_time[:4] if build_time else '2026' }} Marrakech Daily.
+        Articles are independently written; original sources are attributed.
+        {{ total_articles }} articles published.
+      </span>
+      <span class="footer-build">Built by AI Editorial Agent · {{ build_time }}</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ── Article Modal ────────────────────────────────────────────── -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="closeModal(event)">
+  <div class="modal" id="modal-box" role="dialog" aria-modal="true">
+    <button class="modal-close" onclick="closeModalBtn()" aria-label="Close">✕</button>
+    <img src="" alt="" class="modal-hero-img" id="modal-img">
+    <div class="modal-body">
+      <div class="modal-cat" id="modal-cat"></div>
+      <h2 class="modal-title" id="modal-title"></h2>
+      <p class="modal-desc" id="modal-desc"></p>
+      <div class="modal-byline" id="modal-byline"></div>
+      <div class="modal-content" id="modal-content"></div>
+      <div class="modal-tags" id="modal-tags"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Article data (embedded JSON) ─────────────────────────────── -->
+<script>
+const ARTICLES = {{ articles | tojson }};
+const articleMap = {};
+ARTICLES.forEach(a => { articleMap[a.slug] = a; });
+
+/** Escape a string for safe use inside HTML attribute values. */
+function escAttr(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/** Safely build the byline DOM tree without innerHTML on untrusted strings. */
+function buildByline(a) {
+  const el = document.getElementById('modal-byline');
+  el.innerHTML = '';
+  const prefix = document.createTextNode('By ');
+  const strong = document.createElement('strong');
+  strong.textContent = a.author && a.author.name ? a.author.name : 'Staff';
+  const rest = document.createTextNode(
+    ' | ' + (a.author && a.author.role ? a.author.role : '') +
+    ' | ' + (a.date_display || '') +
+    ' | ' + (a.reading_time || 1) + ' min read'
+  );
+  el.appendChild(prefix);
+  el.appendChild(strong);
+  el.appendChild(rest);
+}
+
+/** Build tags safely without innerHTML on untrusted tag strings. */
+function buildTags(tags) {
+  const el = document.getElementById('modal-tags');
+  el.innerHTML = '';
+  (tags || []).forEach(t => {
+    const span = document.createElement('span');
+    span.className = 'modal-tag';
+    span.textContent = t;
+    el.appendChild(span);
+  });
+}
+
+function openArticle(slug) {
+  const a = articleMap[slug];
+  if (!a) return;
+
+  // Safe: these are controlled URLs from Python-generated data
+  const img = document.getElementById('modal-img');
+  img.src = a.hero_image || '';
+  img.alt = '';  // set via textContent below isn't possible for alt, but we trust our own image URLs
+
+  document.getElementById('modal-cat').textContent =
+    (a.is_breaking ? '⚡ Breaking — ' : '') + (a.category || '');
+  document.getElementById('modal-title').textContent = a.title || '';
+  document.getElementById('modal-desc').textContent = a.description || a.excerpt || '';
+
+  buildByline(a);
+
+  // body is server-side sanitised HTML (only <p>,<em>,<strong>,<a href>) — safe to inject
+  document.getElementById('modal-content').innerHTML =
+    a.body || '<p>' + escAttr(a.excerpt || '') + '</p>';
+
+  buildTags(a.tags);
+
+  document.getElementById('modal-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  history.replaceState(null, '', '#' + slug);
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-backdrop')) closeModalBtn();
+}
+
+function closeModalBtn() {
+  document.getElementById('modal-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+  history.replaceState(null, '', window.location.pathname);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModalBtn();
+});
+
+// Open from URL hash on load
+if (location.hash) {
+  const slug = location.hash.slice(1);
+  if (articleMap[slug]) openArticle(slug);
+}
+
+// ── Category filter ──────────────────────────────────────────────
+function filterCategory(cat, btn) {
+  // Update nav button state
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const allSection   = document.getElementById('all-articles-section');
+  const latestSection = document.getElementById('section-latest');
+  const heroSection  = document.getElementById('section-hero');
+  const catSections  = document.querySelectorAll('[data-category-section]');
+
+  if (cat === 'all') {
+    allSection.style.display = 'none';
+    if (latestSection) latestSection.style.display = '';
+    if (heroSection)   heroSection.style.display = '';
+    catSections.forEach(s => s.style.display = '');
+    document.querySelector('.nav-btn').classList.add('active');
+    return;
+  }
+
+  // Show filtered view
+  if (latestSection) latestSection.style.display = 'none';
+  if (heroSection)   heroSection.style.display = 'none';
+  catSections.forEach(s => s.style.display = 'none');
+  allSection.style.display = '';
+
+  const label = document.getElementById('filter-label');
+  if (label) label.textContent = cat;
+
+  const grid = document.getElementById('filtered-grid');
+  const filtered = ARTICLES.filter(a => a.category === cat);
+  if (filtered.length === 0) {
+    grid.innerHTML = '<p style="color:var(--muted);font-family:var(--font-ui);font-size:.85rem;grid-column:1/-1;padding:40px 0;text-align:center;">No articles in this category yet.</p>';
+    return;
+  }
+  // Build cards with DOM APIs to avoid XSS from untrusted article fields
+  grid.innerHTML = '';
+  filtered.forEach(a => {
+    const art = document.createElement('article');
+    art.className = 'card';
+    art.addEventListener('click', () => openArticle(a.slug));
+
+    const imgWrap = document.createElement('div');
+    imgWrap.className = 'card-img-wrap';
+    const img = document.createElement('img');
+    img.src = a.thumb_image || '';
+    img.alt = '';
+    img.className = 'card-img';
+    img.loading = 'lazy';
+    const catBadge = document.createElement('span');
+    catBadge.className = 'card-category' + (a.is_breaking ? ' breaking' : '');
+    catBadge.textContent = (a.is_breaking ? '⚡ ' : '') + (a.category || '');
+    imgWrap.appendChild(img);
+    imgWrap.appendChild(catBadge);
+
+    const body = document.createElement('div');
+    body.className = 'card-body';
+    const title = document.createElement('div');
+    title.className = 'card-title';
+    title.textContent = a.title || '';
+    const excerpt = document.createElement('div');
+    excerpt.className = 'card-excerpt';
+    excerpt.textContent = a.excerpt || '';
+    const footer = document.createElement('div');
+    footer.className = 'card-footer';
+    const dateSpan = document.createElement('span');
+    dateSpan.textContent = a.date_display || '';
+    const readSpan = document.createElement('span');
+    const dot = document.createElement('span');
+    dot.className = 'card-dot';
+    dot.textContent = '·';
+    readSpan.appendChild(dot);
+    readSpan.appendChild(document.createTextNode((a.reading_time || 1) + ' min'));
+    footer.appendChild(dateSpan);
+    footer.appendChild(readSpan);
+    body.appendChild(title);
+    body.appendChild(excerpt);
+    body.appendChild(footer);
+
+    art.appendChild(imgWrap);
+    art.appendChild(body);
+    grid.appendChild(art);
+  });
+}
+</script>
+</body>
+</html>
