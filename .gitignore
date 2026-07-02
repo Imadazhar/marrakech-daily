@@ -1,0 +1,27 @@
+# Agent logs (saved as GitHub Actions artifacts instead)
+agent/logs/*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+*.egg
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Replit
+.replit
+replit.nix
+.upm/
+.config/
