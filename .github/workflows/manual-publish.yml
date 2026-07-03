@@ -43,10 +43,12 @@ jobs:
         run: pip install -r agent/requirements.txt
 
       # ── 4. Generate and publish article ──────────────────────────
+      # AI provider auto-selected: GROQ_API_KEY → GEMINI_API_KEY → OPENAI_API_KEY
       - name: Generate article from headline
         env:
+          GROQ_API_KEY:   ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          # Pass user input via env var — NEVER inline in run: scripts to avoid injection
           ARTICLE_HEADLINE: ${{ github.event.inputs.headline }}
           PYTHONPATH: ${{ github.workspace }}
         run: |
@@ -68,7 +70,6 @@ jobs:
             exit 1
           fi
 
-          # Headline comes from env var, not inline interpolation
           git commit -m "📰 Manual publish: \"$ARTICLE_HEADLINE\" [$(date -u +'%Y-%m-%d %H:%M UTC')]"
           git push
 
