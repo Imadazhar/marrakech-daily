@@ -57,8 +57,24 @@ MAX_PER_SOURCE         = 8          # cap per source to keep diversity
 MIN_SOURCE_TEXT_WORDS  = 60         # skip if extracted content is too short
 
 # ── OpenAI settings ───────────────────────────────────────────────────────────
+# AI provider resolution — checked in order: Groq → Gemini → OpenAI
+# Set whichever key you have as a GitHub Actions secret; the agent auto-selects.
+GROQ_API_KEY    = os.environ.get("GROQ_API_KEY", "")
+GEMINI_API_KEY  = os.environ.get("GEMINI_API_KEY", "")
 OPENAI_API_KEY  = os.environ.get("OPENAI_API_KEY", "")
-OPENAI_MODEL    = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
+
+if GROQ_API_KEY:
+    _AI_KEY        = GROQ_API_KEY
+    OPENAI_MODEL   = os.environ.get("OPENAI_MODEL", "llama-3.3-70b-versatile")
+    OPENAI_BASE_URL = "https://api.groq.com/openai/v1"
+elif GEMINI_API_KEY:
+    _AI_KEY        = GEMINI_API_KEY
+    OPENAI_MODEL   = os.environ.get("OPENAI_MODEL", "gemini-2.0-flash")
+    OPENAI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+else:
+    _AI_KEY        = OPENAI_API_KEY
+    OPENAI_MODEL   = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
+    OPENAI_BASE_URL = None
 OPENAI_TEMP     = 0.65
 OPENAI_MAX_TOKENS = 2200
 
