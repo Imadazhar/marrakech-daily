@@ -28,7 +28,8 @@ from tenacity import (
 )
 
 from config import (
-    OPENAI_API_KEY,
+    _AI_KEY,
+    OPENAI_BASE_URL,
     OPENAI_MODEL,
     OPENAI_TEMP,
     OPENAI_MAX_TOKENS,
@@ -49,12 +50,16 @@ MOROCCO_TZ = timezone(timedelta(hours=1))
 # ── Client ─────────────────────────────────────────────────────────────────────
 
 def _client() -> OpenAI:
-    if not OPENAI_API_KEY:
+    if not _AI_KEY:
         raise RuntimeError(
-            "OPENAI_API_KEY environment variable is not set. "
-            "Add it as a GitHub Actions secret."
+            "No AI API key found. Set GROQ_API_KEY (free at console.groq.com), "
+            "GEMINI_API_KEY (free at aistudio.google.com), or OPENAI_API_KEY "
+            "as a GitHub Actions secret."
         )
-    return OpenAI(api_key=OPENAI_API_KEY)
+    kwargs: dict = {"api_key": _AI_KEY}
+    if OPENAI_BASE_URL:
+        kwargs["base_url"] = OPENAI_BASE_URL
+    return OpenAI(**kwargs)
 
 
 # ── Slug generation ────────────────────────────────────────────────────────────
