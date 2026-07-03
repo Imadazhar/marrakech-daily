@@ -48,12 +48,14 @@ jobs:
         run: pip install -r agent/requirements.txt
 
       # ── 4. Run the agent ─────────────────────────────────────────
+      # AI provider auto-selected: GROQ_API_KEY → GEMINI_API_KEY → OPENAI_API_KEY
       - name: Run editorial agent
         env:
+          GROQ_API_KEY:   ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PYTHONPATH: ${{ github.workspace }}
-          # Use numeric/boolean env vars — no user-controlled strings here
-          AGENT_LIMIT: ${{ github.event.inputs.limit || '20' }}
+          AGENT_LIMIT:   ${{ github.event.inputs.limit || '20' }}
           AGENT_DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         run: |
           cd ${{ github.workspace }}
@@ -72,7 +74,6 @@ jobs:
 
           git add index.html _data/articles.json _data/published_hashes.json
 
-          # Only commit if there are actual changes
           if git diff --cached --quiet; then
             echo "No new articles published — nothing to commit."
           else
