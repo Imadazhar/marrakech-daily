@@ -1,19 +1,16 @@
-name: Daily News — Marrakech Daily AI Agent
+name: "📰 Marrakech Daily — AI News Agent"
 
 on:
-  # Every day at 05:00 UTC = 06:00 Morocco time (UTC+1, year-round)
   schedule:
-    - cron: "0 5 * * *"
-
-  # Allow manual trigger from Actions tab
+    - cron: "0 5 * * *"   # 06:00 Africa/Casablanca (UTC+1 summer / UTC winter)
   workflow_dispatch:
     inputs:
       limit:
-        description: "Maximum number of articles to publish"
+        description: "Max articles to publish"
         required: false
         default: "20"
       dry_run:
-        description: "Dry run (scrape + generate but do NOT commit)"
+        description: "Dry run — generate but do not commit"
         required: false
         type: boolean
         default: false
@@ -22,34 +19,30 @@ permissions:
   contents: write
 
 jobs:
-  run-agent:
-    name: Editorial AI Agent
+  publish:
+    name: "Editorial AI Agent"
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
-      # ── 1. Checkout ──────────────────────────────────────────────
-      - name: Checkout repository
+      - name: "Checkout main (agent lives here)"
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          ref: main
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
-      # ── 2. Python setup ──────────────────────────────────────────
-      - name: Set up Python
+      - name: "Set up Python 3.11"
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: "pip"
+          cache: pip
           cache-dependency-path: agent/requirements.txt
 
-      # ── 3. Install dependencies ──────────────────────────────────
-      - name: Install Python dependencies
+      - name: "Install dependencies"
         run: pip install -r agent/requirements.txt
 
-      # ── 4. Run the agent ─────────────────────────────────────────
-      # AI provider auto-selected: GROQ_API_KEY → GEMINI_API_KEY → OPENAI_API_KEY
-      - name: Run editorial agent
+      - name: "Run editorial agent"
         env:
           GROQ_API_KEY:   ${{ secrets.GROQ_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -58,43 +51,54 @@ jobs:
           AGENT_LIMIT:   ${{ github.event.inputs.limit || '20' }}
           AGENT_DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         run: |
-          cd ${{ github.workspace }}
           if [ "$AGENT_DRY_RUN" = "true" ]; then
             python agent/main.py --limit "$AGENT_LIMIT" --dry-run
           else
             python agent/main.py --limit "$AGENT_LIMIT"
           fi
 
-      # ── 5. Commit & push (skip on dry run) ───────────────────────
-      - name: Commit and push changes
+      - name: "Commit to main"
         if: ${{ github.event.inputs.dry_run != 'true' }}
         run: |
-          git config --global user.name  "Marrakech Daily Bot"
-          git config --global user.email "bot@marrakechdaily.github"
-
-          git add index.html _data/articles.json _data/published_hashes.json
-
+          git config user.name  "Marrakech Daily Bot 🤖"
+          git config user.email "bot@marrakechdaily.github"
+          git add index.html _data/ agent/logs/ || true
           if git diff --cached --quiet; then
-            echo "No new articles published — nothing to commit."
+            echo "Nothing new on main"
           else
-            ARTICLE_COUNT=$(python -c "
-          import json
-          try:
-            arts = json.loads(open('_data/articles.json').read())
-            today = [a for a in arts if a.get('date_display','').endswith('$(date +%Y)')]
-            print(len(today))
-          except:
-            print('?')
-          ")
-            git commit -m "📰 Daily update — ${ARTICLE_COUNT} new articles published [$(date -u +'%Y-%m-%d %H:%M UTC')]"
-            git push
+            git commit -m "📰 Daily update $(date -u +'%Y-%m-%d') — AI-generated articles"
+            git push origin main
           fi
 
-      # ── 6. Upload log as artifact ─────────────────────────────────
-      - name: Upload agent log
+      - name: "Sync index.html to gh-pages (live site)"
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        run: |
+          git config user.name  "Marrakech Daily Bot 🤖"
+          git config user.email "bot@marrakechdaily.github"
+
+          # Stash the updated index.html
+          cp index.html /tmp/updated_index.html
+
+          # Switch to gh-pages
+          git fetch origin gh-pages
+          git checkout gh-pages
+
+          # Copy the updated index.html from main
+          cp /tmp/updated_index.html index.html
+
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No index.html changes to sync"
+          else
+            git commit -m "📰 Sync daily articles to live site $(date -u +'%Y-%m-%d')"
+            git push origin gh-pages
+          fi
+
+      - name: "Upload agent logs"
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: agent-log-${{ github.run_id }}
+          name: "agent-logs-${{ github.run_id }}"
           path: agent/logs/
-          retention-days: 7
+          retention-days: 14
+
