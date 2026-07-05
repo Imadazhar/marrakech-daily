@@ -1,20 +1,20 @@
 """
-Marrakech Daily — Web Scraper
-Fetches article links and raw content from configured sources.
+Marrakech Daily — Multi-source Scraper
+Supports HTML scraping + RSS feeds with retry logic.
 """
-
-import time
+import hashlib
 import logging
 import re
+import time
 from typing import Optional
 from urllib.parse import urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
 
-from config import SOURCES, HTTP_TIMEOUT, HTTP_RETRIES, HTTP_BACKOFF, MIN_CONTENT_WORDS, MAX_CONTENT_WORDS
+from config import HTTP_TIMEOUT, HTTP_RETRIES, CRAWL_DELAY, MIN_WORDS, SOURCES
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("scraper")
 
 HEADERS = {
     "User-Agent": (
@@ -22,164 +22,217 @@ HEADERS = {
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/124.0.0.0 Safari/537.36"
     ),
+    "Accept": "text/html,application/xhtml+xml,*/*;q=0.9",
     "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Cache-Control": "no-cache",
 }
 
-# Patterns to skip (nav, ads, social)
-SKIP_PATTERNS = re.compile(
-    r"(facebook|twitter|instagram|linkedin|youtube|whatsapp|"
-    r"login|register|contact|about|privacy|terms|sitemap|"
-    r"tag/|category/|author/|page/|\?s=|#|javascript:)",
+SKIP_URL_PATTERNS = re.compile(
+    r"(facebook\.com|twitter\.com|instagram|youtube|whatsapp"
+    r"|linkedin|telegram|mailto:|javascript:"
+    r"|/login|/register|/contact|/about|/privacy|/terms"
+    r"|/tag/|/author/|/page/\d+|\?s=|#comment|\.pdf$|\.jpg$|\.png$)",
     re.IGNORECASE,
 )
 
-# Minimum meaningful title length
-MIN_TITLE_LEN = 25
-
 
 def _fetch(url: str, retries: int = HTTP_RETRIES) -> Optional[requests.Response]:
-    """GET with retry + exponential backoff."""
+    """GET with exponential back-off retry."""
     for attempt in range(1, retries + 1):
         try:
-            resp = requests.get(url, headers=HEADERS, timeout=HTTP_TIMEOUT)
-            resp.raise_for_status()
-            return resp
+            resp = requests.get(url, headers=HEADERS, timeout=HTTP_TIMEOUT, allow_redirects=True)
+            if resp.status_code == 200:
+                return resp
+            elif resp.status_code in (429, 503):
+                wait = 10 * attempt
+                logger.warning(f"Rate-limited ({resp.status_code}), waiting {wait}s — {url}")
+                time.sleep(wait)
+            else:
+                logger.debug(f"HTTP {resp.status_code} — {url}")
+                return None
         except requests.RequestException as exc:
-            logger.warning(f"Attempt {attempt}/{retries} failed for {url}: {exc}")
+            logger.warning(f"Attempt {attempt}/{retries} failed: {exc} — {url}")
             if attempt < retries:
-                time.sleep(HTTP_BACKOFF * attempt)
-    logger.error(f"All retries exhausted for {url}")
+                time.sleep(3 * attempt)
     return None
 
 
-def _is_article_url(url: str, base_domain: str) -> bool:
-    """Heuristic: is this URL likely an article (not a nav/category page)?"""
+def _url_hash(url: str) -> str:
+    return hashlib.md5(url.encode()).hexdigest()
+
+
+def _is_article_url(url: str, pattern: str, base_domain: str) -> bool:
     parsed = urlparse(url)
     if parsed.netloc and base_domain not in parsed.netloc:
-        return False                   # external link
-    if SKIP_PATTERNS.search(url):
+        return False
+    if SKIP_URL_PATTERNS.search(url):
         return False
     path = parsed.path.rstrip("/")
-    segments = [s for s in path.split("/") if s]
-    return len(segments) >= 1 and len(path) > 10
+    if len(path) < 5:
+        return False
+    if pattern and re.search(pattern, url):
+        return True
+    # Heuristic: path has at least 1 segment with 4+ chars
+    segments = [s for s in path.split("/") if len(s) >= 4]
+    return len(segments) >= 1
 
 
-def _extract_links(soup: BeautifulSoup, base_url: str) -> list[str]:
-    """Return candidate article URLs from a listing page."""
+def _get_links_from_page(soup: BeautifulSoup, base_url: str, pattern: str) -> list[str]:
     base_domain = urlparse(base_url).netloc
-    seen = set()
-    links = []
+    seen, links = set(), []
     for tag in soup.find_all("a", href=True):
         href = tag["href"].strip()
-        abs_url = urljoin(base_url, href)
+        if not href:
+            continue
+        abs_url = urljoin(base_url, href).split("?")[0].split("#")[0]
         if abs_url in seen:
             continue
         seen.add(abs_url)
-        if _is_article_url(abs_url, base_domain):
+        if _is_article_url(abs_url, pattern, base_domain):
             links.append(abs_url)
     return links
 
 
-def _extract_content(soup: BeautifulSoup, selectors: dict) -> tuple[str, str]:
-    """
-    Returns (title, body_text) from an article page.
-    Falls back gracefully when selectors don't match.
-    """
+def _extract_text(soup: BeautifulSoup) -> tuple[str, str]:
+    """Return (title, body_text) from article page."""
     # Title
     title = ""
-    for sel in [selectors.get("title", "h1"), "h1", "h2"]:
-        tag = soup.select_one(sel)
-        if tag:
-            title = tag.get_text(" ", strip=True)
+    for sel in ["h1.entry-title", "h1.post-title", "h1.article-title", "h1", ".story-title h1"]:
+        el = soup.select_one(sel)
+        if el:
+            title = el.get_text(" ", strip=True)
             break
 
-    # Body — try several selectors before falling back to all <p> tags
-    body_text = ""
+    # Body — try known selectors in order
+    body = ""
     for sel in [
-        selectors.get("body", ""),
-        "article",
+        "article .entry-content",
         ".entry-content",
         ".post-content",
         ".article-content",
-        ".story-content",
         ".article-body",
+        ".story-content",
+        ".post-body",
+        "article",
+        "main .content",
         "main",
     ]:
-        if not sel:
-            continue
-        container = soup.select_one(sel)
-        if container:
-            paragraphs = container.find_all("p")
-            body_text = "\n".join(p.get_text(" ", strip=True) for p in paragraphs if p.get_text(strip=True))
-            if len(body_text.split()) >= MIN_CONTENT_WORDS:
+        el = soup.select_one(sel)
+        if el:
+            # Remove unwanted inner elements
+            for rm in el.select("script,style,nav,header,footer,.ad,.advertisement,.share,.social,.comments"):
+                rm.decompose()
+            paras = [p.get_text(" ", strip=True) for p in el.find_all(["p", "h2", "h3", "li"]) if p.get_text(strip=True)]
+            body = "\n".join(paras)
+            if len(body.split()) >= MIN_WORDS:
                 break
 
-    # Last resort: grab all <p> from the page
-    if len(body_text.split()) < MIN_CONTENT_WORDS:
-        paragraphs = soup.find_all("p")
-        body_text = "\n".join(p.get_text(" ", strip=True) for p in paragraphs if p.get_text(strip=True))
+    # Last resort
+    if len(body.split()) < MIN_WORDS:
+        paras = [p.get_text(" ", strip=True) for p in soup.find_all("p") if len(p.get_text(strip=True)) > 30]
+        body = "\n".join(paras)
 
-    # Truncate to keep AI prompt reasonable
-    words = body_text.split()
-    if len(words) > MAX_CONTENT_WORDS:
-        body_text = " ".join(words[:MAX_CONTENT_WORDS]) + " [...]"
-
-    return title.strip(), body_text.strip()
+    return title.strip(), body.strip()
 
 
-def scrape_source(source: dict, limit: int = 15) -> list[dict]:
-    """
-    Crawl a single source, return list of raw article dicts:
-      { url, source_name, source_lang, raw_title, raw_body }
-    """
-    logger.info(f"Scraping source: {source['name']} → {source['url']}")
-    index_resp = _fetch(source["url"])
-    if not index_resp:
+def scrape_rss(rss_url: str, limit: int = 15) -> list[dict]:
+    """Parse RSS feed and return list of {url, title} dicts."""
+    resp = _fetch(rss_url)
+    if not resp:
+        return []
+    try:
+        soup = BeautifulSoup(resp.text, "xml")
+        items = []
+        for item in soup.find_all("item")[:limit]:
+            url   = (item.find("link") or item.find("guid") or {}).get_text(strip=True) if hasattr(item.find("link") or {}, "get_text") else ""
+            title = item.find("title").get_text(strip=True) if item.find("title") else ""
+            if url and title:
+                items.append({"url": url, "raw_title": title})
+        return items
+    except Exception as e:
+        logger.warning(f"RSS parse error: {e}")
         return []
 
-    soup = BeautifulSoup(index_resp.text, "html.parser")
-    links = _extract_links(soup, source["url"])
-    logger.info(f"  Found {len(links)} candidate links")
+
+def scrape_source(source: dict, already_seen: set) -> list[dict]:
+    """
+    Scrape one source. Returns list of raw article dicts.
+    already_seen: set of URL hashes already in registry.
+    """
+    sid   = source["id"]
+    quota = source["quota"]
+    pattern = source.get("link_pattern", "")
+    logger.info(f"[{sid}] Scraping {source['url']} (quota={quota})")
+
+    candidate_urls = []
+
+    # Try RSS first
+    if source.get("rss"):
+        rss_items = scrape_rss(source["rss"], limit=quota * 3)
+        candidate_urls = [i["url"] for i in rss_items]
+        logger.info(f"[{sid}] RSS gave {len(candidate_urls)} candidates")
+
+    # Fallback to HTML link extraction
+    if not candidate_urls:
+        resp = _fetch(source["url"])
+        if not resp:
+            logger.warning(f"[{sid}] Index page unreachable")
+            return []
+        soup = BeautifulSoup(resp.text, "html.parser")
+        candidate_urls = _get_links_from_page(soup, source["url"], pattern)
+        logger.info(f"[{sid}] HTML gave {len(candidate_urls)} candidates")
 
     results = []
-    for url in links[:limit * 2]:          # over-fetch to hit target after filtering
-        if len(results) >= limit:
+    for url in candidate_urls:
+        if len(results) >= quota:
             break
 
+        h = _url_hash(url)
+        if h in already_seen:
+            logger.debug(f"[{sid}] Skip (already published): {url}")
+            continue
+
+        time.sleep(CRAWL_DELAY)
         resp = _fetch(url)
         if not resp:
             continue
 
-        art_soup = BeautifulSoup(resp.text, "html.parser")
-        raw_title, raw_body = _extract_content(art_soup, source["selectors"])
+        soup = BeautifulSoup(resp.text, "html.parser")
+        title, body = _extract_text(soup)
 
-        if len(raw_title) < MIN_TITLE_LEN:
-            logger.debug(f"  Skip (short title): {url}")
+        if len(title) < 15:
+            logger.debug(f"[{sid}] Skip (no title): {url}")
             continue
-        if len(raw_body.split()) < MIN_CONTENT_WORDS:
-            logger.debug(f"  Skip (thin content: {len(raw_body.split())} words): {url}")
+        if len(body.split()) < MIN_WORDS:
+            logger.debug(f"[{sid}] Skip (thin: {len(body.split())} words): {url}")
             continue
 
-        results.append({
-            "url": url,
-            "source_name": source["name"],
-            "source_lang": source["lang"],
-            "raw_title": raw_title,
-            "raw_body": raw_body,
-        })
-        logger.info(f"  ✓ Collected: {raw_title[:70]}")
-        time.sleep(0.8)   # polite crawl delay
+        art = {
+            "url":           url,
+            "url_hash":      h,
+            "source_id":     sid,
+            "source_name":   source["name"],
+            "source_lang":   source["lang"],
+            "category_hint": source["category_hint"],
+            "raw_title":     title,
+            "raw_body":      body[:6000],  # cap for AI
+        }
+        results.append(art)
+        logger.info(f"[{sid}] ✓ {title[:70]}")
 
-    logger.info(f"  → {len(results)} articles collected from {source['name']}")
+    logger.info(f"[{sid}] → {len(results)} articles collected")
     return results
 
 
-def scrape_all(articles_per_source: dict[str, int]) -> list[dict]:
-    """Scrape all configured sources. articles_per_source = {source_name: limit}"""
+def scrape_all(already_seen: set) -> list[dict]:
+    """Scrape all configured sources. Returns combined list."""
     all_raw = []
     for source in SOURCES:
-        limit = articles_per_source.get(source["name"], source["weight"])
-        raw = scrape_source(source, limit=limit)
-        all_raw.extend(raw)
+        try:
+            raw = scrape_source(source, already_seen)
+            all_raw.extend(raw)
+        except Exception as exc:
+            logger.error(f"Source {source['id']} crashed: {exc}", exc_info=True)
+    logger.info(f"Total raw articles collected: {len(all_raw)}")
     return all_raw

@@ -1,258 +1,238 @@
 #!/usr/bin/env python3
 """
-Marrakech Daily — Daily News Agent
-====================================
-Usage:
-  python daily_agent.py                    # full daily run (scrape + write + publish)
-  python daily_agent.py --manual "topic"  # publish one article on a given topic
-  python daily_agent.py --dry-run         # scrape & write but don't commit to HTML
-  python daily_agent.py --limit 5         # override ARTICLES_PER_RUN
-"""
+Marrakech Daily — Autonomous AI Editorial Agent
+================================================
+Modes:
+  python daily_agent.py                        # daily run: scrape → write → publish
+  python daily_agent.py --manual "topic"       # publish one article on topic
+  python daily_agent.py --limit 10             # override article count
+  python daily_agent.py --dry-run              # run pipeline, skip HTML write
+  python daily_agent.py --sources kech24       # run only specific source(s)
 
+Environment variables required:
+  GROQ_API_KEY   — your Groq API key
+"""
 import argparse
+import hashlib
 import logging
 import os
 import sys
 import time
 from datetime import datetime
 
-# ── Path setup so we can import sibling modules ──────────────────────────────
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from config import (
-    ARTICLES_PER_RUN, MAX_ATTEMPTS, SOURCES, LOG_DIR,
-    ANTHROPIC_KEY,
+    ARTICLES_PER_RUN, LOGS_DIR, GROQ_API_KEY, ROOT_DIR,
 )
 from scraper   import scrape_all
 from writer    import write_from_source, write_manual
 from publisher import (
-    load_registry, save_registry, is_duplicate,
-    register_article, inject_into_html, save_article_json,
+    load_registry, save_registry, is_duplicate, register,
+    inject_html, save_article_json, load_recent_articles,
+    generate_sitemap, generate_rss,
 )
 
-# ── Logging ──────────────────────────────────────────────────────────────────
-os.makedirs(LOG_DIR, exist_ok=True)
-log_file = os.path.join(LOG_DIR, f"agent_{datetime.now().strftime('%Y%m%d')}.log")
+# ── LOGGING ───────────────────────────────────────────────────────────────────
+os.makedirs(LOGS_DIR, exist_ok=True)
+log_path = os.path.join(LOGS_DIR, f"agent_{datetime.now().strftime('%Y%m%d_%H%M')}.log")
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s — %(message)s",
+    format="%(asctime)s [%(levelname)-8s] %(name)s — %(message)s",
+    datefmt="%H:%M:%S",
     handlers=[
-        logging.FileHandler(log_file, encoding="utf-8"),
+        logging.FileHandler(log_path, encoding="utf-8"),
         logging.StreamHandler(sys.stdout),
     ],
 )
-logger = logging.getLogger("daily_agent")
+logger = logging.getLogger("main")
 
 
-# ── Helpers ──────────────────────────────────────────────────────────────────
+# ── HELPERS ───────────────────────────────────────────────────────────────────
 
-def check_env() -> None:
-    if not ANTHROPIC_KEY:
-        logger.error("ANTHROPIC_API_KEY environment variable is not set.")
-        sys.exit(1)
+def _url_hash(url: str) -> str:
+    return hashlib.md5(url.encode()).hexdigest()
 
 
-def run_daily(limit: int, dry_run: bool) -> int:
-    """Full daily pipeline. Returns number of articles published."""
-    logger.info("=" * 60)
-    logger.info(f"Marrakech Daily Agent — {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+def _banner(msg: str) -> None:
+    logger.info("─" * 60)
+    logger.info(msg)
+    logger.info("─" * 60)
+
+
+# ── DAILY RUN ─────────────────────────────────────────────────────────────────
+
+def run_daily(limit: int, dry_run: bool, source_filter: list[str] | None) -> int:
+    _banner(f"MARRAKECH DAILY AGENT — {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     logger.info(f"Target: {limit} articles | dry_run={dry_run}")
-    logger.info("=" * 60)
 
-    registry = load_registry()
-    logger.info(f"Registry: {len(registry.get('slugs', []))} slugs already published")
+    # Load registry
+    registry    = load_registry()
+    seen_hashes = registry.get("url_hashes", set())
+    seen_slugs  = registry.get("slugs", set())
+    logger.info(f"Registry: {len(seen_slugs)} slugs, {len(seen_hashes)} URL hashes")
 
-    # Distribute quota across sources by weight
-    total_weight = sum(s["weight"] for s in SOURCES)
-    per_source = {
-        s["name"]: max(4, round(limit * s["weight"] / total_weight) + 3)
-        for s in SOURCES
-    }
-    logger.info(f"Per-source limits: {per_source}")
+    # Optional source filter
+    if source_filter:
+        from config import SOURCES
+        active_sources = [s for s in SOURCES if s["id"] in source_filter]
+        logger.info(f"Source filter: {[s['id'] for s in active_sources]}")
+        # Temporarily patch config
+        import config
+        _orig = config.SOURCES
+        config.SOURCES = active_sources
 
-    # Step 1 — Scrape
-    logger.info("── STEP 1: Scraping sources ──")
-    all_raw = scrape_all(per_source)
-    logger.info(f"Total raw articles collected: {len(all_raw)}")
+    # ── SCRAPE ───────────────────────────────────────────────────────────────
+    _banner("PHASE 1 — SCRAPING")
+    all_raw = scrape_all(seen_hashes)
+
+    if source_filter:
+        import config
+        config.SOURCES = _orig  # restore
 
     if not all_raw:
-        logger.error("No articles scraped — check source connectivity.")
+        logger.error("No articles scraped — check network / sources")
         return 0
 
-    # Step 2 — Write & publish loop
-    logger.info("── STEP 2: AI writing pipeline ──")
+    # ── WRITE & PUBLISH ──────────────────────────────────────────────────────
+    _banner("PHASE 2 — AI WRITING")
     published = []
-    skipped   = 0
-    errors    = 0
+    skipped = errors = 0
 
-    for raw in all_raw:
+    for i, raw in enumerate(all_raw):
         if len(published) >= limit:
             break
-        if (skipped + errors) > MAX_ATTEMPTS:
-            logger.warning("Max attempts reached — stopping early")
-            break
 
-        logger.info(f"\n[{len(published)+1}/{limit}] Writing: {raw['raw_title'][:70]}")
-
-        # Duplicate check on source URL before spending AI tokens
-        temp_check = {"slug": "", "source_url": raw["url"]}
-        if is_duplicate(temp_check, registry):
-            skipped += 1
-            continue
+        url_hash = raw.get("url_hash", _url_hash(raw["url"]))
+        logger.info(f"\n[{len(published)+1}/{limit}] {raw['raw_title'][:70]}")
 
         try:
             article = write_from_source(raw)
         except Exception as exc:
-            logger.error(f"  Write failed: {exc}")
+            logger.error(f"  ✗ Write failed: {exc}")
             errors += 1
             time.sleep(2)
             continue
 
-        # Duplicate check on slug after writing
-        if is_duplicate(article, registry):
+        slug = article.get("slug", "")
+        if is_duplicate(slug, url_hash, registry):
+            logger.info(f"  → Duplicate, skipping")
             skipped += 1
             continue
 
-        logger.info(f"  ✓ Written: {article['title'][:70]}")
+        # Add url_hash to article for registry
+        article["url_hash"] = url_hash
+
+        logger.info(f"  ✓ [{article['category']}] {article['title'][:70]}")
         published.append(article)
         save_article_json(article)
-        registry = register_article(article, registry)
+        register(article, registry)
 
-        time.sleep(1.5)   # rate-limit AI calls
+        time.sleep(1.2)  # rate-limit AI calls
 
-    logger.info(f"\n── STEP 2 complete: {len(published)} written, {skipped} skipped, {errors} errors ──")
+    logger.info(f"\nPhase 2 done: {len(published)} published, {skipped} skipped, {errors} errors")
 
     if not published:
-        logger.warning("No new articles — nothing to publish")
+        logger.warning("Nothing new to publish")
         return 0
 
-    # Step 3 — Inject into HTML
-    logger.info("── STEP 3: Injecting into index.html ──")
     if dry_run:
-        logger.info("DRY RUN — skipping HTML injection")
-    else:
-        # Merge: new articles first, then last 40 from registry (for JS lookup)
-        archived = _load_recent_articles(40)
-        all_for_html = published + [a for a in archived if a["slug"] not in {p["slug"] for p in published}]
-        success = inject_into_html(all_for_html[:60])   # keep HTML manageable
-        if success:
-            save_registry(registry)
-            logger.info(f"✅ Published {len(published)} articles to index.html")
-        else:
-            logger.error("HTML injection failed")
-            return 0
+        logger.info("DRY RUN — skipping HTML/sitemap/RSS writes")
+        return len(published)
 
+    # ── INJECT INTO SITE ─────────────────────────────────────────────────────
+    _banner("PHASE 3 — PUBLISHING TO SITE")
+    recent = load_recent_articles(80)
+    # Merge: new articles first, then historical (no duplicates)
+    new_slugs = {a["slug"] for a in published}
+    combined  = published + [a for a in recent if a.get("slug") not in new_slugs]
+
+    success = inject_html(combined[:80])  # keep JS manageable
+    if not success:
+        logger.error("HTML injection failed")
+        return 0
+
+    generate_sitemap(combined[:200])
+    generate_rss(combined[:30])
+    save_registry(registry)
+
+    logger.info(f"✅ {len(published)} articles published | Log: {log_path}")
     return len(published)
 
 
-def run_manual(topic: str, dry_run: bool) -> bool:
-    """Write and publish a single article on a given topic."""
-    logger.info("=" * 60)
-    logger.info(f"Manual publish: '{topic}'")
-    logger.info("=" * 60)
+# ── MANUAL MODE ───────────────────────────────────────────────────────────────
 
+def run_manual(topic: str, dry_run: bool) -> bool:
+    _banner(f"MANUAL PUBLISH: {topic}")
     registry = load_registry()
 
     try:
         article = write_manual(topic)
     except Exception as exc:
-        logger.error(f"Manual write failed: {exc}")
+        logger.error(f"Write failed: {exc}")
         return False
 
     logger.info(f"✓ Written: {article['title']}")
 
-    if is_duplicate(article, registry):
-        logger.warning("This article appears to already be published (duplicate slug)")
-        # Still publish with timestamp suffix
-        article["slug"] = article["slug"] + f"-{datetime.now().strftime('%H%M')}"
+    # Avoid exact slug collision
+    slug     = article.get("slug", "")
+    url_hash = _url_hash(article.get("source_url", topic))
+    if is_duplicate(slug, url_hash, registry):
+        article["slug"] = slug + f"-{datetime.now().strftime('%H%M%S')}"
+        logger.info(f"Slug adjusted to avoid collision: {article['slug']}")
 
+    article["url_hash"] = url_hash
     save_article_json(article)
-    registry = register_article(article, registry)
+    register(article, registry)
 
     if dry_run:
-        logger.info("DRY RUN — skipping HTML injection")
+        logger.info("DRY RUN — skipping HTML write")
         return True
 
-    archived = _load_recent_articles(40)
-    all_for_html = [article] + [a for a in archived if a["slug"] != article["slug"]]
-    success = inject_into_html(all_for_html[:60])
+    recent   = load_recent_articles(80)
+    combined = [article] + [a for a in recent if a.get("slug") != article["slug"]]
 
+    success = inject_html(combined[:80])
     if success:
+        generate_sitemap(combined[:200])
+        generate_rss(combined[:30])
         save_registry(registry)
         logger.info(f"✅ Manual article published: {article['title']}")
         return True
-    else:
-        logger.error("HTML injection failed")
-        return False
 
-
-def _load_recent_articles(n: int) -> list[dict]:
-    """Load the N most recent article JSON files from disk."""
-    from config import ARTICLES_DIR
-    import json
-
-    if not os.path.exists(ARTICLES_DIR):
-        return []
-
-    files = [
-        f for f in os.listdir(ARTICLES_DIR)
-        if f.endswith(".json") and f != "published.json"
-    ]
-    # Sort by modification time — newest first
-    files.sort(
-        key=lambda f: os.path.getmtime(os.path.join(ARTICLES_DIR, f)),
-        reverse=True,
-    )
-
-    articles = []
-    for fname in files[:n]:
-        try:
-            with open(os.path.join(ARTICLES_DIR, fname), "r", encoding="utf-8") as f:
-                articles.append(json.load(f))
-        except Exception:
-            pass
-    return articles
+    logger.error("HTML injection failed")
+    return False
 
 
 # ── CLI ───────────────────────────────────────────────────────────────────────
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Marrakech Daily — AI Editorial Agent"
-    )
-    parser.add_argument(
-        "--manual", "-m",
-        metavar="TOPIC",
-        help='Manually publish one article. E.g. --manual "New hotel opens in Marrakech"',
-    )
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Run the pipeline but do NOT write to index.html",
-    )
-    parser.add_argument(
-        "--limit", "-n",
-        type=int,
-        default=ARTICLES_PER_RUN,
-        help=f"Number of articles to publish (default: {ARTICLES_PER_RUN})",
-    )
+    parser = argparse.ArgumentParser(description="Marrakech Daily AI Agent")
+    parser.add_argument("--manual", "-m", metavar="TOPIC",
+                        help='Manually publish: --manual "New hotel in Marrakech"')
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Run pipeline without writing files")
+    parser.add_argument("--limit", "-n", type=int, default=ARTICLES_PER_RUN,
+                        help=f"Articles to publish (default: {ARTICLES_PER_RUN})")
+    parser.add_argument("--sources", nargs="+", metavar="ID",
+                        help="Only use specific sources by ID, e.g. --sources kech24 alphabourse")
     args = parser.parse_args()
 
-    check_env()
+    if not GROQ_API_KEY:
+        logger.error("GROQ_API_KEY environment variable is not set. Exiting.")
+        sys.exit(1)
 
-    start = time.time()
+    t0 = time.time()
 
     if args.manual:
-        success = run_manual(args.manual, dry_run=args.dry_run)
-        elapsed = time.time() - start
-        logger.info(f"Manual run complete in {elapsed:.1f}s — {'SUCCESS' if success else 'FAILED'}")
-        sys.exit(0 if success else 1)
+        ok = run_manual(args.manual, dry_run=args.dry_run)
+        logger.info(f"Manual run: {'SUCCESS' if ok else 'FAILED'} in {time.time()-t0:.1f}s")
+        sys.exit(0 if ok else 1)
     else:
-        count = run_daily(limit=args.limit, dry_run=args.dry_run)
-        elapsed = time.time() - start
-        logger.info(f"Daily run complete in {elapsed:.1f}s — {count} articles published")
-        sys.exit(0 if count > 0 else 1)
+        n = run_daily(limit=args.limit, dry_run=args.dry_run, source_filter=args.sources)
+        logger.info(f"Daily run: {n} articles in {time.time()-t0:.1f}s")
+        sys.exit(0 if n > 0 else 1)
 
 
 if __name__ == "__main__":
