@@ -1,5 +1,38 @@
 [
   {
+    "slug": "marrakech-heatwave",
+    "title": "Marrakech Heatwave",
+    "excerpt": "Marrakech experiences the highest temperatures in Morocco. The heatwave is expected to continue.",
+    "description": "Marrakech records the highest temperatures in Morocco over the past four days, with temperatures soaring above seasonal averages, causing discomfort to resident",
+    "body": "<p>Marrakech has been experiencing an intense heatwave over the past four days, with temperatures reaching record highs. According to local reports, the city has recorded the highest temperatures in Morocco, surpassing other major cities like Casablanca and Rabat.</p><p>The heatwave has been causing discomfort to both residents and tourists, with many seeking refuge in air-conditioned spaces or cooling off in the city&#x27;s many public fountains and pools. The temperatures have been soaring above seasonal averages, with daytime highs often reaching over 40 degrees Celsius.</p><p>The Moroccan National Meteorological Service has issued a heatwave alert, warning of the risks associated with extreme heat, particularly for vulnerable populations such as the elderly and young children. The service has advised people to stay hydrated, avoid outdoor activities during the hottest part of the day, and to wear light, loose-fitting clothing.</p><p>The heatwave is expected to continue over the coming days, with temperatures showing no signs of easing. As a result, the city&#x27;s authorities have implemented measures to mitigate the impact of the heat, including the distribution of water and other essential supplies to those in need.</p><p>Meanwhile, local businesses are feeling the effects of the heatwave, with many reporting a decline in sales as people stay indoors to avoid the heat. The city&#x27;s famous souks and markets have been particularly affected, with many vendors struggling to attract customers.</p><p>Despite the challenges posed by the heatwave, Marrakech remains a popular destination for tourists, with many visitors drawn to the city&#x27;s rich cultural heritage and vibrant atmosphere. However, tourists are being advised to take necessary precautions to protect themselves from the heat, including staying hydrated and seeking medical attention if they experience any symptoms of heat-related illness.</p><p>This is an original report by Marrakech Daily editorial staff.</p>",
+    "category": "National",
+    "tags": [
+      "marrakech",
+      "heatwave",
+      "morocco",
+      "weather",
+      "tourism"
+    ],
+    "is_breaking": false,
+    "author": {
+      "name": "Leila Berrada",
+      "role": "Tourism Correspondent"
+    },
+    "reading_time": 1,
+    "hero_image": "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1200&q=80",
+    "thumb_image": "https://images.unsplash.com/photo-1539578703015-e8a5eb1c3c6d?w=600&q=70",
+    "published_at": "2026-07-06T09:05:05.689775+01:00",
+    "date_display": "July 6, 2026",
+    "sources": [
+      {
+        "name": "Marrakech Daily",
+        "url": "",
+        "original_title": "heat in marrakech highest in morocco last 4 days"
+      }
+    ],
+    "_source_url": ""
+  },
+  {
     "slug": "fairmont-royal-palm-marrakech-summer-offers",
     "title": "Fairmont Royal Palm Marrakech Summer Offers",
     "excerpt": "Fairmont Royal Palm Marrakech announces summer offers, including a new Asian-inspired restaurant and Day Pass options. Enjoy the resort's facilities and services.",
