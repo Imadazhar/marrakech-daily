@@ -1,22 +1,10 @@
 """
-Web scrapers for the three news sources.
-
-Each scraper returns a list of raw article dicts:
-  {
-    "url":     str,            # canonical article URL
-    "title":   str,            # original title (French)
-    "excerpt": str | None,     # teaser / lead paragraph
-    "content": str | None,     # main body text (may be empty; caller can fetch)
-    "image":   str | None,     # absolute image URL
-    "source":  str,            # source display name
-    "source_id": str,          # source id key
-    "published_raw": str | None,
-    "category_hint": str | None,
-  }
+Marrakech Daily — Multi-source web scraper.
+Handles HTML scrapers + RSS feeds for all configured news sources.
 """
-
 from __future__ import annotations
 
+import hashlib
 import logging
 import re
 import time
@@ -25,368 +13,316 @@ from urllib.parse import urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
-from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 from config import (
-    NEWS_SOURCES,
-    REQUEST_HEADERS,
-    REQUEST_TIMEOUT,
-    MAX_RETRY_ATTEMPTS,
-    RETRY_WAIT_MIN,
-    RETRY_WAIT_MAX,
-    MIN_SOURCE_TEXT_WORDS,
+    NEWS_SOURCES, REQUEST_HEADERS, REQUEST_TIMEOUT,
+    MAX_RETRY_ATTEMPTS, RETRY_WAIT_MIN, RETRY_WAIT_MAX,
+    MIN_SOURCE_TEXT_WORDS, MAX_PER_SOURCE,
 )
 
 log = logging.getLogger(__name__)
 
+# URLs to skip
+SKIP_PATTERNS = re.compile(
+    r"(facebook\.com|twitter\.com|instagram|youtube|whatsapp|linkedin"
+    r"|mailto:|javascript:|tel:"
+    r"|/login|/register|/contact|/about|/privacy|/terms|/cookies"
+    r"|/tag/|/author/|/page/\d+|/feed|/rss|\?s=|#|\.pdf$|\.jpg$|\.png$|\.mp4$)",
+    re.IGNORECASE,
+)
 
-# ── HTTP helpers ──────────────────────────────────────────────────────────────
+MIN_TITLE_LEN = 20
+CRAWL_DELAY   = 1.0   # polite delay between requests
 
-def _session() -> requests.Session:
-    s = requests.Session()
-    s.headers.update(REQUEST_HEADERS)
-    return s
 
+# ── HTTP ───────────────────────────────────────────────────────────────────────
 
 @retry(
     stop=stop_after_attempt(MAX_RETRY_ATTEMPTS),
     wait=wait_exponential(min=RETRY_WAIT_MIN, max=RETRY_WAIT_MAX),
-    retry=retry_if_exception_type((requests.exceptions.Timeout,
-                                   requests.exceptions.ConnectionError)),
-    reraise=True,
+    reraise=False,
 )
-def _get(url: str, session: requests.Session, **kwargs) -> requests.Response:
-    resp = session.get(url, timeout=REQUEST_TIMEOUT, **kwargs)
-    resp.raise_for_status()
-    return resp
-
-
-def _soup(html: str) -> BeautifulSoup:
-    return BeautifulSoup(html, "html.parser")
-
-
-def _abs(url: str, base: str) -> str:
-    return urljoin(base, url)
-
-
-def _clean_text(text: str) -> str:
-    return re.sub(r"\s+", " ", text).strip()
-
-
-# ── Article content fetcher ───────────────────────────────────────────────────
-
-def fetch_article_text(url: str, session: requests.Session) -> str:
-    """
-    Fetch the full article body text from a URL.
-    Tries trafilatura first, falls back to BeautifulSoup heuristics.
-    """
+def _get(url: str) -> Optional[requests.Response]:
     try:
-        resp = _get(url, session)
-        html = resp.text
+        resp = requests.get(
+            url,
+            headers=REQUEST_HEADERS,
+            timeout=REQUEST_TIMEOUT,
+            allow_redirects=True,
+        )
+        if resp.status_code == 200:
+            return resp
+        if resp.status_code in (429, 503):
+            log.warning("Rate limited (%s): %s — waiting", resp.status_code, url)
+            time.sleep(15)
+            raise requests.RequestException(f"Rate limited: {resp.status_code}")
+        log.debug("HTTP %s: %s", resp.status_code, url)
+        return None
+    except requests.RequestException as exc:
+        log.warning("Fetch error: %s — %s", exc, url)
+        raise
 
-        # Try trafilatura (best for content extraction)
-        try:
-            import trafilatura
-            text = trafilatura.extract(html, include_comments=False,
-                                        include_tables=False,
-                                        no_fallback=False)
-            if text and len(text.split()) >= MIN_SOURCE_TEXT_WORDS:
-                return _clean_text(text)
-        except ImportError:
-            pass
 
-        # Fallback: heuristic BS4 extraction
-        soup = _soup(html)
-        for tag in soup(["script", "style", "nav", "header", "footer",
-                          "aside", "form", "figure", "figcaption", "noscript"]):
-            tag.decompose()
+def _url_hash(url: str) -> str:
+    return hashlib.md5(url.strip().encode()).hexdigest()
 
-        # Candidate selectors (most news CMSes)
-        selectors = [
-            "article",
-            '[class*="article-body"]',
-            '[class*="entry-content"]',
-            '[class*="post-content"]',
-            '[class*="content-body"]',
-            "main",
-            ".content",
+
+def _is_article_url(url: str, base_domain: str) -> bool:
+    p = urlparse(url)
+    if p.netloc and base_domain not in p.netloc:
+        return False
+    if SKIP_PATTERNS.search(url):
+        return False
+    path = p.path.rstrip("/")
+    if len(path) < 8:
+        return False
+    segs = [s for s in path.split("/") if len(s) >= 4]
+    return len(segs) >= 1
+
+
+def _find_links(soup: BeautifulSoup, base_url: str) -> list[str]:
+    base_domain = urlparse(base_url).netloc
+    seen, links = set(), []
+    for tag in soup.find_all("a", href=True):
+        href = tag["href"].strip()
+        if not href:
+            continue
+        abs_url = urljoin(base_url, href).split("?")[0].rstrip("/")
+        if abs_url in seen:
+            continue
+        seen.add(abs_url)
+        if _is_article_url(abs_url, base_domain):
+            links.append(abs_url)
+    return links
+
+
+# ── Content extraction ─────────────────────────────────────────────────────────
+
+def _extract(soup: BeautifulSoup) -> tuple[str, str]:
+    """Return (title, body_text)."""
+    title = ""
+    for sel in ["h1.entry-title", "h1.post-title", "h1.article-title",
+                "h1.title", "h1", ".story-title", ".article__title"]:
+        el = soup.select_one(sel)
+        if el:
+            title = el.get_text(" ", strip=True)
+            break
+
+    body = ""
+    for sel in [
+        "article .entry-content", ".entry-content", ".post-content",
+        ".article-content", ".article-body", ".story-content",
+        ".article__body", ".post-body", ".content-body",
+        "article", "main .content", ".main-content", "main",
+    ]:
+        el = soup.select_one(sel)
+        if not el:
+            continue
+        # Remove noise
+        for noise in el.select(
+            "script,style,nav,header,footer,aside,.ad,.advertisement,"
+            ".share-buttons,.social-share,.comments,.related-posts,"
+            ".newsletter-widget,.sidebar,.widget"
+        ):
+            noise.decompose()
+        paras = [
+            p.get_text(" ", strip=True)
+            for p in el.find_all(["p", "h2", "h3", "li", "blockquote"])
+            if len(p.get_text(strip=True)) > 20
         ]
-        for sel in selectors:
-            node = soup.select_one(sel)
-            if node:
-                text = _clean_text(node.get_text(" "))
-                if len(text.split()) >= MIN_SOURCE_TEXT_WORDS:
-                    return text
+        body = "\n".join(paras)
+        if len(body.split()) >= MIN_SOURCE_TEXT_WORDS:
+            break
 
-        # Last resort: all paragraph text
-        paras = [p.get_text(" ") for p in soup.find_all("p")]
-        return _clean_text(" ".join(paras))
+    # Last resort
+    if len(body.split()) < MIN_SOURCE_TEXT_WORDS:
+        paras = [
+            p.get_text(" ", strip=True)
+            for p in soup.find_all("p")
+            if len(p.get_text(strip=True)) > 30
+        ]
+        body = "\n".join(paras)
 
-    except Exception as exc:
-        log.warning("Could not fetch article text from %s: %s", url, exc)
-        return ""
+    return title.strip(), body.strip()[:8000]
 
 
-# ── Kech24 scraper ────────────────────────────────────────────────────────────
+# ── RSS parser ─────────────────────────────────────────────────────────────────
 
-def scrape_kech24(source: dict, session: requests.Session) -> list[dict]:
-    articles: list[dict] = []
-    base = source["base_url"]
-    url  = source["listing_url"]
-    log.info("Scraping %s → %s", source["name"], url)
-
+def _parse_rss(url: str, limit: int = 20) -> list[dict]:
+    resp = _get(url)
+    if not resp:
+        return []
     try:
-        resp = _get(url, session)
-        soup = _soup(resp.text)
-
-        # kech24 uses <article> or <div class="jeg_post"> cards
-        cards = soup.select("article") or soup.select('[class*="jeg_post"]') or []
-
-        for card in cards[:25]:
-            link_el = card.select_one("a[href]")
-            title_el = card.select_one("h2, h3, .jeg_post_title, .entry-title")
-            img_el   = card.select_one("img")
-            excerpt_el = card.select_one(".jeg_post_excerpt, .entry-summary, p")
-
-            if not link_el or not title_el:
-                continue
-
-            article_url = _abs(link_el["href"], base)
-            if not article_url.startswith("http"):
-                continue
-
-            title = _clean_text(title_el.get_text())
-            if len(title) < 15:
-                continue
-
-            excerpt = _clean_text(excerpt_el.get_text()) if excerpt_el else None
-            img_url = None
-            if img_el:
-                img_url = img_el.get("src") or img_el.get("data-src") or img_el.get("data-lazy-src")
-                if img_url and img_url.startswith("http"):
-                    img_url = img_url
-                else:
-                    img_url = None
-
-            # Guess category from URL
-            category_hint = None
-            for segment in ["sport", "economie", "culture", "societe", "international",
-                             "politique", "sante", "education", "marrakech", "maroc"]:
-                if segment in article_url.lower():
-                    category_hint = segment
-                    break
-
-            articles.append({
-                "url":            article_url,
-                "title":          title,
-                "excerpt":        excerpt,
-                "content":        None,
-                "image":          img_url,
-                "source":         source["name"],
-                "source_id":      source["id"],
-                "published_raw":  None,
-                "category_hint":  category_hint,
-            })
-
+        soup = BeautifulSoup(resp.content, "xml")
+        items = []
+        for item in soup.find_all("item")[:limit]:
+            link_el  = item.find("link")
+            title_el = item.find("title")
+            desc_el  = item.find("description") or item.find("summary")
+            link  = link_el.get_text(strip=True) if link_el else ""
+            title = title_el.get_text(strip=True) if title_el else ""
+            desc  = BeautifulSoup(desc_el.get_text(strip=True), "html.parser").get_text() if desc_el else ""
+            if link and len(title) >= MIN_TITLE_LEN:
+                items.append({"url": link, "raw_title": title, "raw_body": desc[:2000]})
+        return items
     except Exception as exc:
-        log.error("kech24 scrape failed: %s", exc, exc_info=True)
-
-    log.info("kech24 found %d raw articles", len(articles))
-    return articles
+        log.warning("RSS parse error %s: %s", url, exc)
+        return []
 
 
-# ── Made In City scraper ──────────────────────────────────────────────────────
+# ── Source-specific scrapers ───────────────────────────────────────────────────
 
-def scrape_madein_city(source: dict, session: requests.Session) -> list[dict]:
-    articles: list[dict] = []
-    base = source["base_url"]
-    url  = source["listing_url"]
-    log.info("Scraping %s → %s", source["name"], url)
-
-    try:
-        resp = _get(url, session)
-        soup = _soup(resp.text)
-
-        # madein.city uses <article> or generic grid cards
-        cards = (soup.select("article") or
-                 soup.select('[class*="story"]') or
-                 soup.select('[class*="card"]') or [])
-
-        # Also try <a> elements that link to story URLs
-        if not cards:
-            cards = [a for a in soup.find_all("a", href=True)
-                     if "/stories/" in a.get("href", "")]
-
-        seen_urls: set[str] = set()
-
-        for card in cards[:25]:
-            # Determine link element
-            if card.name == "a":
-                link_el = card
-            else:
-                link_el = card.select_one("a[href]")
-            if not link_el:
-                continue
-
-            href = link_el.get("href", "")
-            article_url = _abs(href, base)
-            if article_url in seen_urls or not article_url.startswith("http"):
-                continue
-            seen_urls.add(article_url)
-
-            title_el   = card.select_one("h1, h2, h3, h4")
-            img_el     = card.select_one("img")
-            excerpt_el = card.select_one("p, [class*='excerpt'], [class*='description']")
-
-            title = _clean_text(title_el.get_text()) if title_el else _clean_text(link_el.get_text())
-            if len(title) < 15:
-                continue
-
-            excerpt = _clean_text(excerpt_el.get_text()) if excerpt_el else None
-            img_url = None
-            if img_el:
-                for attr in ("src", "data-src", "data-lazy-src"):
-                    img_url = img_el.get(attr)
-                    if img_url and img_url.startswith("http"):
-                        break
-
-            articles.append({
-                "url":            article_url,
-                "title":          title,
-                "excerpt":        excerpt,
-                "content":        None,
-                "image":          img_url,
-                "source":         source["name"],
-                "source_id":      source["id"],
-                "published_raw":  None,
-                "category_hint":  "tourisme",   # madein.city is mostly lifestyle/tourism
-            })
-
-    except Exception as exc:
-        log.error("madein_city scrape failed: %s", exc, exc_info=True)
-
-    log.info("madein_city found %d raw articles", len(articles))
-    return articles
+def _scrape_kech24(listing_url: str, quota: int, seen: set) -> list[dict]:
+    resp = _get(listing_url)
+    if not resp:
+        return []
+    soup    = BeautifulSoup(resp.text, "html.parser")
+    links   = _find_links(soup, listing_url)
+    # Kech24 articles have slugs like /2024/06/25/article-name/
+    links   = [l for l in links if re.search(r"/\d{4}/\d{2}/\d{2}/", l) or
+               re.search(r"kech24\.com/[a-z]", l)]
+    return _fetch_articles(links, "kech24", seen, quota, "fr")
 
 
-# ── Alphabourse scraper ───────────────────────────────────────────────────────
-
-def scrape_alphabourse(source: dict, session: requests.Session) -> list[dict]:
-    articles: list[dict] = []
-    base = source["base_url"]
-    url  = source["listing_url"]
-    log.info("Scraping %s → %s", source["name"], url)
-
-    try:
-        resp = _get(url, session)
-        soup = _soup(resp.text)
-
-        # alphabourse.ma uses <article> or div.article-item
-        cards = (soup.select("article") or
-                 soup.select('[class*="article"]') or
-                 soup.select('[class*="news-item"]') or [])
-
-        if not cards:
-            # Fall back: h3 with links
-            cards = soup.select("h3 a")
-
-        seen_urls: set[str] = set()
-
-        for card in cards[:25]:
-            if card.name == "a":
-                link_el = card
-                title_el = card
-            else:
-                link_el  = card.select_one("a[href]")
-                title_el = card.select_one("h2, h3, h4, .article-title, .title")
-            if not link_el:
-                continue
-
-            href = link_el.get("href", "")
-            article_url = _abs(href, base)
-            if article_url in seen_urls or not article_url.startswith("http"):
-                continue
-            seen_urls.add(article_url)
-
-            title = _clean_text(title_el.get_text()) if title_el else ""
-            if len(title) < 15:
-                continue
-
-            img_el     = card.select_one("img") if hasattr(card, "select_one") else None
-            excerpt_el = (card.select_one("p, [class*='excerpt']")
-                          if hasattr(card, "select_one") else None)
-
-            img_url = None
-            if img_el:
-                for attr in ("src", "data-src"):
-                    img_url = img_el.get(attr)
-                    if img_url and img_url.startswith("http"):
-                        break
-
-            category_hint = "bourse"
-            for segment in ["marches", "economie", "bourse", "banques", "societe"]:
-                if segment in article_url.lower():
-                    category_hint = segment
-                    break
-
-            articles.append({
-                "url":            article_url,
-                "title":          title,
-                "excerpt":        _clean_text(excerpt_el.get_text()) if excerpt_el else None,
-                "content":        None,
-                "image":          img_url,
-                "source":         source["name"],
-                "source_id":      source["id"],
-                "published_raw":  None,
-                "category_hint":  category_hint,
-            })
-
-    except Exception as exc:
-        log.error("alphabourse scrape failed: %s", exc, exc_info=True)
-
-    log.info("alphabourse found %d raw articles", len(articles))
-    return articles
+def _scrape_madein_city(listing_url: str, quota: int, seen: set) -> list[dict]:
+    resp = _get(listing_url)
+    if not resp:
+        return []
+    soup  = BeautifulSoup(resp.text, "html.parser")
+    links = _find_links(soup, listing_url)
+    links = [l for l in links if "madein.city/marrakech" in l and "/stories/" in l]
+    return _fetch_articles(links, "madein_city", seen, quota, "fr")
 
 
-# ── Dispatcher ────────────────────────────────────────────────────────────────
+def _scrape_alphabourse(listing_url: str, quota: int, seen: set) -> list[dict]:
+    resp = _get(listing_url)
+    if not resp:
+        return []
+    soup  = BeautifulSoup(resp.text, "html.parser")
+    links = _find_links(soup, listing_url)
+    links = [l for l in links if "alphabourse.ma" in l]
+    return _fetch_articles(links, "alphabourse", seen, quota, "fr")
 
-SCRAPER_MAP = {
-    "kech24":      scrape_kech24,
-    "madein_city": scrape_madein_city,
-    "alphabourse": scrape_alphabourse,
-}
+
+def _scrape_generic(source: dict, seen: set) -> list[dict]:
+    quota = min(source.get("daily_quota", 3), MAX_PER_SOURCE)
+    listing_url = source["listing_url"]
+    resp = _get(listing_url)
+    if not resp:
+        return []
+    soup  = BeautifulSoup(resp.text, "html.parser")
+    links = _find_links(soup, listing_url)
+    return _fetch_articles(links, source["id"], seen, quota, source.get("language","fr"))
 
 
-def scrape_all_sources() -> list[dict]:
-    """Scrape all configured sources and return raw article candidates."""
-    session  = _session()
+def _fetch_articles(links: list[str], source_id: str, seen: set,
+                    quota: int, lang: str) -> list[dict]:
+    results = []
+    for url in links:
+        if len(results) >= quota:
+            break
+        h = _url_hash(url)
+        if h in seen:
+            log.debug("Skip (seen): %s", url)
+            continue
+
+        time.sleep(CRAWL_DELAY)
+        resp = _get(url)
+        if not resp:
+            continue
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        title, body = _extract(soup)
+
+        if len(title) < MIN_TITLE_LEN:
+            log.debug("Skip (no title): %s", url)
+            continue
+        if len(body.split()) < MIN_SOURCE_TEXT_WORDS:
+            log.debug("Skip (thin content %d words): %s", len(body.split()), url)
+            continue
+
+        results.append({
+            "url":        url,
+            "url_hash":   h,
+            "source_id":  source_id,
+            "source_lang": lang,
+            "raw_title":  title,
+            "raw_body":   body,
+        })
+        log.info("✓ [%s] %s", source_id, title[:70])
+
+    return results
+
+
+# ── Main scrape entry point ────────────────────────────────────────────────────
+
+def scrape_all(seen_hashes: set) -> list[dict]:
+    """
+    Scrape all configured sources.
+    seen_hashes: set of URL md5 hashes already published — skip these.
+    Returns list of raw article dicts.
+    """
     all_raw: list[dict] = []
 
     for source in NEWS_SOURCES:
-        scraper_fn = SCRAPER_MAP.get(source["scraper"])
-        if not scraper_fn:
-            log.warning("No scraper registered for %s", source["scraper"])
-            continue
+        sid   = source["id"]
+        quota = min(source.get("daily_quota", 3), MAX_PER_SOURCE)
+        stype = source.get("scraper", "generic")
+        log.info("Scraping [%s] %s (quota=%d)", sid, source["listing_url"], quota)
+
         try:
-            raw = scraper_fn(source, session)
-            all_raw.extend(raw)
+            if stype == "rss":
+                rss_items = _parse_rss(source["listing_url"], limit=quota * 2)
+                # For RSS we have title+desc but no full body yet
+                batch = []
+                for item in rss_items:
+                    h = _url_hash(item["url"])
+                    if h in seen_hashes:
+                        continue
+                    if len(batch) >= quota:
+                        break
+                    # Try to fetch full body
+                    time.sleep(CRAWL_DELAY)
+                    resp = _get(item["url"])
+                    if resp:
+                        soup = BeautifulSoup(resp.text, "html.parser")
+                        _, full_body = _extract(soup)
+                        body = full_body if len(full_body.split()) >= MIN_SOURCE_TEXT_WORDS else item["raw_body"]
+                    else:
+                        body = item["raw_body"]
+                    batch.append({
+                        "url":         item["url"],
+                        "url_hash":    h,
+                        "source_id":   sid,
+                        "source_lang": source.get("language", "en"),
+                        "raw_title":   item["raw_title"],
+                        "raw_body":    body,
+                    })
+                    log.info("✓ [%s] %s", sid, item["raw_title"][:70])
+                all_raw.extend(batch)
+
+            elif stype == "kech24":
+                batch = _scrape_kech24(source["listing_url"], quota, seen_hashes)
+                all_raw.extend(batch)
+
+            elif stype == "madein_city":
+                batch = _scrape_madein_city(source["listing_url"], quota, seen_hashes)
+                all_raw.extend(batch)
+
+            elif stype == "alphabourse":
+                batch = _scrape_alphabourse(source["listing_url"], quota, seen_hashes)
+                all_raw.extend(batch)
+
+            else:
+                batch = _scrape_generic(source, seen_hashes)
+                all_raw.extend(batch)
+
+            log.info("[%s] → %d articles collected", sid,
+                     len([x for x in all_raw if x.get("source_id") == sid]))
+
         except Exception as exc:
-            log.error("Source %s failed: %s", source["name"], exc, exc_info=True)
-        # Be polite between sources
-        time.sleep(1)
+            log.error("Source [%s] crashed: %s", sid, exc, exc_info=True)
 
-    log.info("Total raw articles collected: %d", len(all_raw))
+    log.info("Total raw articles: %d", len(all_raw))
     return all_raw
-
-
-def enrich_with_content(articles: list[dict]) -> list[dict]:
-    """Fetch the full body text for articles that don't have it yet."""
-    session = _session()
-    enriched = []
-    for art in articles:
-        if not art.get("content"):
-            log.debug("Fetching content from %s", art["url"])
-            art["content"] = fetch_article_text(art["url"], session)
-            time.sleep(0.5)   # polite delay
-        enriched.append(art)
-    return enriched
