@@ -1,83 +1,103 @@
-name: Manual Publish — Marrakech Daily
+name: "✏️ Manual Publish — Marrakech Daily"
 
 on:
   workflow_dispatch:
     inputs:
-      headline:
-        description: |
-          Article headline or topic to publish.
-          Examples:
-            "New luxury hotel opens in Marrakech"
-            "Marrakech airport expansion"
-            "Morocco advances in FIFA World Cup"
+      topic:
+        description: 'Article topic — e.g. "New luxury hotel opens in Marrakech"'
         required: true
-        type: string
+        default: ""
+      category:
+        description: "Category"
+        required: false
+        default: "auto"
+        type: choice
+        options:
+          - auto
+          - Breaking
+          - National
+          - Business
+          - Sport
+          - Culture
+          - Tourism
+          - Society
+          - Tech
+          - Health
+          - World
 
 permissions:
   contents: write
 
 jobs:
-  publish-article:
-    name: Publish Article from Headline
+  manual-publish:
+    name: "Manual article: ${{ inputs.topic }}"
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
-      # ── 1. Checkout ──────────────────────────────────────────────
-      - name: Checkout repository
+      - name: "⬇ Checkout main"
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
-          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
+          token: ${{ secrets.GH_TOKEN }}
+          fetch-depth: 0
 
-      # ── 2. Python setup ──────────────────────────────────────────
-      - name: Set up Python
+      - name: "🐍 Python 3.11"
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: "pip"
+          cache: pip
           cache-dependency-path: agent/requirements.txt
 
-      # ── 3. Install dependencies ──────────────────────────────────
-      - name: Install Python dependencies
+      - name: "📦 Install dependencies"
         run: pip install -r agent/requirements.txt
 
-      # ── 4. Generate and publish article ──────────────────────────
-      # AI provider auto-selected: GROQ_API_KEY → GEMINI_API_KEY → OPENAI_API_KEY
-      - name: Generate article from headline
+      - name: "✏️ Generate article"
         env:
           GROQ_API_KEY:   ${{ secrets.GROQ_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          ARTICLE_HEADLINE: ${{ github.event.inputs.headline }}
-          PYTHONPATH: ${{ github.workspace }}
+          PYTHONPATH:     ${{ github.workspace }}
         run: |
-          cd ${{ github.workspace }}
-          python agent/manual_publish.py "$ARTICLE_HEADLINE"
+          CATEGORY_ARG=""
+          if [ "${{ inputs.category }}" != "auto" ]; then
+            CATEGORY_ARG="--category '${{ inputs.category }}'"
+          fi
+          cd agent && python manual_publish.py --topic "${{ inputs.topic }}" $CATEGORY_ARG
 
-      # ── 5. Commit and push ────────────────────────────────────────
-      - name: Commit and push
-        env:
-          ARTICLE_HEADLINE: ${{ github.event.inputs.headline }}
+      - name: "💾 Commit to main"
         run: |
-          git config --global user.name  "Marrakech Daily Bot"
-          git config --global user.email "bot@marrakechdaily.github"
-
-          git add index.html _data/articles.json _data/published_hashes.json
-
+          git config user.name  "Marrakech Daily Bot 🤖"
+          git config user.email "bot@marrakechdaily.github"
+          git add index.html _data/ || true
           if git diff --cached --quiet; then
-            echo "No changes detected — article may have been a duplicate."
-            exit 1
+            echo "Nothing to commit"
+          else
+            git commit -m "✏️ Manual: ${{ inputs.topic }}"
+            git push origin main
           fi
 
-          git commit -m "📰 Manual publish: \"$ARTICLE_HEADLINE\" [$(date -u +'%Y-%m-%d %H:%M UTC')]"
-          git push
+      - name: "🚀 Sync to gh-pages"
+        run: |
+          git config user.name  "Marrakech Daily Bot 🤖"
+          git config user.email "bot@marrakechdaily.github"
+          cp index.html /tmp/manual_index.html
+          git fetch origin gh-pages
+          git checkout gh-pages
+          cp /tmp/manual_index.html index.html
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "✏️ Manual article: ${{ inputs.topic }}"
+            git push origin gh-pages
+            echo "✅ Live site updated"
+          fi
 
-      # ── 6. Upload log ─────────────────────────────────────────────
-      - name: Upload agent log
+      - name: "📊 Upload logs"
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: manual-publish-log-${{ github.run_id }}
+          name: "manual-logs-${{ github.run_id }}"
           path: agent/logs/
           retention-days: 7
