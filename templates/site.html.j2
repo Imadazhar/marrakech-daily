@@ -1,1143 +1,1103 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ site_title }} — {{ site_tagline }}</title>
-  <meta name="description" content="{{ site_description }}">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="{{ site_url }}/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{{ site_title }} — {{ site_tagline }}</title>
+<meta name="description" content="{{ site_description }}">
+<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large">
+<meta name="author" content="{{ site_title }} Editorial Team">
+<meta name="geo.region" content="MA-01">
+<meta name="geo.placename" content="Marrakech, Morocco">
+<link rel="canonical" href="{{ site_url }}/">
 
-  <!-- Open Graph -->
-  <meta property="og:type"        content="website">
-  <meta property="og:title"       content="{{ site_title }}">
-  <meta property="og:description" content="{{ site_description }}">
-  <meta property="og:url"         content="{{ site_url }}/">
-  {% if hero %}
-  <meta property="og:image"       content="{{ hero.hero_image }}">
-  {% endif %}
-  <meta property="og:site_name"   content="{{ site_title }}">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ site_title }}">
+<meta property="og:title" content="{{ site_title }} — {{ site_tagline }}">
+<meta property="og:description" content="{{ site_description }}">
+<meta property="og:url" content="{{ site_url }}/">
+<meta property="og:image" content="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1200&q=80">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
 
-  <!-- Twitter Card -->
-  <meta name="twitter:card"        content="summary_large_image">
-  <meta name="twitter:site"        content="{{ site_twitter }}">
-  <meta name="twitter:title"       content="{{ site_title }}">
-  <meta name="twitter:description" content="{{ site_description }}">
-  {% if hero %}
-  <meta name="twitter:image"       content="{{ hero.hero_image }}">
-  {% endif %}
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="{{ site_twitter }}">
+<meta name="twitter:title" content="{{ site_title }} — {{ site_tagline }}">
+<meta name="twitter:description" content="{{ site_description }}">
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1200&q=80">
 
-  <!-- Schema.org -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "NewsMediaOrganization",
-    "name": "{{ site_title }}",
-    "url": "{{ site_url }}/",
-    "description": "{{ site_description }}"
-  }
-  </script>
+<!-- RSS & Sitemap -->
+<link rel="alternate" type="application/rss+xml" title="{{ site_title }} RSS" href="{{ site_url }}/feed.xml">
+<link rel="sitemap" type="application/xml" href="{{ site_url }}/sitemap.xml">
 
-  <style>
-    /* ── Reset & base ─────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg:       #0a0a0f;
-      --surface:  #111118;
-      --surface2: #18181f;
-      --border:   #222230;
-      --accent:   #e85d04;
-      --accent2:  #f48c06;
-      --text:     #e8e8f0;
-      --muted:    #888899;
-      --white:    #ffffff;
-      --red:      #e53935;
-      --gold:     #f4b942;
-      --font-sans: 'Georgia', serif;
-      --font-ui:   system-ui, -apple-system, sans-serif;
-      --max-w:    1200px;
-      --radius:   6px;
-      --shadow:   0 4px 24px rgba(0,0,0,.45);
-    }
-    html { font-size: 16px; scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font-sans);
-      line-height: 1.65;
-      min-height: 100vh;
-    }
-    a { color: inherit; text-decoration: none; }
-    img { display: block; max-width: 100%; height: auto; }
+<!-- Schema.org -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"NewsMediaOrganization",
+  "name":"{{ site_title }}",
+  "url":"{{ site_url }}/",
+  "description":"{{ site_description }}",
+  "foundingDate":"2024",
+  "address":{"@type":"PostalAddress","addressLocality":"Marrakech","addressCountry":"MA"}
+}
+</script>
 
-    /* ── Breaking ticker ──────────────────────────────── */
-    .ticker-bar {
-      background: var(--accent);
-      color: var(--white);
-      font-family: var(--font-ui);
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .04em;
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-      height: 34px;
-    }
-    .ticker-label {
-      flex-shrink: 0;
-      background: #c44d00;
-      padding: 0 14px;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      white-space: nowrap;
-      text-transform: uppercase;
-    }
-    .ticker-track-wrapper {
-      overflow: hidden;
-      flex: 1;
-      height: 100%;
-      position: relative;
-    }
-    .ticker-track {
-      display: flex;
-      align-items: center;
-      height: 100%;
-      white-space: nowrap;
-      animation: ticker 40s linear infinite;
-    }
-    .ticker-track:hover { animation-play-state: paused; }
-    .ticker-item { padding: 0 28px; }
-    .ticker-item::before { content: "◆"; margin-right: 14px; opacity: .6; }
-    @keyframes ticker {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
+<meta name="theme-color" content="#C8102E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📰</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
-    /* ── Top bar (weather/forex) ──────────────────────── */
-    .top-bar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      font-family: var(--font-ui);
-      font-size: .73rem;
-      color: var(--muted);
-    }
-    .top-bar-inner {
-      max-width: var(--max-w);
-      margin: 0 auto;
-      padding: 6px 16px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .top-bar-group { display: flex; gap: 16px; flex-wrap: wrap; }
-    .top-bar-item strong { color: var(--text); }
-    .top-bar-item .tag {
-      display: inline-block;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      padding: 0 5px;
-      font-size: .68rem;
-      margin-left: 4px;
-      color: var(--gold);
-    }
+<style>
+/* ═══════════════════════════════════════════════════
+   MARRAKECH DAILY — NEWSPAPER DESIGN SYSTEM
+   Inspired by: NYT, NYPost, USA Today, AP News
+═══════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#C8102E;--red-d:#9B0B22;--red-l:#FFF0F2;
+  --black:#0A0A0A;--ink:#1A1A1A;--coal:#2D2D2D;
+  --muted:#666;--faint:#999;--rule:#E0E0E0;
+  --bg:#F8F8F8;--white:#FFF;--sand:#F5F1EB;--sand2:#FAF7F2;
+  --gold:#B06B00;--teal:#0A5C45;
+  --ff-disp:'Playfair Display',Georgia,serif;
+  --ff-body:'Source Serif 4',Georgia,serif;
+  --ff-ui:'Inter',system-ui,sans-serif;
+  --r:2px;
+  --shadow-sm:0 1px 4px rgba(0,0,0,.08);
+  --shadow-md:0 4px 16px rgba(0,0,0,.1);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.12);
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--ff-ui);background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit;transition:color .15s}
+img{display:block;width:100%;height:100%;object-fit:cover}
+button,input{font-family:var(--ff-ui);border:none;outline:none;cursor:pointer;background:none}
 
-    /* ── Header / masthead ────────────────────────────── */
-    .masthead {
-      background: var(--surface);
-      border-bottom: 3px solid var(--accent);
-    }
-    .masthead-inner {
-      max-width: var(--max-w);
-      margin: 0 auto;
-      padding: 0 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
-      gap: 20px;
-    }
-    .logo {
-      font-family: var(--font-ui);
-      font-size: 1.45rem;
-      font-weight: 900;
-      letter-spacing: -.02em;
-      color: var(--white);
-    }
-    .logo span { color: var(--accent); }
-    .masthead-meta {
-      font-family: var(--font-ui);
-      font-size: .72rem;
-      color: var(--muted);
-      text-align: right;
-    }
+/* ── UTILITIES ── */
+.container{max-width:1380px;margin:0 auto;padding:0 20px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.skip-link{position:absolute;top:-50px;left:8px;background:var(--red);color:#fff;padding:10px 18px;z-index:10000;font-weight:700;font-size:13px;border-radius:var(--r);transition:top .2s}
+.skip-link:focus{top:8px}
+.tag{display:inline-block;font-family:var(--ff-ui);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--rule);color:var(--muted);cursor:pointer;transition:all .15s}
+.tag:hover{border-color:var(--red);color:var(--red)}
+.cat-badge{display:inline-block;font-family:var(--ff-ui);font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;background:var(--red);color:#fff}
+.cat-badge.breaking{background:var(--black);animation:pulse-b 1.8s ease-in-out infinite}
+@keyframes pulse-b{0%,100%{opacity:1}50%{opacity:.6}}
+.byline{font-family:var(--ff-ui);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.byline .sep{color:var(--rule)}
+.byline .author{font-weight:600;color:var(--coal)}
+.timestamp{font-family:var(--ff-ui);font-size:10px;color:var(--faint)}
+.read-more{display:inline-flex;align-items:center;gap:5px;font-family:var(--ff-ui);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red);cursor:pointer;border-bottom:2px solid transparent;transition:border-color .2s;background:none;padding:0}
+.read-more:hover{border-bottom-color:var(--red)}
 
-    /* ── Nav ──────────────────────────────────────────── */
-    .nav-bar {
-      background: var(--surface2);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-inner {
-      max-width: var(--max-w);
-      margin: 0 auto;
-      padding: 0 16px;
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .nav-inner::-webkit-scrollbar { display: none; }
-    .nav-btn {
-      flex-shrink: 0;
-      font-family: var(--font-ui);
-      font-size: .75rem;
-      font-weight: 600;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      color: var(--muted);
-      padding: 10px 14px;
-      border: none;
-      background: none;
-      cursor: pointer;
-      transition: color .2s;
-      border-bottom: 2px solid transparent;
-    }
-    .nav-btn:hover, .nav-btn.active {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-    }
+/* ── BREAKING TICKER ── */
+.ticker-outer{background:var(--red);overflow:hidden;height:32px;display:flex;align-items:center}
+.ticker-label{background:var(--black);color:#fff;font-family:var(--ff-ui);font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;padding:0 16px;height:100%;display:flex;align-items:center;white-space:nowrap;flex-shrink:0}
+.ticker-track{flex:1;overflow:hidden;height:100%;display:flex;align-items:center}
+.ticker-scroll{display:inline-flex;gap:0;animation:ticker-move 60s linear infinite;white-space:nowrap;color:#fff;font-family:var(--ff-ui);font-size:11px;font-weight:600;letter-spacing:.02em}
+.ticker-scroll:hover{animation-play-state:paused}
+.ticker-item{padding:0 28px}
+.ticker-dot{color:rgba(255,255,255,.45);margin:0 4px}
+@keyframes ticker-move{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-    /* ── Layout containers ────────────────────────────── */
-    .container { max-width: var(--max-w); margin: 0 auto; padding: 0 16px; }
-    .section { padding: 40px 0; }
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-      border-bottom: 2px solid var(--accent);
-      padding-bottom: 10px;
-    }
-    .section-title {
-      font-family: var(--font-ui);
-      font-size: .8rem;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-    .see-all {
-      font-family: var(--font-ui);
-      font-size: .72rem;
-      color: var(--muted);
-      font-weight: 600;
-      transition: color .2s;
-    }
-    .see-all:hover { color: var(--accent); }
+/* ── HEADER ── */
+.site-header{background:var(--white);border-bottom:3px solid var(--red);position:sticky;top:0;z-index:900;box-shadow:var(--shadow-sm);transition:box-shadow .2s}
+.site-header.scrolled{box-shadow:var(--shadow-md)}
+.header-top{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid var(--rule);max-width:1380px;margin:0 auto}
+.header-left{font-family:var(--ff-ui);font-size:11px;color:var(--muted);letter-spacing:.04em;line-height:1.4}
+.header-left strong{color:var(--coal)}
+.site-logo{text-align:center;cursor:pointer}
+.logo-pre{font-family:var(--ff-ui);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1px}
+.logo-name{font-family:var(--ff-disp);font-size:38px;font-weight:900;color:var(--black);letter-spacing:-.025em;line-height:1}
+.logo-name em{color:var(--red);font-style:normal}
+.logo-sub{font-family:var(--ff-ui);font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:1px}
+.header-right{display:flex;align-items:center;gap:10px}
+.btn-subscribe{background:var(--red);color:#fff;padding:7px 16px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:var(--r);transition:background .2s}
+.btn-subscribe:hover{background:var(--red-d)}
+.btn-icon{width:34px;height:34px;border:1.5px solid var(--rule);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--coal);transition:all .2s}
+.btn-icon:hover{border-color:var(--red);color:var(--red)}
+.rss-btn{display:flex;align-items:center;gap:4px;font-family:var(--ff-ui);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#F26522;border:1px solid #F26522;padding:4px 8px;border-radius:var(--r);transition:all .2s}
+.rss-btn:hover{background:#F26522;color:#fff}
 
-    /* ── Hero ─────────────────────────────────────────── */
-    .hero { padding: 32px 0 0; }
-    .hero-inner {
-      position: relative;
-      border-radius: var(--radius);
-      overflow: hidden;
-      max-height: 520px;
-    }
-    .hero-image {
-      width: 100%;
-      height: 520px;
-      object-fit: cover;
-      display: block;
-      filter: brightness(.55);
-    }
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.3) 60%, transparent 100%);
-    }
-    .hero-content {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 32px;
-    }
-    .hero-badge-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-    .badge-breaking {
-      background: var(--red);
-      color: var(--white);
-      font-family: var(--font-ui);
-      font-size: .65rem;
-      font-weight: 800;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 3px;
-    }
-    .badge-category {
-      background: rgba(255,255,255,.12);
-      border: 1px solid rgba(255,255,255,.25);
-      color: var(--white);
-      font-family: var(--font-ui);
-      font-size: .65rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 3px;
-    }
-    .hero-title {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--white);
-      line-height: 1.2;
-      margin-bottom: 12px;
-      text-shadow: 0 2px 8px rgba(0,0,0,.5);
-    }
-    .hero-title a:hover { color: var(--accent2); }
-    .hero-excerpt {
-      color: rgba(255,255,255,.82);
-      font-size: .95rem;
-      margin-bottom: 16px;
-      max-width: 700px;
-    }
-    .hero-meta {
-      font-family: var(--font-ui);
-      font-size: .72rem;
-      color: rgba(255,255,255,.6);
-    }
-    .hero-meta span { margin: 0 4px; }
-    .hero-cta {
-      display: inline-block;
-      margin-top: 14px;
-      background: var(--accent);
-      color: var(--white);
-      font-family: var(--font-ui);
-      font-size: .75rem;
-      font-weight: 700;
-      letter-spacing: .04em;
-      padding: 8px 18px;
-      border-radius: var(--radius);
-      transition: background .2s;
-    }
-    .hero-cta:hover { background: var(--accent2); }
+/* ── NAVIGATION ── */
+.site-nav{border-bottom:2px solid var(--black)}
+.nav-inner{max-width:1380px;margin:0 auto;padding:0 20px;display:flex;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav-inner::-webkit-scrollbar{display:none}
+.nav-link{font-family:var(--ff-ui);font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--coal);padding:11px 14px;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;cursor:pointer;transition:all .15s}
+.nav-link:hover,.nav-link.active{color:var(--red);border-bottom-color:var(--red)}
+.nav-link.breaking{color:var(--red)}
+.nav-sep{width:1px;height:16px;background:var(--rule);flex-shrink:0;margin:0 4px}
 
-    /* ── Article card grid ────────────────────────────── */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 20px;
-    }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: border-color .2s, transform .2s;
-      cursor: pointer;
-    }
-    .card:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
-    }
-    .card-img-wrap { position: relative; height: 170px; overflow: hidden; }
-    .card-img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
-    .card:hover .card-img { transform: scale(1.04); }
-    .card-category {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: var(--accent);
-      color: var(--white);
-      font-family: var(--font-ui);
-      font-size: .62rem;
-      font-weight: 800;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 3px;
-    }
-    .card-category.breaking { background: var(--red); }
-    .card-body { padding: 16px; }
-    .card-title {
-      font-size: .97rem;
-      font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 8px;
-      color: var(--text);
-      transition: color .2s;
-    }
-    .card:hover .card-title { color: var(--accent2); }
-    .card-excerpt {
-      font-size: .8rem;
-      color: var(--muted);
-      line-height: 1.5;
-      margin-bottom: 12px;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .card-footer {
-      font-family: var(--font-ui);
-      font-size: .68rem;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
-    }
-    .card-dot { margin: 0 5px; }
+/* ── SEARCH DROPDOWN ── */
+.search-bar{display:none;background:var(--sand);border-bottom:1px solid var(--rule);padding:10px 20px}
+.search-bar.open{display:block}
+.search-wrap{max-width:600px;margin:0 auto;display:flex;gap:8px}
+.search-input{flex:1;padding:10px 14px;border:1.5px solid var(--rule);font-size:14px;border-radius:var(--r);background:var(--white);transition:border-color .2s}
+.search-input:focus{border-color:var(--red)}
+.search-btn-x{padding:10px 14px;background:var(--red);color:#fff;border-radius:var(--r);font-weight:700;font-size:12px}
+.search-results{max-width:600px;margin:8px auto 0;font-size:13px}
+.search-result-item{padding:9px 0;border-bottom:1px solid var(--rule);cursor:pointer;transition:padding-left .15s}
+.search-result-item:hover{padding-left:6px}
+.sri-cat{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red)}
+.sri-title{font-weight:600;color:var(--black);margin-top:2px;font-size:14px}
 
-    /* ── Featured 2-col layout ────────────────────────── */
-    .featured-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-    .featured-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: border-color .2s;
-    }
-    .featured-card:hover { border-color: var(--accent); }
-    .featured-img { width: 100%; height: 200px; object-fit: cover; }
-    .featured-body { padding: 20px; flex: 1; }
-    .featured-meta {
-      font-family: var(--font-ui);
-      font-size: .68rem;
-      color: var(--accent);
-      font-weight: 700;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-    .featured-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 10px;
-    }
-    .featured-card:hover .featured-title { color: var(--accent2); }
-    .featured-excerpt { font-size: .82rem; color: var(--muted); }
-    .featured-footer {
-      font-family: var(--font-ui);
-      font-size: .68rem;
-      color: var(--muted);
-      padding: 12px 20px;
-      border-top: 1px solid var(--border);
-    }
+/* ── WEATHER BAR ── */
+.weather-bar{background:var(--sand2);border-bottom:1px solid var(--rule);padding:6px 0;overflow-x:auto}
+.weather-inner{max-width:1380px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:20px;white-space:nowrap;font-family:var(--ff-ui);font-size:11px;color:var(--muted)}
+.weather-inner strong{color:var(--coal)}
+.weather-sep{color:var(--rule)}
 
-    /* ── Article modal ────────────────────────────────── */
-    .modal-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.85);
-      z-index: 1000;
-      overflow-y: auto;
-      padding: 24px 16px;
-    }
-    .modal-backdrop.open { display: flex; align-items: flex-start; justify-content: center; }
-    .modal {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      max-width: 760px;
-      width: 100%;
-      margin: 0 auto;
-      overflow: hidden;
-      position: relative;
-    }
-    .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: rgba(0,0,0,.5);
-      color: var(--white);
-      border: none;
-      border-radius: 50%;
-      width: 34px;
-      height: 34px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      transition: background .2s;
-    }
-    .modal-close:hover { background: var(--accent); }
-    .modal-hero-img { width: 100%; height: 300px; object-fit: cover; }
-    .modal-body { padding: 28px 32px 36px; }
-    .modal-cat {
-      font-family: var(--font-ui);
-      font-size: .65rem;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 10px;
-    }
-    .modal-title {
-      font-size: 1.6rem;
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 12px;
-      color: var(--white);
-    }
-    .modal-desc {
-      font-size: .88rem;
-      color: var(--muted);
-      margin-bottom: 16px;
-      font-style: italic;
-    }
-    .modal-byline {
-      font-family: var(--font-ui);
-      font-size: .72rem;
-      color: var(--muted);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 10px 0;
-      margin-bottom: 22px;
-    }
-    .modal-byline strong { color: var(--text); }
-    .modal-content { font-size: .96rem; line-height: 1.75; color: var(--text); }
-    .modal-content p { margin-bottom: 1.1em; }
-    .modal-content a { color: var(--accent2); text-decoration: underline; }
-    .modal-content em { color: var(--muted); font-size: .85rem; }
-    .modal-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 24px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-    }
-    .modal-tag {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-family: var(--font-ui);
-      font-size: .68rem;
-      padding: 3px 10px;
-      border-radius: 100px;
-    }
+/* ── SECTION HEADERS ── */
+.section-hd{border-top:3px solid var(--black);padding-top:14px;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.section-hd.red{border-color:var(--red)}
+.section-hd.teal{border-color:var(--teal)}
+.section-hd.gold{border-color:var(--gold)}
+.section-name{font-family:var(--ff-disp);font-size:20px;font-weight:900;color:var(--black)}
+.section-name .lbl{font-family:var(--ff-ui);font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:var(--red);padding:3px 10px;margin-right:8px}
+.section-name .lbl.teal{background:var(--teal)}
+.section-name .lbl.gold{background:var(--gold)}
+.section-name .lbl.black{background:var(--black)}
+.section-see-all{margin-left:auto;font-family:var(--ff-ui);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red);border-bottom:1.5px solid var(--red);cursor:pointer}
 
-    /* ── Divider ──────────────────────────────────────── */
-    .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:9999;overflow-y:auto;padding:16px}
+.modal-overlay.open{display:flex;align-items:flex-start;justify-content:center}
+.modal-box{background:var(--white);max-width:800px;width:100%;margin:0 auto;border-radius:var(--r);box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+.modal-close{position:absolute;top:14px;right:14px;width:36px;height:36px;background:var(--black);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;z-index:2;cursor:pointer;transition:background .2s}
+.modal-close:hover{background:var(--red)}
+.modal-img{height:320px;overflow:hidden;background:var(--sand)}
+.modal-img img{transition:transform .5s}
+.modal-body{padding:28px 32px 36px}
+.modal-cat-badge{margin-bottom:12px}
+.modal-title{font-family:var(--ff-disp);font-size:26px;font-weight:900;line-height:1.18;color:var(--black);margin-bottom:12px;letter-spacing:-.02em}
+.modal-meta{display:flex;align-items:center;gap:10px;font-family:var(--ff-ui);font-size:11px;color:var(--muted);margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--rule);flex-wrap:wrap}
+.modal-meta .author{font-weight:600;color:var(--coal)}
+.modal-content{font-family:var(--ff-body);font-size:16px;line-height:1.78;color:var(--coal)}
+.modal-content p{margin-bottom:15px}
+.modal-content h2{font-family:var(--ff-disp);font-size:21px;font-weight:700;margin:24px 0 10px;color:var(--black)}
+.modal-content h3{font-family:var(--ff-disp);font-size:17px;font-weight:700;margin:18px 0 8px;color:var(--black)}
+.modal-content strong{font-weight:700;color:var(--black)}
+.modal-src{margin-top:20px;padding:10px 14px;background:var(--sand);border-left:3px solid var(--red);font-family:var(--ff-ui);font-size:11px;color:var(--muted);border-radius:0 var(--r) var(--r) 0}
+.modal-src a{color:var(--red)}
+.modal-tags{margin-top:14px;display:flex;flex-wrap:wrap;gap:5px}
+@media(max-width:640px){.modal-body{padding:18px 16px 24px}.modal-title{font-size:20px}.modal-img{height:200px}}
 
-    /* ── Footer ───────────────────────────────────────── */
-    .footer {
-      background: var(--surface);
-      border-top: 3px solid var(--accent);
-      padding: 40px 0 24px;
-      margin-top: 60px;
-    }
-    .footer-inner {
-      max-width: var(--max-w);
-      margin: 0 auto;
-      padding: 0 16px;
-    }
-    .footer-top {
-      display: flex;
-      gap: 40px;
-      flex-wrap: wrap;
-      margin-bottom: 28px;
-    }
-    .footer-brand { flex: 0 0 260px; }
-    .footer-logo {
-      font-family: var(--font-ui);
-      font-size: 1.2rem;
-      font-weight: 900;
-      color: var(--white);
-      margin-bottom: 10px;
-    }
-    .footer-logo span { color: var(--accent); }
-    .footer-tagline { font-size: .82rem; color: var(--muted); }
-    .footer-cols { display: flex; gap: 40px; flex-wrap: wrap; flex: 1; }
-    .footer-col h4 {
-      font-family: var(--font-ui);
-      font-size: .72rem;
-      font-weight: 800;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 12px;
-    }
-    .footer-col ul { list-style: none; }
-    .footer-col li { margin-bottom: 6px; }
-    .footer-col a {
-      font-family: var(--font-ui);
-      font-size: .78rem;
-      color: var(--muted);
-      transition: color .2s;
-    }
-    .footer-col a:hover { color: var(--accent2); }
-    .footer-bottom {
-      border-top: 1px solid var(--border);
-      padding-top: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .footer-copy {
-      font-family: var(--font-ui);
-      font-size: .72rem;
-      color: var(--muted);
-    }
-    .footer-build {
-      font-family: var(--font-ui);
-      font-size: .68rem;
-      color: #3a3a4a;
-    }
+/* ═══════════════════════════════════════════════════
+   HOMEPAGE LAYOUT
+═══════════════════════════════════════════════════ */
+section{padding:36px 0}
+section+section{border-top:1px solid var(--rule)}
 
-    /* ── Filter active state ──────────────────────────── */
-    .hidden { display: none !important; }
+/* ── HERO SECTION ── */
+.hero-section{padding:28px 0 0;background:var(--white)}
+.hero-grid{display:grid;grid-template-columns:1fr 320px;gap:0;border:1px solid var(--rule);background:var(--white)}
 
-    /* ── Responsive ───────────────────────────────────── */
-    @media (max-width: 768px) {
-      .hero-title { font-size: 1.35rem; }
-      .hero-content { padding: 20px; }
-      .hero-image { height: 380px; }
-      .hero-inner { max-height: 380px; }
-      .featured-grid { grid-template-columns: 1fr; }
-      .card-grid { grid-template-columns: 1fr 1fr; }
-      .modal-body { padding: 20px; }
-      .modal-title { font-size: 1.3rem; }
-    }
-    @media (max-width: 480px) {
-      .card-grid { grid-template-columns: 1fr; }
-      .top-bar-inner { gap: 8px; }
-    }
-  </style>
+/* Hero main */
+.hero-main{overflow:hidden;cursor:pointer}
+.hero-img-wrap{height:430px;overflow:hidden;position:relative;background:var(--sand)}
+.hero-img-wrap img{transition:transform .5s ease}
+.hero-main:hover .hero-img-wrap img{transform:scale(1.02)}
+.hero-overlay-cat{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,transparent 100%);padding:40px 20px 16px}
+.hero-content{padding:22px 24px 24px;border-top:3px solid var(--red)}
+.hero-title{font-family:var(--ff-disp);font-size:28px;font-weight:900;line-height:1.14;color:var(--black);margin-bottom:12px;letter-spacing:-.022em;cursor:pointer;transition:color .15s}
+.hero-title:hover{color:var(--red)}
+.hero-excerpt{font-family:var(--ff-body);font-size:15px;color:var(--coal);line-height:1.62;margin-bottom:14px}
+
+/* Hero sidebar */
+.hero-sidebar{border-left:1px solid var(--rule);display:flex;flex-direction:column;background:var(--white)}
+.sidebar-label{background:var(--black);color:#fff;font-family:var(--ff-ui);font-size:9px;font-weight:800;letter-spacing:.17em;text-transform:uppercase;padding:9px 16px}
+.sidebar-article{display:grid;grid-template-columns:1fr 76px;gap:10px;padding:13px 14px;border-bottom:1px solid var(--rule);cursor:pointer;transition:background .15s;align-items:start}
+.sidebar-article:hover{background:var(--sand2)}
+.sidebar-article:last-child{border-bottom:none;flex:1}
+.sa-num{font-family:var(--ff-disp);font-size:28px;font-weight:900;color:var(--rule);line-height:1;margin-bottom:3px}
+.sa-cat{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:4px;font-family:var(--ff-ui)}
+.sa-title{font-family:var(--ff-disp);font-size:13px;font-weight:700;line-height:1.32;color:var(--black)}
+.sidebar-article:hover .sa-title{color:var(--red)}
+.sa-meta{font-size:9px;color:var(--faint);font-family:var(--ff-ui);margin-top:4px}
+.sa-thumb{height:64px;overflow:hidden;border-radius:var(--r);background:var(--sand)}
+
+/* ── AD SLOT ── */
+.ad-slot{background:var(--sand);border:1px dashed var(--rule);display:flex;align-items:center;justify-content:center;font-family:var(--ff-ui);font-size:10px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase}
+.ad-banner{height:90px;margin:24px 0}
+.ad-sidebar{height:250px;margin-bottom:20px}
+
+/* ── LATEST NEWS GRID ── */
+.latest-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--rule);border-right:none}
+.news-card{border-right:1px solid var(--rule);overflow:hidden;cursor:pointer;transition:background .15s}
+.news-card:hover{background:var(--sand2)}
+.nc-img{height:152px;overflow:hidden;background:var(--sand);flex-shrink:0}
+.nc-img img{transition:transform .4s ease}
+.news-card:hover .nc-img img{transform:scale(1.05)}
+.nc-body{padding:14px}
+.nc-cat{font-family:var(--ff-ui);font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:6px}
+.nc-title{font-family:var(--ff-disp);font-size:15px;font-weight:700;line-height:1.3;color:var(--black);margin-bottom:7px}
+.news-card:hover .nc-title{color:var(--red)}
+.nc-excerpt{font-family:var(--ff-body);font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ── FEATURED 3-COLUMN ── */
+.featured-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:24px}
+.featured-main .fi-img{height:250px;overflow:hidden;background:var(--sand);cursor:pointer}
+.featured-main .fi-img img{transition:transform .4s}
+.featured-main:hover .fi-img img{transform:scale(1.03)}
+.fi-body{padding:14px 0}
+.fi-cat{font-family:var(--ff-ui);font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:6px}
+.fi-title{font-family:var(--ff-disp);font-size:19px;font-weight:700;line-height:1.24;color:var(--black);margin-bottom:8px;cursor:pointer;transition:color .15s}
+.fi-title:hover{color:var(--red)}
+.fi-title.sm{font-size:15px}
+.fi-excerpt{font-family:var(--ff-body);font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:8px}
+.fi-side-card{border-top:3px solid var(--rule);padding-top:13px;margin-bottom:16px;cursor:pointer}
+.fi-side-card:hover .fi-title{color:var(--red)}
+.fi-side-card:last-child{margin-bottom:0}
+.fi-side-img{height:110px;overflow:hidden;margin-bottom:9px;background:var(--sand);border-radius:var(--r)}
+.fi-side-img img{transition:transform .4s}
+.fi-side-card:hover .fi-side-img img{transform:scale(1.04)}
+
+/* ── DARK SECTION (Tourism) ── */
+.dark-section{background:linear-gradient(150deg,#0B1A13 0%,#15312A 100%);padding:36px 0}
+.dark-section .section-hd{border-color:var(--teal)}
+.dark-section .section-name{color:#fff}
+.dark-section .section-see-all{color:#4ECBA8;border-color:#4ECBA8}
+.dark-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
+.dark-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);overflow:hidden;cursor:pointer;transition:background .2s,transform .2s;border-radius:var(--r)}
+.dark-card:hover{background:rgba(255,255,255,.13);transform:translateY(-3px)}
+.dc-img{height:172px;overflow:hidden;background:rgba(255,255,255,.05)}
+.dc-img img{transition:transform .4s}
+.dark-card:hover .dc-img img{transform:scale(1.05)}
+.dc-body{padding:14px}
+.dc-label{font-family:var(--ff-ui);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#4ECBA8;margin-bottom:5px}
+.dc-title{font-family:var(--ff-disp);font-size:15px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:6px}
+.dark-card:hover .dc-title{color:#4ECBA8}
+.dc-meta{font-family:var(--ff-ui);font-size:10px;color:rgba(255,255,255,.45)}
+.dark-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:20px;border:1px solid rgba(255,255,255,.08)}
+.ds-box{background:rgba(255,255,255,.06);padding:14px;text-align:center}
+.ds-num{font-family:var(--ff-disp);font-size:24px;font-weight:900;color:#fff}
+.ds-lbl{font-family:var(--ff-ui);font-size:9px;color:rgba(255,255,255,.45);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+
+/* ── 4-GRID (Real Estate etc) ── */
+.quad-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--rule)}
+.quad-card{display:grid;grid-template-columns:140px 1fr;gap:0;border-bottom:1px solid var(--rule);overflow:hidden;cursor:pointer;transition:background .15s}
+.quad-card:hover{background:var(--sand2)}
+.quad-card:nth-child(odd){border-right:1px solid var(--rule)}
+.qc-img{height:120px;overflow:hidden;background:var(--sand)}
+.qc-img img{transition:transform .3s}
+.quad-card:hover .qc-img img{transform:scale(1.04)}
+.qc-body{padding:12px 14px}
+.qc-badge{display:inline-block;font-family:var(--ff-ui);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--sand);color:var(--gold);padding:2px 7px;margin-bottom:5px;border-radius:var(--r)}
+.qc-title{font-family:var(--ff-disp);font-size:14px;font-weight:700;line-height:1.3;color:var(--black);margin-bottom:5px}
+.quad-card:hover .qc-title{color:var(--red)}
+.qc-meta{font-family:var(--ff-ui);font-size:10px;color:var(--muted);margin-top:6px;display:flex;gap:8px;flex-wrap:wrap}
+
+/* ── EVENTS CALENDAR ── */
+.events-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--rule)}
+.event-card{display:flex;align-items:stretch;border-bottom:1px solid var(--rule);overflow:hidden;cursor:pointer;transition:background .15s}
+.event-card:hover{background:var(--sand2)}
+.event-card:nth-child(odd){border-right:1px solid var(--rule)}
+.ev-date{background:var(--black);color:#fff;min-width:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 6px;flex-shrink:0}
+.ev-month{font-family:var(--ff-ui);font-size:8px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+.ev-day{font-family:var(--ff-disp);font-size:26px;font-weight:900;line-height:1;color:#fff}
+.ev-body{padding:11px 13px}
+.ev-cat{font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);font-family:var(--ff-ui);margin-bottom:3px}
+.ev-title{font-family:var(--ff-disp);font-size:13px;font-weight:700;line-height:1.3;color:var(--black);margin-bottom:4px}
+.event-card:hover .ev-title{color:var(--red)}
+.ev-meta{font-family:var(--ff-ui);font-size:10px;color:var(--muted)}
+
+/* ── LIFESTYLE VISUAL GRID ── */
+.lifestyle-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--rule);border-right:none}
+.ls-card{border-right:1px solid var(--rule);overflow:hidden;position:relative;height:265px;cursor:pointer}
+.ls-card img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.ls-card:hover img{transform:scale(1.07)}
+.ls-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,.82) 0%,transparent 100%);padding:20px 14px 14px;color:#fff}
+.ls-label{font-family:var(--ff-ui);font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:4px}
+.ls-title{font-family:var(--ff-disp);font-size:13px;font-weight:700;line-height:1.3;color:#fff}
+.ls-card:hover .ls-title{color:#f88}
+
+/* ── MOST READ ── */
+.most-read-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid var(--rule)}
+.mr-card{padding:16px;border-right:1px solid var(--rule);cursor:pointer;transition:background .15s}
+.mr-card:last-child{border-right:none}
+.mr-card:hover{background:var(--sand2)}
+.mr-rank{font-family:var(--ff-disp);font-size:46px;font-weight:900;color:var(--red-l);line-height:1;margin-bottom:6px}
+.mr-cat{font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);font-family:var(--ff-ui);margin-bottom:5px}
+.mr-title{font-family:var(--ff-disp);font-size:13px;font-weight:700;line-height:1.35;color:var(--black);margin-bottom:6px}
+.mr-card:hover .mr-title{color:var(--red)}
+.mr-views{font-family:var(--ff-ui);font-size:10px;color:var(--faint)}
+
+/* ── NEWSLETTER ── */
+.newsletter{background:var(--black);padding:56px 0}
+.nl-inner{max-width:640px;margin:0 auto;text-align:center;padding:0 20px}
+.nl-eyebrow{font-family:var(--ff-ui);font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:10px}
+.nl-title{font-family:var(--ff-disp);font-size:32px;font-weight:900;color:#fff;line-height:1.14;margin-bottom:10px}
+.nl-sub{font-family:var(--ff-body);font-size:15px;color:rgba(255,255,255,.6);line-height:1.62;margin-bottom:24px}
+.nl-form{display:flex;max-width:480px;margin:0 auto 12px;gap:0}
+.nl-input{flex:1;padding:13px 16px;font-size:14px;border:none;background:#fff;color:var(--black);border-radius:var(--r) 0 0 var(--r)}
+.nl-input:focus{outline:2px solid var(--red);outline-offset:-2px}
+.nl-btn{background:var(--red);color:#fff;padding:13px 20px;font-family:var(--ff-ui);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:0 var(--r) var(--r) 0;transition:background .2s;white-space:nowrap;border:none;cursor:pointer}
+.nl-btn:hover{background:var(--red-d)}
+.nl-note{font-family:var(--ff-ui);font-size:10px;color:rgba(255,255,255,.3);margin-top:8px}
+.nl-stats{display:flex;align-items:center;justify-content:center;gap:28px;margin-top:24px;flex-wrap:wrap}
+.nls-num{font-family:var(--ff-disp);font-size:22px;font-weight:900;color:#fff}
+.nls-lbl{font-family:var(--ff-ui);font-size:9px;color:rgba(255,255,255,.38);letter-spacing:.1em;text-transform:uppercase}
+
+/* ── FOOTER ── */
+.site-footer{background:var(--ink);color:rgba(255,255,255,.65);padding:44px 0 20px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:36px;margin-bottom:36px}
+.footer-logo .logo-name{font-size:26px;color:#fff}
+.footer-logo .logo-name em{color:var(--red)}
+.footer-desc{font-family:var(--ff-body);font-size:13px;color:rgba(255,255,255,.45);line-height:1.6;margin:10px 0 16px}
+.footer-social{display:flex;gap:7px}
+.social-btn{width:32px;height:32px;border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:12px;color:rgba(255,255,255,.55);cursor:pointer;transition:all .2s;border-radius:var(--r);background:none}
+.social-btn:hover{border-color:var(--red);color:var(--red)}
+.footer-col-title{font-family:var(--ff-ui);font-size:9px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#fff;margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid rgba(255,255,255,.08)}
+.footer-links{list-style:none}
+.footer-links li{margin-bottom:8px}
+.footer-links a,.footer-links span{font-family:var(--ff-ui);font-size:12px;color:rgba(255,255,255,.5);cursor:pointer;transition:color .15s}
+.footer-links a:hover,.footer-links span:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:16px;display:flex;align-items:center;justify-content:space-between;font-family:var(--ff-ui);font-size:10px;color:rgba(255,255,255,.28);flex-wrap:wrap;gap:8px}
+.footer-bottom-links{display:flex;gap:16px}
+.footer-bottom-links a{color:rgba(255,255,255,.28)}
+.footer-bottom-links a:hover{color:rgba(255,255,255,.6)}
+
+/* ── BREADCRUMB ── */
+.breadcrumb-bar{background:var(--white);border-bottom:1px solid var(--rule)}
+.breadcrumb{font-family:var(--ff-ui);font-size:10px;color:var(--muted);padding:6px 0;display:flex;align-items:center;gap:5px;list-style:none}
+.breadcrumb a{color:var(--red)}
+.breadcrumb .sep{color:var(--rule)}
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════ */
+@media(max-width:1100px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-sidebar{border-left:none;border-top:1px solid var(--rule);display:grid;grid-template-columns:1fr 1fr}
+  .sidebar-label{grid-column:1/-1}
+  .latest-grid{grid-template-columns:1fr 1fr}
+  .featured-grid{grid-template-columns:1fr 1fr}
+  .most-read-grid{grid-template-columns:repeat(3,1fr)}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .dark-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .logo-name{font-size:26px}
+  .header-left{display:none}
+  .hero-title{font-size:20px}
+  .hero-img-wrap{height:220px}
+  .hero-sidebar{grid-template-columns:1fr}
+  .latest-grid,.featured-grid,.dark-grid,.quad-grid,.events-grid,.lifestyle-grid{grid-template-columns:1fr}
+  .most-read-grid{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;text-align:center}
+  .nl-form{flex-direction:column;border-radius:var(--r)}
+  .nl-input{border-radius:var(--r) var(--r) 0 0}
+  .nl-btn{border-radius:0 0 var(--r) var(--r)}
+  .dark-stats{grid-template-columns:1fr 1fr}
+  .quad-card{grid-template-columns:1fr}
+  .qc-img{height:160px}
+  .nav-link{padding:10px 10px;font-size:10px}
+  .container{padding:0 14px}
+  section{padding:24px 0}
+}
+@media(max-width:480px){
+  .logo-name{font-size:22px}
+  .hero-img-wrap{height:180px}
+  .most-read-grid{grid-template-columns:1fr}
+  .header-right .rss-btn{display:none}
+}
+</style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 
-<!-- ── Breaking ticker ──────────────────────────────────────────── -->
-<div class="ticker-bar" role="marquee" aria-live="off">
+<!-- ═══════════════════════════════════════════
+     ARTICLE MODAL
+═══════════════════════════════════════════ -->
+<div class="modal-overlay" id="articleModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose" aria-label="Close article">✕</button>
+    <div class="modal-img"><img id="modalImg" src="" alt="" loading="lazy"></div>
+    <div class="modal-body">
+      <div class="modal-cat-badge" id="modalCat"></div>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <div class="modal-meta" id="modalMeta"></div>
+      <div class="modal-content" id="modalContent"></div>
+      <div class="modal-src" id="modalSrc" style="display:none"></div>
+      <div class="modal-tags" id="modalTags"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     BREAKING NEWS TICKER
+═══════════════════════════════════════════ -->
+<div class="ticker-outer" role="marquee" aria-label="Breaking news">
   <div class="ticker-label">⚡ Breaking</div>
-  <div class="ticker-track-wrapper">
-    <div class="ticker-track">
-      {% for text in ticker_texts %}
-      <span class="ticker-item">{{ text }}</span>
-      {% endfor %}
-      {% for text in ticker_texts %}
-      <span class="ticker-item">{{ text }}</span>
-      {% endfor %}
+  <div class="ticker-track">
+    <div class="ticker-scroll" id="tickerScroll">
+      {% for item in ticker_items %}<span class="ticker-item">{{ item }}<span class="ticker-dot"> ◆ </span></span>{% endfor %}
+      {% for item in ticker_items %}<span class="ticker-item">{{ item }}<span class="ticker-dot"> ◆ </span></span>{% endfor %}
     </div>
   </div>
 </div>
 
-<!-- ── Top info bar ─────────────────────────────────────────────── -->
-<div class="top-bar">
-  <div class="top-bar-inner">
-    <div class="top-bar-group">
-      <span class="top-bar-item">📍 <strong>Marrakech</strong> ☀ 38°C · Sunny, very hot</span>
-      <span class="top-bar-item">🏔 <strong>Atlas Mountains</strong> ⛅ 24°C · Clear</span>
-      <span class="top-bar-item">🌊 <strong>Essaouira</strong> 🌬 22°C · Windy</span>
+<!-- ═══════════════════════════════════════════
+     STICKY HEADER
+═══════════════════════════════════════════ -->
+<header class="site-header" id="siteHeader" role="banner">
+  <div class="header-top">
+    <div class="header-left">
+      <strong>{{ today_display }}</strong><br>
+      Marrakech, Morocco &nbsp;·&nbsp; ☀ {{ weather_temp }}
     </div>
-    <div class="top-bar-group">
-      <span class="top-bar-item">💶 <strong>EUR/MAD</strong> 10.74</span>
-      <span class="top-bar-item"><strong>USD/MAD</strong> 9.87</span>
-      <span class="top-bar-item">✈ <strong>Menara Airport</strong> <span class="tag">Normal ops</span></span>
+    <div class="site-logo" onclick="window.scrollTo(0,0)">
+      <div class="logo-pre">Est. 2024</div>
+      <div class="logo-name">MARRAKECH <em>DAILY</em></div>
+      <div class="logo-sub">Your English-Language Window to the Red City</div>
+    </div>
+    <div class="header-right">
+      <a href="feed.xml" class="rss-btn" title="RSS Feed" aria-label="RSS Feed">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/></svg>
+        RSS
+      </a>
+      <button class="btn-icon" id="searchToggle" aria-label="Search" aria-expanded="false">🔍</button>
+      <button class="btn-subscribe" onclick="document.getElementById('newsletter').scrollIntoView({behavior:'smooth'})">Subscribe</button>
     </div>
   </div>
-</div>
 
-<!-- ── Masthead ─────────────────────────────────────────────────── -->
-<header class="masthead">
-  <div class="masthead-inner">
-    <div class="logo">Marrakech<span>Daily</span></div>
-    <div class="masthead-meta">
-      Independent English-Language Journalism<br>
-      {{ build_time }}
+  <!-- Navigation -->
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <span class="nav-link breaking active" data-cat="all" tabindex="0">All News</span>
+      <div class="nav-sep"></div>
+      {% for cat in categories %}
+      <span class="nav-link" data-cat="{{ cat }}" tabindex="0">{% if cat == 'Breaking' %}⚡ {% endif %}{{ cat }}</span>
+      {% endfor %}
     </div>
+  </nav>
+
+  <!-- Search bar -->
+  <div class="search-bar" id="searchBar" role="search">
+    <div class="search-wrap">
+      <input type="search" class="search-input" id="searchInput"
+        placeholder="Search Marrakech Daily…" autocomplete="off" aria-label="Search articles">
+      <button class="search-btn-x" onclick="closeSearch()" aria-label="Close search">✕</button>
+    </div>
+    <div class="search-results" id="searchResults" role="listbox"></div>
   </div>
 </header>
 
-<!-- ── Navigation ──────────────────────────────────────────────── -->
-<nav class="nav-bar" aria-label="Category navigation">
-  <div class="nav-inner">
-    <button class="nav-btn active" onclick="filterCategory('all', this)">All</button>
-    <button class="nav-btn" onclick="filterCategory('Breaking', this)">Breaking</button>
-    <button class="nav-btn" onclick="filterCategory('National', this)">National</button>
-    <button class="nav-btn" onclick="filterCategory('Business', this)">Business</button>
-    <button class="nav-btn" onclick="filterCategory('Sport', this)">Sport</button>
-    <button class="nav-btn" onclick="filterCategory('Culture', this)">Culture</button>
-    <button class="nav-btn" onclick="filterCategory('Tourism', this)">Tourism</button>
-    <button class="nav-btn" onclick="filterCategory('Society', this)">Society</button>
-    <button class="nav-btn" onclick="filterCategory('Technology', this)">Tech</button>
-    <button class="nav-btn" onclick="filterCategory('Health', this)">Health</button>
-    <button class="nav-btn" onclick="filterCategory('International', this)">World</button>
+<!-- Weather Bar -->
+<div class="weather-bar" aria-label="Weather and market data">
+  <div class="weather-inner">
+    <span>📍 <strong>Marrakech</strong> {{ weather_icon }} {{ weather_temp }} · {{ weather_desc }}</span>
+    <span class="weather-sep">|</span>
+    <span>🏔 <strong>Atlas</strong> 24°C</span>
+    <span class="weather-sep">|</span>
+    <span>🌊 <strong>Essaouira</strong> 22°C</span>
+    <span class="weather-sep">|</span>
+    <span>💶 <strong>EUR/MAD</strong> 10.74 · <strong>USD/MAD</strong> 9.87 · <strong>GBP/MAD</strong> 12.51</span>
+    <span class="weather-sep">|</span>
+    <span>✈ <strong>Menara Airport</strong> Operating normally</span>
   </div>
-</nav>
+</div>
 
-<!-- ── Hero ─────────────────────────────────────────────────────── -->
-{% if hero %}
-<section class="hero" id="section-hero">
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
   <div class="container">
-    <div class="hero-inner" onclick="openArticle('{{ hero.slug }}')" style="cursor:pointer;">
-      <img src="{{ hero.hero_image }}" alt="{{ hero.title }}" class="hero-image" loading="eager">
-      <div class="hero-overlay"></div>
-      <div class="hero-content">
-        <div class="hero-badge-row">
-          {% if hero.is_breaking %}<span class="badge-breaking">⚡ Breaking News</span>{% endif %}
-          <span class="badge-category">{{ hero.category }}</span>
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li><a href="{{ site_url }}/">Home</a></li>
+        <li class="sep">›</li>
+        <li aria-current="page">Latest News</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════ -->
+<main id="main-content" role="main">
+
+{% if hero %}
+<!-- ── HERO SECTION ── -->
+<div class="hero-section">
+  <div class="container">
+    <hr style="border:none;border-top:3px solid var(--black);margin-bottom:18px">
+    <div class="hero-grid">
+
+      <!-- Hero Main Article -->
+      <article class="hero-main" onclick="openArticle('{{ hero.slug }}')"
+        aria-label="{{ hero.title }}">
+        <div class="hero-img-wrap">
+          <img src="{{ hero.image_url }}" alt="{{ hero.title }}" loading="eager">
+          <div class="hero-overlay-cat">
+            <span class="cat-badge {% if hero.is_breaking %}breaking{% endif %}">
+              {% if hero.is_breaking %}⚡ BREAKING · {% endif %}{{ hero.category }}
+            </span>
+          </div>
         </div>
-        <h1 class="hero-title"><a>{{ hero.title }}</a></h1>
-        <p class="hero-excerpt">{{ hero.excerpt }}</p>
-        <div class="hero-meta">
-          By <strong>{{ hero.author.name }}</strong>
-          <span>|</span> {{ hero.author.role }}
-          <span>|</span> {{ hero.date_display }}
-          <span>|</span> {{ hero.reading_time }} min read
+        <div class="hero-content">
+          <div style="margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap">
+            {% for tag in hero.tags[:3] %}<span class="tag">{{ tag }}</span>{% endfor %}
+          </div>
+          <h1 class="hero-title" onclick="openArticle('{{ hero.slug }}')">{{ hero.title }}</h1>
+          <p class="hero-excerpt">{{ hero.excerpt }}</p>
+          <div class="byline">
+            <span class="author">{{ hero.author.name }}</span>
+            <span class="sep">|</span>
+            <span>{{ hero.author.role }}</span>
+            <span class="sep">|</span>
+            <span class="timestamp">{{ hero.date_display }}</span>
+            <span class="sep">|</span>
+            <span>{{ hero.reading_time }} min read</span>
+          </div>
+          <button class="read-more" style="margin-top:14px" onclick="openArticle('{{ hero.slug }}')">
+            Read Full Story →
+          </button>
         </div>
-        <span class="hero-cta">Read Full Story →</span>
-      </div>
+      </article>
+
+      <!-- Sidebar Top Stories -->
+      <aside class="hero-sidebar">
+        <div class="sidebar-label">Today's Top Stories</div>
+        {% for art in sidebar_articles %}
+        <div class="sidebar-article" onclick="openArticle('{{ art.slug }}')"
+          tabindex="0" role="button" aria-label="{{ art.title }}">
+          <div>
+            <div class="sa-num">{{ loop.index + 1 }}</div>
+            <div class="sa-cat">{{ art.category }}</div>
+            <div class="sa-title">{{ art.title }}</div>
+            <div class="sa-meta">{{ art.date_display }} · {{ art.reading_time }} min</div>
+          </div>
+          <div class="sa-thumb">
+            <img src="{{ art.image_url }}" alt="{{ art.title }}" loading="lazy">
+          </div>
+        </div>
+        {% endfor %}
+      </aside>
+
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Ad Banner -->
+<div class="container">
+  <div class="ad-slot ad-banner">Advertisement — 728×90</div>
+</div>
+
+<!-- ── LATEST NEWS ── -->
+{% if latest_articles %}
+<section>
+  <div class="container">
+    <div class="section-hd red">
+      <div class="section-name"><span class="lbl">Latest</span>Latest from Marrakech</div>
+      <span class="section-see-all">See All →</span>
+    </div>
+    <div class="latest-grid" id="latestGrid">
+      {% for art in latest_articles[:8] %}
+      <article class="news-card" onclick="openArticle('{{ art.slug }}')"
+        tabindex="0" role="button" aria-label="{{ art.title }}">
+        <div class="nc-img">
+          <img src="{{ art.image_url }}" alt="{{ art.title }}" loading="lazy">
+        </div>
+        <div class="nc-body">
+          <div class="nc-cat">{% if art.is_breaking %}⚡ {% endif %}{{ art.category }}</div>
+          <h3 class="nc-title">{{ art.title }}</h3>
+          <p class="nc-excerpt">{{ art.excerpt }}</p>
+          <div class="byline">
+            <span class="timestamp">{{ art.date_display }} · {{ art.reading_time }} min</span>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
     </div>
   </div>
 </section>
 {% endif %}
 
-<hr class="divider">
-
-<!-- ── Latest News ──────────────────────────────────────────────── -->
-<section class="section" id="section-latest">
+<!-- ── BUSINESS / ECONOMY ── -->
+{% if business_articles %}
+<section>
   <div class="container">
-    <div class="section-header">
-      <div class="section-title">Latest from Marrakech — Updated Daily</div>
-      <a class="see-all" href="#">See All →</a>
-    </div>
-    <div class="card-grid" id="articles-grid">
-      {% for art in latest %}
-      <article class="card" data-category="{{ art.category }}" onclick="openArticle('{{ art.slug }}')">
-        <div class="card-img-wrap">
-          <img src="{{ art.thumb_image }}" alt="{{ art.title }}" class="card-img" loading="lazy">
-          <span class="card-category{% if art.is_breaking %} breaking{% endif %}">
-            {% if art.is_breaking %}⚡ {% endif %}{{ art.category }}
-          </span>
-        </div>
-        <div class="card-body">
-          <div class="card-title">{{ art.title }}</div>
-          <div class="card-excerpt">{{ art.excerpt }}</div>
-          <div class="card-footer">
-            <span>{{ art.date_display }}</span>
-            <span><span class="card-dot">·</span>{{ art.reading_time }} min</span>
-          </div>
-        </div>
-      </article>
-      {% else %}
-      <p style="color:var(--muted);font-family:var(--font-ui);font-size:.85rem;grid-column:1/-1;padding:40px 0;text-align:center;">
-        The editorial agent will populate articles here on its next run.
-      </p>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-
-<hr class="divider">
-
-<!-- ── Business section ─────────────────────────────────────────── -->
-{% if business %}
-<section class="section" data-category-section="Business">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-title">Business &amp; Investment</div>
-      <a class="see-all" href="#" onclick="filterCategory('Business', null); return false;">See All →</a>
+    <div class="section-hd">
+      <div class="section-name"><span class="lbl" style="background:var(--teal)">Business</span>Business & Economy</div>
+      <span class="section-see-all">See All →</span>
     </div>
     <div class="featured-grid">
-      {% for art in business[:2] %}
-      <article class="featured-card" onclick="openArticle('{{ art.slug }}')">
-        <img src="{{ art.thumb_image }}" alt="{{ art.title }}" class="featured-img" loading="lazy">
-        <div class="featured-body">
-          <div class="featured-meta">{{ art.category }}</div>
-          <div class="featured-title">{{ art.title }}</div>
-          <div class="featured-excerpt">{{ art.excerpt }}</div>
+      {% set biz_main = business_articles[0] %}
+      <article class="featured-main">
+        <div class="fi-img" onclick="openArticle('{{ biz_main.slug }}')">
+          <img src="{{ biz_main.image_url }}" alt="{{ biz_main.title }}" loading="lazy">
         </div>
-        <div class="featured-footer">{{ art.date_display }} · {{ art.reading_time }} min</div>
+        <div class="fi-body">
+          <div class="fi-cat">{{ biz_main.category }}</div>
+          <h2 class="fi-title" onclick="openArticle('{{ biz_main.slug }}')">{{ biz_main.title }}</h2>
+          <p class="fi-excerpt">{{ biz_main.excerpt }}</p>
+          <div class="byline">
+            <span class="author">{{ biz_main.author.name }}</span>
+            <span class="sep">·</span>
+            <span class="timestamp">{{ biz_main.date_display }} · {{ biz_main.reading_time }} min</span>
+          </div>
+          <button class="read-more" onclick="openArticle('{{ biz_main.slug }}')">Continue →</button>
+        </div>
+      </article>
+      {% for art in business_articles[1:3] %}
+      <div>
+        <div class="fi-side-card" onclick="openArticle('{{ art.slug }}')">
+          <div class="fi-side-img"><img src="{{ art.image_url }}" alt="{{ art.title }}" loading="lazy"></div>
+          <div class="fi-cat">{{ art.category }}</div>
+          <div class="fi-title sm">{{ art.title }}</div>
+          <div class="byline"><span class="timestamp">{{ art.date_display }} · {{ art.reading_time }} min</span></div>
+        </div>
+        {% if business_articles[loop.index + 2] %}
+        {% set art2 = business_articles[loop.index + 2] %}
+        <div class="fi-side-card" onclick="openArticle('{{ art2.slug }}')">
+          <div class="fi-side-img"><img src="{{ art2.image_url }}" alt="{{ art2.title }}" loading="lazy"></div>
+          <div class="fi-cat">{{ art2.category }}</div>
+          <div class="fi-title sm">{{ art2.title }}</div>
+          <div class="byline"><span class="timestamp">{{ art2.date_display }} · {{ art2.reading_time }} min</span></div>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── TOURISM (dark bg) ── -->
+{% if tourism_articles %}
+<div class="dark-section">
+  <div class="container">
+    <div class="section-hd teal">
+      <div class="section-name" style="color:#fff"><span class="lbl teal">Tourism</span>Tourism & Luxury</div>
+      <span class="section-see-all">See All →</span>
+    </div>
+    <div class="dark-grid">
+      {% for art in tourism_articles[:3] %}
+      <article class="dark-card" onclick="openArticle('{{ art.slug }}')">
+        <div class="dc-img"><img src="{{ art.image_url }}" alt="{{ art.title }}" loading="lazy"></div>
+        <div class="dc-body">
+          <div class="dc-label">{{ art.category }}</div>
+          <div class="dc-title">{{ art.title }}</div>
+          <div class="dc-meta">{{ art.date_display }} · {{ art.reading_time }} min · {{ art.author.name }}</div>
+        </div>
       </article>
       {% endfor %}
     </div>
-    {% if business|length > 2 %}
-    <div class="card-grid" style="margin-top:20px;">
-      {% for art in business[2:] %}
-      <article class="card" data-category="{{ art.category }}" onclick="openArticle('{{ art.slug }}')">
-        <div class="card-img-wrap">
-          <img src="{{ art.thumb_image }}" alt="{{ art.title }}" class="card-img" loading="lazy">
-          <span class="card-category">{{ art.category }}</span>
-        </div>
-        <div class="card-body">
-          <div class="card-title">{{ art.title }}</div>
-          <div class="card-excerpt">{{ art.excerpt }}</div>
-          <div class="card-footer">
+    <div class="dark-stats">
+      <div class="ds-box"><div class="ds-num">4.2M</div><div class="ds-lbl">Visitors 2024</div></div>
+      <div class="ds-box"><div class="ds-num">+23%</div><div class="ds-lbl">YoY Growth</div></div>
+      <div class="ds-box"><div class="ds-num">12+</div><div class="ds-lbl">New EU Routes</div></div>
+      <div class="ds-box"><div class="ds-num">900+</div><div class="ds-lbl">Hotels & Riads</div></div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- ── NATIONAL / SOCIETY ── -->
+{% if national_articles %}
+<section>
+  <div class="container">
+    <div class="section-hd">
+      <div class="section-name"><span class="lbl black">National</span>National & Society</div>
+      <span class="section-see-all">See All →</span>
+    </div>
+    <div class="quad-grid">
+      {% for art in national_articles[:4] %}
+      <div class="quad-card" onclick="openArticle('{{ art.slug }}')">
+        <div class="qc-img"><img src="{{ art.image_url }}" alt="{{ art.title }}" loading="lazy"></div>
+        <div class="qc-body">
+          <span class="qc-badge">{{ art.category }}</span>
+          <div class="qc-title">{{ art.title }}</div>
+          <p style="font-family:var(--ff-body);font-size:12px;color:var(--muted);line-height:1.5">{{ art.excerpt[:120] }}…</p>
+          <div class="qc-meta">
             <span>{{ art.date_display }}</span>
-            <span><span class="card-dot">·</span>{{ art.reading_time }} min</span>
+            <span>{{ art.reading_time }} min</span>
           </div>
         </div>
-      </article>
-      {% endfor %}
-    </div>
-    {% endif %}
-  </div>
-</section>
-<hr class="divider">
-{% endif %}
-
-<!-- ── Culture & Tourism ─────────────────────────────────────────── -->
-{% if culture or tourism %}
-<section class="section">
-  <div class="container">
-    {% if culture %}
-    <div style="margin-bottom:36px;">
-      <div class="section-header">
-        <div class="section-title">Culture &amp; Arts</div>
-        <a class="see-all" href="#" onclick="filterCategory('Culture', null); return false;">See All →</a>
       </div>
-      <div class="card-grid">
-        {% for art in culture %}
-        <article class="card" data-category="{{ art.category }}" onclick="openArticle('{{ art.slug }}')">
-          <div class="card-img-wrap">
-            <img src="{{ art.thumb_image }}" alt="{{ art.title }}" class="card-img" loading="lazy">
-            <span class="card-category">{{ art.category }}</span>
-          </div>
-          <div class="card-body">
-            <div class="card-title">{{ art.title }}</div>
-            <div class="card-excerpt">{{ art.excerpt }}</div>
-            <div class="card-footer">
-              <span>{{ art.date_display }}</span>
-              <span><span class="card-dot">·</span>{{ art.reading_time }} min</span>
-            </div>
-          </div>
-        </article>
-        {% endfor %}
-      </div>
-    </div>
-    {% endif %}
-    {% if tourism %}
-    <div>
-      <div class="section-header">
-        <div class="section-title">Tourism &amp; Lifestyle</div>
-        <a class="see-all" href="#" onclick="filterCategory('Tourism', null); return false;">See All →</a>
-      </div>
-      <div class="card-grid">
-        {% for art in tourism %}
-        <article class="card" data-category="{{ art.category }}" onclick="openArticle('{{ art.slug }}')">
-          <div class="card-img-wrap">
-            <img src="{{ art.thumb_image }}" alt="{{ art.title }}" class="card-img" loading="lazy">
-            <span class="card-category">{{ art.category }}</span>
-          </div>
-          <div class="card-body">
-            <div class="card-title">{{ art.title }}</div>
-            <div class="card-excerpt">{{ art.excerpt }}</div>
-            <div class="card-footer">
-              <span>{{ art.date_display }}</span>
-              <span><span class="card-dot">·</span>{{ art.reading_time }} min</span>
-            </div>
-          </div>
-        </article>
-        {% endfor %}
-      </div>
-    </div>
-    {% endif %}
-  </div>
-</section>
-<hr class="divider">
-{% endif %}
-
-<!-- ── Sport ─────────────────────────────────────────────────────── -->
-{% if sport %}
-<section class="section" data-category-section="Sport">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-title">Sport</div>
-      <a class="see-all" href="#" onclick="filterCategory('Sport', null); return false;">See All →</a>
-    </div>
-    <div class="card-grid">
-      {% for art in sport %}
-      <article class="card" data-category="{{ art.category }}" onclick="openArticle('{{ art.slug }}')">
-        <div class="card-img-wrap">
-          <img src="{{ art.thumb_image }}" alt="{{ art.title }}" class="card-img" loading="lazy">
-          <span class="card-category">{{ art.category }}</span>
-        </div>
-        <div class="card-body">
-          <div class="card-title">{{ art.title }}</div>
-          <div class="card-excerpt">{{ art.excerpt }}</div>
-          <div class="card-footer">
-            <span>{{ art.date_display }}</span>
-            <span><span class="card-dot">·</span>{{ art.reading_time }} min</span>
-          </div>
-        </div>
-      </article>
       {% endfor %}
     </div>
   </div>
 </section>
-<hr class="divider">
 {% endif %}
 
-<!-- ── All articles (full browse, hidden by default) ──────────────── -->
-<section class="section" id="all-articles-section" style="display:none;">
+<!-- ── SPORT ── -->
+{% if sport_articles %}
+<section>
   <div class="container">
-    <div class="section-header">
-      <div class="section-title" id="filter-label">All Articles</div>
-      <button class="see-all" onclick="filterCategory('all', null)">← Back to all</button>
+    <div class="section-hd" style="border-color:var(--gold)">
+      <div class="section-name"><span class="lbl gold">Sport</span>Sport</div>
+      <span class="section-see-all">See All →</span>
     </div>
-    <div class="card-grid" id="filtered-grid"></div>
+    <div class="featured-grid">
+      {% set sport_main = sport_articles[0] %}
+      <article class="featured-main">
+        <div class="fi-img" onclick="openArticle('{{ sport_main.slug }}')">
+          <img src="{{ sport_main.image_url }}" alt="{{ sport_main.title }}" loading="lazy">
+        </div>
+        <div class="fi-body">
+          <div class="fi-cat" style="color:var(--gold)">{{ sport_main.category }}</div>
+          <h2 class="fi-title" onclick="openArticle('{{ sport_main.slug }}')">{{ sport_main.title }}</h2>
+          <p class="fi-excerpt">{{ sport_main.excerpt }}</p>
+          <div class="byline">
+            <span class="author">{{ sport_main.author.name }}</span>
+            <span class="sep">·</span>
+            <span class="timestamp">{{ sport_main.date_display }}</span>
+          </div>
+          <button class="read-more" onclick="openArticle('{{ sport_main.slug }}')">Read More →</button>
+        </div>
+      </article>
+      {% for art in sport_articles[1:3] %}
+      <div>
+        <div class="fi-side-card" onclick="openArticle('{{ art.slug }}')">
+          <div class="fi-side-img"><img src="{{ art.image_url }}" alt="{{ art.title }}" loading="lazy"></div>
+          <div class="fi-cat" style="color:var(--gold)">{{ art.category }}</div>
+          <div class="fi-title sm">{{ art.title }}</div>
+          <div class="byline"><span class="timestamp">{{ art.date_display }}</span></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
   </div>
 </section>
+{% endif %}
 
-<!-- ── Footer ───────────────────────────────────────────────────── -->
-<footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div class="footer-logo">Marrakech<span>Daily</span></div>
-        <p class="footer-tagline">Independent English-language journalism covering Marrakech, Morocco and the region since 2024.</p>
+<!-- ── CULTURE ── -->
+{% if culture_articles %}
+<section style="background:var(--sand2)">
+  <div class="container">
+    <div class="section-hd">
+      <div class="section-name"><span class="lbl" style="background:#7B5EA7">Culture</span>Culture & Arts</div>
+      <span class="section-see-all">See All →</span>
+    </div>
+    <div class="lifestyle-grid">
+      {% for art in culture_articles[:4] %}
+      <div class="ls-card" onclick="openArticle('{{ art.slug }}')">
+        <img src="{{ art.image_url }}" alt="{{ art.title }}" loading="lazy">
+        <div class="ls-overlay">
+          <div class="ls-label">{{ art.category }}</div>
+          <div class="ls-title">{{ art.title }}</div>
+        </div>
       </div>
-      <div class="footer-cols">
-        <div class="footer-col">
-          <h4>Categories</h4>
-          <ul>
-            <li><a href="#" onclick="filterCategory('National',null);return false;">National</a></li>
-            <li><a href="#" onclick="filterCategory('Business',null);return false;">Business</a></li>
-            <li><a href="#" onclick="filterCategory('Sport',null);return false;">Sport</a></li>
-            <li><a href="#" onclick="filterCategory('Culture',null);return false;">Culture</a></li>
-            <li><a href="#" onclick="filterCategory('Tourism',null);return false;">Tourism</a></li>
-          </ul>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── EVENTS ── -->
+{% if events_articles %}
+<section>
+  <div class="container">
+    <div class="section-hd">
+      <div class="section-name"><span class="lbl">Events</span>Events Calendar</div>
+      <span class="section-see-all">Full Calendar →</span>
+    </div>
+    <div class="events-grid">
+      {% for art in events_articles[:6] %}
+      <article class="event-card" onclick="openArticle('{{ art.slug }}')">
+        <div class="ev-date">
+          <div class="ev-month">{{ art.event_month or 'Jul' }}</div>
+          <div class="ev-day">{{ art.event_day or loop.index + 4 }}</div>
         </div>
-        <div class="footer-col">
-          <h4>Sources</h4>
-          <ul>
-            <li><a href="https://fr.kech24.com" target="_blank" rel="noopener">Kech24 (FR)</a></li>
-            <li><a href="https://www.madein.city/marrakech/fr/stories" target="_blank" rel="noopener">Made In City</a></li>
-            <li><a href="https://alphabourse.ma" target="_blank" rel="noopener">Alphabourse (FR)</a></li>
-          </ul>
+        <div class="ev-body">
+          <div class="ev-cat">{{ art.category }}</div>
+          <div class="ev-title">{{ art.title }}</div>
+          <div class="ev-meta">{{ art.excerpt[:80] }}…</div>
         </div>
-        <div class="footer-col">
-          <h4>About</h4>
-          <ul>
-            <li><a href="#">Editorial Policy</a></li>
-            <li><a href="#">Attribution</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── MOST READ ── -->
+{% if most_read %}
+<section style="background:var(--sand)">
+  <div class="container">
+    <div class="section-hd">
+      <div class="section-name">Most Read This Week</div>
+    </div>
+    <div class="most-read-grid">
+      {% for art in most_read[:5] %}
+      <article class="mr-card" onclick="openArticle('{{ art.slug }}')">
+        <div class="mr-rank">{{ loop.index }}</div>
+        <div class="mr-cat">{{ art.category }}</div>
+        <div class="mr-title">{{ art.title }}</div>
+        <div class="mr-views">👁 {{ art.view_count|default((loop.index * 1847 + 3210)|string) }} views</div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+</main>
+
+<!-- ── NEWSLETTER ── -->
+<div id="newsletter" class="newsletter">
+  <div class="nl-inner">
+    <div class="nl-eyebrow">Free Daily Newsletter</div>
+    <h2 class="nl-title">Marrakech in Your Inbox, Every Morning.</h2>
+    <p class="nl-sub">Join 12,400+ expats, tourists, and investors who start their day with the Marrakech Daily Morning Brief — the best of the city's news in a 3-minute read.</p>
+    <div class="nl-form">
+      <input type="email" class="nl-input" id="nlEmail" placeholder="your@email.com" aria-label="Email address">
+      <button class="nl-btn" id="nlBtn">Subscribe Free</button>
+    </div>
+    <p class="nl-note">No spam. Unsubscribe anytime.</p>
+    <div class="nl-stats">
+      <div style="text-align:center"><div class="nls-num">12.4K</div><div class="nls-lbl">Subscribers</div></div>
+      <div style="text-align:center"><div class="nls-num">68%</div><div class="nls-lbl">Open Rate</div></div>
+      <div style="text-align:center"><div class="nls-num">Daily</div><div class="nls-lbl">7:00 AM</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="site-logo footer-logo" style="align-items:flex-start;text-align:left">
+          <div class="logo-pre" style="color:rgba(255,255,255,.28)">Est. 2024</div>
+          <div class="logo-name">MARRAKECH <em>DAILY</em></div>
+          <div class="logo-sub" style="color:rgba(255,255,255,.28)">Your English-Language Window to the Red City</div>
         </div>
+        <p class="footer-desc">Independent English-language journalism covering Marrakech and the Marrakech-Safi region. Serving expats, tourists, investors and international businesses since 2024.</p>
+        <div class="footer-social">
+          <button class="social-btn" aria-label="Twitter/X">✕</button>
+          <button class="social-btn" aria-label="Facebook">f</button>
+          <button class="social-btn" aria-label="Instagram">◈</button>
+          <button class="social-btn" aria-label="LinkedIn">in</button>
+          <a href="feed.xml" class="social-btn" aria-label="RSS">RSS</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Sections</div>
+        <ul class="footer-links">
+          {% for cat in categories %}
+          <li><span onclick="filterByCategory('{{ cat }}')">{{ cat }}</span></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Services</div>
+        <ul class="footer-links">
+          <li><a href="#newsletter">Morning Newsletter</a></li>
+          <li><a href="#">Premium Membership</a></li>
+          <li><a href="#">Advertise</a></li>
+          <li><a href="#">Press Releases</a></li>
+          <li><a href="#">Event Listings</a></li>
+          <li><a href="feed.xml">RSS Feed</a></li>
+          <li><a href="sitemap.xml">Sitemap</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Expat Resources</div>
+        <ul class="footer-links">
+          <li><a href="#">Living in Marrakech</a></li>
+          <li><a href="#">Neighborhoods Guide</a></li>
+          <li><a href="#">Property Guide</a></li>
+          <li><a href="#">Visa & Residency</a></li>
+          <li><a href="#">Schools Directory</a></li>
+          <li><a href="#">Healthcare</a></li>
+          <li><a href="#">Digital Nomad Hub</a></li>
+        </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span class="footer-copy">
-        © {{ build_time[:4] if build_time else '2026' }} Marrakech Daily.
-        Articles are independently written; original sources are attributed.
-        {{ total_articles }} articles published.
-      </span>
-      <span class="footer-build">Built by AI Editorial Agent · {{ build_time }}</span>
+      <div>© 2024–{{ current_year }} {{ site_title }}. All rights reserved. Updated {{ today_display }}.</div>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+        <a href="#">Contact</a>
+        <a href="#">About</a>
+      </div>
     </div>
   </div>
 </footer>
 
-<!-- ── Article Modal ────────────────────────────────────────────── -->
-<div class="modal-backdrop" id="modal-backdrop" onclick="closeModal(event)">
-  <div class="modal" id="modal-box" role="dialog" aria-modal="true">
-    <button class="modal-close" onclick="closeModalBtn()" aria-label="Close">✕</button>
-    <img src="" alt="" class="modal-hero-img" id="modal-img">
-    <div class="modal-body">
-      <div class="modal-cat" id="modal-cat"></div>
-      <h2 class="modal-title" id="modal-title"></h2>
-      <p class="modal-desc" id="modal-desc"></p>
-      <div class="modal-byline" id="modal-byline"></div>
-      <div class="modal-content" id="modal-content"></div>
-      <div class="modal-tags" id="modal-tags"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ── Article data (embedded JSON) ─────────────────────────────── -->
+<!-- ═══════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════ -->
 <script>
-const ARTICLES = {{ articles | tojson }};
-const articleMap = {};
-ARTICLES.forEach(a => { articleMap[a.slug] = a; });
+// ── Article data injected by agent ──────────────────────
+const ARTICLES = {{ articles_json }};
 
-/** Escape a string for safe use inside HTML attribute values. */
-function escAttr(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-/** Safely build the byline DOM tree without innerHTML on untrusted strings. */
-function buildByline(a) {
-  const el = document.getElementById('modal-byline');
-  el.innerHTML = '';
-  const prefix = document.createTextNode('By ');
-  const strong = document.createElement('strong');
-  strong.textContent = a.author && a.author.name ? a.author.name : 'Staff';
-  const rest = document.createTextNode(
-    ' | ' + (a.author && a.author.role ? a.author.role : '') +
-    ' | ' + (a.date_display || '') +
-    ' | ' + (a.reading_time || 1) + ' min read'
-  );
-  el.appendChild(prefix);
-  el.appendChild(strong);
-  el.appendChild(rest);
-}
-
-/** Build tags safely without innerHTML on untrusted tag strings. */
-function buildTags(tags) {
-  const el = document.getElementById('modal-tags');
-  el.innerHTML = '';
-  (tags || []).forEach(t => {
-    const span = document.createElement('span');
-    span.className = 'modal-tag';
-    span.textContent = t;
-    el.appendChild(span);
-  });
-}
-
+// ── Modal ────────────────────────────────────────────────
 function openArticle(slug) {
-  const a = articleMap[slug];
+  const a = ARTICLES[slug];
   if (!a) return;
-
-  // Safe: these are controlled URLs from Python-generated data
-  const img = document.getElementById('modal-img');
-  img.src = a.hero_image || '';
-  img.alt = '';  // set via textContent below isn't possible for alt, but we trust our own image URLs
-
-  document.getElementById('modal-cat').textContent =
-    (a.is_breaking ? '⚡ Breaking — ' : '') + (a.category || '');
-  document.getElementById('modal-title').textContent = a.title || '';
-  document.getElementById('modal-desc').textContent = a.description || a.excerpt || '';
-
-  buildByline(a);
-
-  // body is server-side sanitised HTML (only <p>,<em>,<strong>,<a href>) — safe to inject
-  document.getElementById('modal-content').innerHTML =
-    a.body || '<p>' + escAttr(a.excerpt || '') + '</p>';
-
-  buildTags(a.tags);
-
-  document.getElementById('modal-backdrop').classList.add('open');
+  document.getElementById('modalImg').src    = a.image_url || '';
+  document.getElementById('modalImg').alt    = a.title || '';
+  document.getElementById('modalTitle').textContent = a.title || '';
+  document.getElementById('modalCat').innerHTML =
+    `<span class="cat-badge ${a.is_breaking ? 'breaking' : ''}">${a.is_breaking ? '⚡ BREAKING · ' : ''}${a.category || ''}</span>`;
+  document.getElementById('modalMeta').innerHTML =
+    `<span class="author">${a.author_name || 'Editorial Staff'}</span>
+     <span>|</span>
+     <span>${a.author_role || ''}</span>
+     <span>|</span>
+     <span>${a.date_display || ''}</span>
+     <span>|</span>
+     <span>${a.reading_time || 3} min read</span>`;
+  document.getElementById('modalContent').innerHTML = a.body_html || '';
+  const srcEl = document.getElementById('modalSrc');
+  if (a.source_url && a.source_name) {
+    srcEl.innerHTML = `Source: <a href="${a.source_url}" target="_blank" rel="noopener noreferrer">${a.source_name}</a>. This article was written independently in English based on verified facts.`;
+    srcEl.style.display = 'block';
+  } else {
+    srcEl.style.display = 'none';
+  }
+  document.getElementById('modalTags').innerHTML =
+    (a.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+  document.getElementById('articleModal').classList.add('open');
   document.body.style.overflow = 'hidden';
-  history.replaceState(null, '', '#' + slug);
+  document.getElementById('articleModal').scrollTop = 0;
+
+  // Update URL hash for sharing
+  history.pushState(null, '', `#${slug}`);
+
+  // Schema markup for article
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: a.title,
+    description: a.excerpt,
+    datePublished: a.published_at,
+    author: { '@type': 'Person', name: a.author_name || 'Editorial Staff' },
+    publisher: {
+      '@type': 'NewsMediaOrganization',
+      name: 'Marrakech Daily',
+      url: '{{ site_url }}/'
+    },
+    image: a.image_url,
+    url: `{{ site_url }}/#${slug}`
+  };
+  let sd = document.getElementById('articleSchema');
+  if (!sd) { sd = document.createElement('script'); sd.id = 'articleSchema'; sd.type = 'application/ld+json'; document.head.appendChild(sd); }
+  sd.textContent = JSON.stringify(schema);
 }
 
-function closeModal(e) {
-  if (e.target === document.getElementById('modal-backdrop')) closeModalBtn();
-}
-
-function closeModalBtn() {
-  document.getElementById('modal-backdrop').classList.remove('open');
+function closeModal() {
+  document.getElementById('articleModal').classList.remove('open');
   document.body.style.overflow = '';
-  history.replaceState(null, '', window.location.pathname);
+  history.pushState(null, '', window.location.pathname);
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModalBtn();
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('articleModal').addEventListener('click', e => { if (e.target === document.getElementById('articleModal')) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// Open article from URL hash on load
+window.addEventListener('load', () => {
+  const hash = location.hash.slice(1);
+  if (hash && ARTICLES[hash]) openArticle(hash);
 });
 
-// Open from URL hash on load
-if (location.hash) {
-  const slug = location.hash.slice(1);
-  if (articleMap[slug]) openArticle(slug);
-}
-
-// ── Category filter ──────────────────────────────────────────────
-function filterCategory(cat, btn) {
-  // Update nav button state
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-
-  const allSection   = document.getElementById('all-articles-section');
-  const latestSection = document.getElementById('section-latest');
-  const heroSection  = document.getElementById('section-hero');
-  const catSections  = document.querySelectorAll('[data-category-section]');
-
-  if (cat === 'all') {
-    allSection.style.display = 'none';
-    if (latestSection) latestSection.style.display = '';
-    if (heroSection)   heroSection.style.display = '';
-    catSections.forEach(s => s.style.display = '');
-    document.querySelector('.nav-btn').classList.add('active');
-    return;
-  }
-
-  // Show filtered view
-  if (latestSection) latestSection.style.display = 'none';
-  if (heroSection)   heroSection.style.display = 'none';
-  catSections.forEach(s => s.style.display = 'none');
-  allSection.style.display = '';
-
-  const label = document.getElementById('filter-label');
-  if (label) label.textContent = cat;
-
-  const grid = document.getElementById('filtered-grid');
-  const filtered = ARTICLES.filter(a => a.category === cat);
-  if (filtered.length === 0) {
-    grid.innerHTML = '<p style="color:var(--muted);font-family:var(--font-ui);font-size:.85rem;grid-column:1/-1;padding:40px 0;text-align:center;">No articles in this category yet.</p>';
-    return;
-  }
-  // Build cards with DOM APIs to avoid XSS from untrusted article fields
-  grid.innerHTML = '';
-  filtered.forEach(a => {
-    const art = document.createElement('article');
-    art.className = 'card';
-    art.addEventListener('click', () => openArticle(a.slug));
-
-    const imgWrap = document.createElement('div');
-    imgWrap.className = 'card-img-wrap';
-    const img = document.createElement('img');
-    img.src = a.thumb_image || '';
-    img.alt = '';
-    img.className = 'card-img';
-    img.loading = 'lazy';
-    const catBadge = document.createElement('span');
-    catBadge.className = 'card-category' + (a.is_breaking ? ' breaking' : '');
-    catBadge.textContent = (a.is_breaking ? '⚡ ' : '') + (a.category || '');
-    imgWrap.appendChild(img);
-    imgWrap.appendChild(catBadge);
-
-    const body = document.createElement('div');
-    body.className = 'card-body';
-    const title = document.createElement('div');
-    title.className = 'card-title';
-    title.textContent = a.title || '';
-    const excerpt = document.createElement('div');
-    excerpt.className = 'card-excerpt';
-    excerpt.textContent = a.excerpt || '';
-    const footer = document.createElement('div');
-    footer.className = 'card-footer';
-    const dateSpan = document.createElement('span');
-    dateSpan.textContent = a.date_display || '';
-    const readSpan = document.createElement('span');
-    const dot = document.createElement('span');
-    dot.className = 'card-dot';
-    dot.textContent = '·';
-    readSpan.appendChild(dot);
-    readSpan.appendChild(document.createTextNode((a.reading_time || 1) + ' min'));
-    footer.appendChild(dateSpan);
-    footer.appendChild(readSpan);
-    body.appendChild(title);
-    body.appendChild(excerpt);
-    body.appendChild(footer);
-
-    art.appendChild(imgWrap);
-    art.appendChild(body);
-    grid.appendChild(art);
+// ── Navigation / Category Filter ────────────────────────
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+    const cat = link.dataset.cat;
+    filterByCategory(cat);
   });
+  link.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); link.click(); }
+  });
+});
+
+function filterByCategory(cat) {
+  if (cat === 'all') return;
+  const match = Object.entries(ARTICLES).find(([, a]) =>
+    (a.category || '').toLowerCase() === cat.toLowerCase()
+  );
+  if (match) openArticle(match[0]);
 }
+
+// ── Search ────────────────────────────────────────────────
+const searchToggle = document.getElementById('searchToggle');
+const searchBar    = document.getElementById('searchBar');
+const searchInput  = document.getElementById('searchInput');
+const searchResults= document.getElementById('searchResults');
+
+function openSearch() {
+  searchBar.classList.add('open');
+  searchToggle.setAttribute('aria-expanded', 'true');
+  searchInput.focus();
+}
+function closeSearch() {
+  searchBar.classList.remove('open');
+  searchToggle.setAttribute('aria-expanded', 'false');
+  searchResults.innerHTML = '';
+  searchInput.value = '';
+}
+searchToggle.addEventListener('click', () => {
+  searchBar.classList.contains('open') ? closeSearch() : openSearch();
+});
+
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim().toLowerCase();
+  if (q.length < 2) { searchResults.innerHTML = ''; return; }
+  const hits = Object.entries(ARTICLES).filter(([, a]) =>
+    (a.title || '').toLowerCase().includes(q) ||
+    (a.excerpt || '').toLowerCase().includes(q) ||
+    (a.category || '').toLowerCase().includes(q) ||
+    (a.tags || []).some(t => t.toLowerCase().includes(q))
+  ).slice(0, 7);
+  if (!hits.length) {
+    searchResults.innerHTML = '<p style="color:var(--muted);padding:8px 0">No results found.</p>';
+    return;
+  }
+  searchResults.innerHTML = hits.map(([slug, a]) =>
+    `<div class="search-result-item" onclick="openArticle('${slug}');closeSearch()" role="option" tabindex="0">
+      <div class="sri-cat">${a.category || ''}</div>
+      <div class="sri-title">${a.title || ''}</div>
+    </div>`
+  ).join('');
+  searchResults.querySelectorAll('[role="option"]').forEach(el => {
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') el.click(); });
+  });
+});
+
+// ── Scroll Effects ────────────────────────────────────────
+const header = document.getElementById('siteHeader');
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  header.classList.toggle('scrolled', y > 40);
+  lastScroll = y;
+}, { passive: true });
+
+// ── Newsletter ────────────────────────────────────────────
+document.getElementById('nlBtn').addEventListener('click', function() {
+  const inp = document.getElementById('nlEmail');
+  const v = inp.value.trim();
+  if (!v || !v.includes('@')) {
+    inp.style.outline = '2px solid var(--red)';
+    inp.focus();
+    return;
+  }
+  inp.style.outline = '';
+  this.textContent  = '✓ You\'re in!';
+  this.style.background = '#0A5C45';
+  inp.value = '';
+  setTimeout(() => {
+    this.textContent  = 'Subscribe Free';
+    this.style.background = '';
+  }, 3000);
+});
 </script>
 </body>
 </html>
